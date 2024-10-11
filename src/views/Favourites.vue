@@ -1,26 +1,26 @@
 <template>
-  <div class="favorites">
-    <h1>Favorite Recipes</h1>
-    <div v-if="favorites.length">
+  <div class="favourites">
+    <h1>Favourite Recipes</h1>
+    <div v-if="favourites.length">
       <ul>
-        <li v-for="recipe in favorites" :key="recipe.id">
+        <li v-for="recipe in favourites" :key="recipe.id">
           {{ recipe.name }}
-          <button @click="removeFromFavorites(recipe.id)">Remove</button>
+          <button @click="removeFromFavourites(recipe.id)">Remove</button>
         </li>
       </ul>
     </div>
     <div v-else>
-      <p>You haven't added any favorites yet.</p>
+      <p>You haven't added any favourites yet.</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Favorites',
+  name: 'Favourites',
   data() {
     return {
-      favorites: [
+      favourites: [
         { id: 1, name: 'Spaghetti Bolognese' },
         { id: 2, name: 'Chocolate Chip Cookies' },
         { id: 3, name: 'Caesar Salad' }
@@ -28,17 +28,17 @@ export default {
     }
   },
   methods: {
-    removeFromFavorites(id) {
-      // TODO: Implement API call to remove favorite
-      console.log('Removing favorite with id:', id)
-      this.favorites = this.favorites.filter(recipe => recipe.id !== id)
+    removeFromFavourites(id) {
+      // TODO: Implement API call to remove favourite
+      console.log('Removing favourite with id:', id)
+      this.favourites = this.favourites.filter((recipe) => recipe.id !== id)
     }
   }
 }
 </script>
 
 <style scoped>
-.favorites {
+.favourites {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;

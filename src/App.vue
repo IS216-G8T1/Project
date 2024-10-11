@@ -4,25 +4,27 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <table>
-    <tr>
-      <!-- Navbar -->
-      <td id="navbar">
-        <div>
-          <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/signup">Sign Up</RouterLink>
-          <RouterLink to="/login">Login</RouterLink>
-          <RouterLink to="/recipe-search">Recipe Search</RouterLink>
-          <RouterLink to="/favorites">Favorites</RouterLink>
-          <RouterLink to="/personal-recipes">Personal Recipes</RouterLink>
-          <RouterLink to="/shopping-list">Shopping List</RouterLink>
-          <RouterLink to="/profile">Profile</RouterLink>
-        </div>
-      </td>
-      <!-- Main content -->
-      <td>
-        <RouterView />
-      </td>
-    </tr>
+    <tbody>
+      <tr>
+        <!-- Navbar -->
+        <td id="navbar">
+          <div>
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/signup">Sign Up</RouterLink>
+            <RouterLink to="/login">Login</RouterLink>
+            <RouterLink to="/recipe-search">Recipe Search</RouterLink>
+            <RouterLink to="/favorites">Favorites</RouterLink>
+            <RouterLink to="/personal-recipes">Personal Recipes</RouterLink>
+            <RouterLink to="/shopping-list">Shopping List</RouterLink>
+            <RouterLink to="/profile">Profile</RouterLink>
+          </div>
+        </td>
+        <!-- Main content -->
+        <td>
+          <RouterView />
+        </td>
+      </tr>
+    </tbody>
   </table>
 </template>
 

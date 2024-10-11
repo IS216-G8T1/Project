@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Profile from '../views/Profile.vue'
+import RecipeSearch from '../views/RecipeSearch.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,12 +30,12 @@ const router = createRouter({
     {
       path: '/recipe-search',
       name: 'recipeSearch',
-      component: () => import('../views/RecipeSearch.vue')
+      component: RecipeSearch
     },
     {
-      path: '/favorites',
-      name: 'favorites',
-      component: () => import('../views/Favorites.vue')
+      path: '/favourites',
+      name: 'favourites',
+      component: () => import('../views/Favourites.vue')
     },
     {
       path: '/personal-recipes',
