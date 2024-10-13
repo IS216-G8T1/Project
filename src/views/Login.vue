@@ -12,6 +12,9 @@ export default {
     foodIcon.style.animation = 'bounce 2s ease infinite'
 
     document.getElementById('login-form').addEventListener('submit', this.handleSubmit)
+
+    // Check if user is already logged in
+    this.checkLoginState()
   },
   methods: {
     async makeRequest(url, method, body = null) {
@@ -38,11 +41,32 @@ export default {
 
       if (result.username) {
         this.currentUsername = result.username
+        // Save login state
+        this.saveLoginState(this.currentUsername)
         alert(`Logged in as ${this.currentUsername}`)
         this.$router.push('/profile')
       } else {
         alert(result.error)
       }
+    },
+    saveLoginState(username) {
+      localStorage.setItem('loggedInUser', username)
+      localStorage.setItem('isLoggedIn', 'true')
+    },
+    checkLoginState() {
+      const loggedInUser = localStorage.getItem('loggedInUser')
+      const isLoggedIn = localStorage.getItem('isLoggedIn')
+
+      if (isLoggedIn === 'true' && loggedInUser) {
+        this.currentUsername = loggedInUser
+        this.$router.push('/profile')
+      }
+    },
+    logout() {
+      localStorage.removeItem('loggedInUser')
+      localStorage.removeItem('isLoggedIn')
+      this.currentUsername = ''
+      this.$router.push('/login')
     }
   }
 }
