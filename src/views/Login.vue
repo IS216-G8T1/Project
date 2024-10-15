@@ -1,11 +1,18 @@
 <script>
+import { inject } from 'vue'
+
 export default {
+  name: 'LoginView',
   data() {
     return {
       currentUsername: '',
       username: '',
       password: ''
     }
+  },
+  setup() {
+    const updateLoginState = inject('updateLoginState')
+    return { updateLoginState }
   },
   mounted() {
     const foodIcon = document.querySelector('.icon img')
@@ -52,6 +59,7 @@ export default {
     saveLoginState(username) {
       localStorage.setItem('loggedInUser', username)
       localStorage.setItem('isLoggedIn', 'true')
+      this.updateLoginState(true, username)
     },
     checkLoginState() {
       const loggedInUser = localStorage.getItem('loggedInUser')
@@ -59,6 +67,7 @@ export default {
 
       if (isLoggedIn === 'true' && loggedInUser) {
         this.currentUsername = loggedInUser
+        this.updateLoginState(true, loggedInUser)
         this.$router.push('/profile')
       }
     },
@@ -66,6 +75,7 @@ export default {
       localStorage.removeItem('loggedInUser')
       localStorage.removeItem('isLoggedIn')
       this.currentUsername = ''
+      this.updateLoginState(false)
       this.$router.push('/login')
     }
   }

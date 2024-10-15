@@ -1,26 +1,25 @@
 <script setup>
-// Import necessary functions and components
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, provide, readonly } from 'vue'
 
-// Get the current route and router instance
 const route = useRoute()
 const router = useRouter()
 
-// Computed properties to determine current page
 const homePage = computed(() => route.path === '/')
 const loginSignup = computed(() => route.path === '/login' || route.path === '/signup')
 
-// Reactive references for login state
 const isLoggedIn = ref(false)
 const currentUsername = ref('')
 
-// Check login state when component is mounted
+// Provide the login state and a function to update it
+provide('loginState', readonly(isLoggedIn))
+provide('currentUsername', readonly(currentUsername))
+provide('updateLoginState', updateLoginState)
+
 onMounted(() => {
   checkLoginState()
 })
 
-// Function to check if user is logged in
 function checkLoginState() {
   const loggedInUser = localStorage.getItem('loggedInUser')
   const loggedInState = localStorage.getItem('isLoggedIn')
@@ -34,12 +33,20 @@ function checkLoginState() {
   }
 }
 
-// Function to handle logout
+function updateLoginState(loggedIn, username = '') {
+  isLoggedIn.value = loggedIn
+  currentUsername.value = username
+  if (loggedIn) {
+    localStorage.setItem('isLoggedIn', 'true')
+    localStorage.setItem('loggedInUser', username)
+  } else {
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('loggedInUser')
+  }
+}
+
 function logout() {
-  localStorage.removeItem('loggedInUser')
-  localStorage.removeItem('isLoggedIn')
-  isLoggedIn.value = false
-  currentUsername.value = ''
+  updateLoginState(false)
   router.push('/login')
 }
 </script>
