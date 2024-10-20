@@ -2,12 +2,13 @@
   <div class="shopping-list">
     <h1>Shopping List</h1>
     <div class="add-item">
-      <input v-model="newItem" placeholder="Add new item" @keyup.enter="addItem" />
+      <input v-model="newItem" placeholder="Add new item" />
+      <input id="quantity" v-model="quantity" placeholder="Quantity" />
       <button @click="addItem">Add</button>
     </div>
     <ul v-if="items.length">
       <li v-for="(item, index) in items" :key="index">
-        <span :class="{ completed: item.completed }">{{ item.name }}</span>
+        <span :class="{ completed: item.completed }">{{ item.name }} | {{ item.quantity }}</span>
         <div>
           <button @click="toggleComplete(index)">{{ item.completed ? 'Undo' : 'Complete' }}</button>
           <button @click="removeItem(index)">Remove</button>
@@ -25,7 +26,8 @@ export default {
     return {
       username: '',
       items: [],
-      newItem: ''
+      newItem: '',
+      quantity: ''
     }
   },
   mounted() {
@@ -49,21 +51,23 @@ export default {
       }
     },
     async addItem(event) {
-      if (this.newItem.trim()) {
-        this.items.push({ name: this.newItem, completed: false })
-        event.preventDefault()
-        const result = await this.makeRequest('/shopping-list', 'POST', {
-          itemName: this.newItem,
-          itemQuantity: 2
-        })
-        this.newItem = ''
-      }
+      this.newItem.trim()
+      this.newItem = this.newItem.charAt(0).toUpperCase() + this.newItem.slice(1)
+      event.preventDefault()
+      const result = await this.makeRequest('/shopping-list', 'POST', {
+        itemName: this.newItem,
+        itemQuantity: this.quantity
+      })
+      this.newItem = ''
+      this.quantity = ''
+      this.getItems()
     },
     async getItems() {
       try {
         const result = await this.makeRequest('/shopping-list', 'GET')
         this.items = result.map((item) => ({
           name: item.ItemName,
+          quantity: item.ItemQuantity,
           completed: false
         }))
       } catch (error) {
@@ -97,11 +101,16 @@ h1 {
   margin-bottom: 20px;
 }
 
+#quantity {
+  width: 10px;
+}
+
 input {
   flex-grow: 1;
   padding: 10px;
   border: 1px solid #795548;
-  border-radius: 4px 0 0 4px;
+  border-radius: 4px;
+  margin-right: 5px;
 }
 
 button {
@@ -114,10 +123,6 @@ button {
 
 button:hover {
   background-color: #ff9800;
-}
-
-.add-item button {
-  border-radius: 0 4px 4px 0;
 }
 
 ul {
