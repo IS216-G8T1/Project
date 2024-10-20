@@ -11,7 +11,7 @@
         <span :class="{ completed: item.completed }">{{ item.name }} | {{ item.quantity }}</span>
         <div>
           <button @click="toggleComplete(index)">{{ item.completed ? 'Undo' : 'Complete' }}</button>
-          <button @click="removeItem(index)">Remove</button>
+          <button @click="removeItem(item.id)">Remove</button>
         </div>
       </li>
     </ul>
@@ -54,7 +54,7 @@ export default {
       this.newItem.trim()
       this.newItem = this.newItem.charAt(0).toUpperCase() + this.newItem.slice(1)
       event.preventDefault()
-      const result = await this.makeRequest('/shopping-list', 'POST', {
+      await this.makeRequest('/shopping-list', 'POST', {
         itemName: this.newItem,
         itemQuantity: this.quantity
       })
@@ -66,6 +66,7 @@ export default {
       try {
         const result = await this.makeRequest('/shopping-list', 'GET')
         this.items = result.map((item) => ({
+          id: item.ShoppingListID,
           name: item.ItemName,
           quantity: item.ItemQuantity,
           completed: false
@@ -77,8 +78,9 @@ export default {
     toggleComplete(index) {
       this.items[index].completed = !this.items[index].completed
     },
-    removeItem(index) {
-      this.items.splice(index, 1)
+    async removeItem(shoppingListID) {
+      await this.makeRequest(`/shopping-list/${shoppingListID}`, 'DELETE')
+      this.getItems()
     }
   }
 }

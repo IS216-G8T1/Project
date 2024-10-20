@@ -1,20 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RecipeApp Backend Test</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h2 { margin-top: 20px; }
-        form { margin-bottom: 20px; }
-        input, button { margin: 5px 0; }
-        #results { white-space: pre-wrap; background-color: #f0f0f0; padding: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input,
+        button {
+            margin: 5px 0;
+        }
+
+        #results {
+            white-space: pre-wrap;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
     </style>
 </head>
+
 <body>
     <h1>RecipeApp Backend Test</h1>
-    
+
     <h2>User Operations</h2>
     <form id="signupForm">
         <h3>Signup</h3>
@@ -71,6 +93,12 @@
     <form id="getShoppingListForm">
         <h3>Get Shopping List</h3>
         <button type="submit">Get Shopping List</button>
+    </form>
+
+    <form id="deleteFromShoppingListForm">
+        <h3>Delete from Shopping List</h3>
+        <input type="number" id="shoppingListID" placeholder="ID" required>
+        <button type="submit">Delete from Shopping List</button>
     </form>
 
     <h2>Points System</h2>
@@ -178,6 +206,15 @@
             displayResults(result);
         });
 
+        document.getElementById('deleteFromShoppingListForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const shoppingListID = document.getElementById('shoppingListID').value;
+            console.log(shoppingListID);
+            const result = await makeRequest(`/shopping-list/${shoppingListID}`, 'DELETE');
+            displayResults(result);
+        });
+
+
         document.getElementById('getUserPointsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const result = await makeRequest('/user-points', 'GET');
@@ -193,4 +230,5 @@
         });
     </script>
 </body>
+
 </html>

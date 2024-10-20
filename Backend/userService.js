@@ -89,10 +89,13 @@ async function updatePersonalRecipe(username, recipeId, recipe) {
   // Prepare the update object by comparing with existing recipe
   const updateFields = {}
   if (recipe.RecipeName !== existingRecipe.RecipeName) updateFields.RecipeName = recipe.RecipeName
-  if (recipe.PrepTime !== existingRecipe.PrepTime) updateFields.PrepTime = formatPrepTime(recipe.PrepTime)
-  if (recipe.ServingSize !== existingRecipe.ServingSize) updateFields.ServingSize = recipe.ServingSize
+  if (recipe.PrepTime !== existingRecipe.PrepTime)
+    updateFields.PrepTime = formatPrepTime(recipe.PrepTime)
+  if (recipe.ServingSize !== existingRecipe.ServingSize)
+    updateFields.ServingSize = recipe.ServingSize
   if (recipe.PrepSteps !== existingRecipe.PrepSteps) updateFields.PrepSteps = recipe.PrepSteps
-  if (recipe.IngredientList !== existingRecipe.IngredientList) updateFields.IngredientList = recipe.IngredientList
+  if (recipe.IngredientList !== existingRecipe.IngredientList)
+    updateFields.IngredientList = recipe.IngredientList
 
   console.log('Update fields:', updateFields) // Debug log
 
@@ -174,6 +177,12 @@ async function getShoppingList(username) {
   return await query('SELECT * FROM ShoppingList WHERE Username = ?', [username])
 }
 
+async function deleteFromShoppingList(shoppingListID) {
+  // Delete item from user's shopping list
+  const result = await query('DELETE FROM ShoppingList WHERE ShoppingListID = ?', [shoppingListID])
+  return result.affectedRows > 0
+}
+
 // Recipe rating and points system
 async function rateRecipe(username, userMadeRecipeId, rating, description = '') {
   // Add a review for a recipe
@@ -241,6 +250,7 @@ module.exports = {
   updateDietaryInfo,
   addToShoppingList,
   getShoppingList,
+  deleteFromShoppingList,
   rateRecipe,
   getUserPoints,
   redeemPoints,
