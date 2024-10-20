@@ -21,14 +21,17 @@ onMounted(() => {
 })
 
 // Watch for route changes
-watch(() => route.path, () => {
-  updateLoginState()
-})
+watch(
+  () => route.path,
+  () => {
+    updateLoginState()
+  }
+)
 
 function updateLoginState(loggedIn, username) {
   const loggedInState = localStorage.getItem('isLoggedIn')
   const loggedInUser = localStorage.getItem('loggedInUser')
-  
+
   if (loggedIn !== undefined && username !== undefined) {
     isLoggedIn.value = loggedIn
     currentUsername.value = username
@@ -102,7 +105,7 @@ function logout() {
             </div>
           </td>
           <!-- Main content area -->
-          <td>
+          <td id="content">
             <RouterView />
           </td>
         </tr>
@@ -144,10 +147,12 @@ table {
 }
 
 #navbar-column {
+  height: 100vh;
   width: 210px;
   border-right: 2px solid gray;
   background-color: #ffe0b2;
   vertical-align: top;
+  position: fixed;
 }
 
 #navbar-column div {
@@ -156,7 +161,8 @@ table {
   padding: 20px;
 }
 
-.navbar-content a, .navbar-content span {
+.navbar-content a,
+.navbar-content span {
   color: #5d4037;
   text-decoration: none;
   padding: 10px;
@@ -172,5 +178,9 @@ table {
 .navbar-content a.router-link-active {
   background-color: #ffa726;
   font-weight: bold;
+}
+
+#content {
+  padding-left: 215px;
 }
 </style>
