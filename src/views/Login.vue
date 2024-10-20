@@ -1,5 +1,5 @@
 <script>
-import { inject } from 'vue'
+import { inject, nextTick } from 'vue'
 
 export default {
   name: 'LoginView',
@@ -51,7 +51,10 @@ export default {
         // Save login state
         this.saveLoginState(this.currentUsername)
         alert(`Logged in as ${this.currentUsername}`)
-        this.$router.push('/profile')
+        // Use nextTick to ensure DOM has updated before navigation
+        nextTick(() => {
+          this.$router.push('/profile')
+        })
       } else {
         alert(result.error)
       }

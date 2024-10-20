@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { computed, ref, onMounted, provide, readonly } from 'vue'
+import { computed, ref, onMounted, provide, readonly, watch } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,14 +17,29 @@ provide('currentUsername', readonly(currentUsername))
 provide('updateLoginState', updateLoginState)
 
 onMounted(() => {
-  checkLoginState()
+  updateLoginState()
 })
 
-function checkLoginState() {
-  const loggedInUser = localStorage.getItem('loggedInUser')
+// Watch for route changes
+watch(() => route.path, () => {
+  updateLoginState()
+})
+
+function updateLoginState(loggedIn, username) {
   const loggedInState = localStorage.getItem('isLoggedIn')
+  const loggedInUser = localStorage.getItem('loggedInUser')
   
-  if (loggedInState === 'true' && loggedInUser) {
+  if (loggedIn !== undefined && username !== undefined) {
+    isLoggedIn.value = loggedIn
+    currentUsername.value = username
+    if (loggedIn) {
+      localStorage.setItem('isLoggedIn', 'true')
+      localStorage.setItem('loggedInUser', username)
+    } else {
+      localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('loggedInUser')
+    }
+  } else if (loggedInState === 'true' && loggedInUser) {
     isLoggedIn.value = true
     currentUsername.value = loggedInUser
   } else {
@@ -33,20 +48,8 @@ function checkLoginState() {
   }
 }
 
-function updateLoginState(loggedIn, username = '') {
-  isLoggedIn.value = loggedIn
-  currentUsername.value = username
-  if (loggedIn) {
-    localStorage.setItem('isLoggedIn', 'true')
-    localStorage.setItem('loggedInUser', username)
-  } else {
-    localStorage.removeItem('isLoggedIn')
-    localStorage.removeItem('loggedInUser')
-  }
-}
-
 function logout() {
-  updateLoginState(false)
+  updateLoginState(false, '')
   router.push('/login')
 }
 </script>
