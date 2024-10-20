@@ -34,6 +34,12 @@ async function loginUser(username, password) {
   }
 }
 
+// New function to check if a username already exists
+async function checkUsernameExists(username) {
+  const [user] = await query('SELECT Username FROM Users WHERE Username = ?', [username])
+  return !!user
+}
+
 // Recipe management functions
 function formatPrepTime(prepTime) {
   // Handle invalid input
@@ -225,6 +231,7 @@ async function getTopRatedRecipes(limit = 10) {
 module.exports = {
   createUser,
   loginUser,
+  checkUsernameExists,
   addFavoriteRecipe,
   getFavoriteRecipes,
   createPersonalRecipe,

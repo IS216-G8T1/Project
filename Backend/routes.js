@@ -35,6 +35,17 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// New route to check username availability
+router.get('/check-username/:username', async (req, res) => {
+  try {
+    const { username } = req.params;
+    const exists = await userService.checkUsernameExists(username);
+    res.json({ exists });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Recipe routes
 router.get('/search-recipes', async (req, res) => {
   try {
