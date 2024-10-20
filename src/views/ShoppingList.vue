@@ -2,12 +2,12 @@
   <div class="shopping-list">
     <h1>Shopping List</h1>
     <div class="add-item">
-      <input v-model="newItem" placeholder="Add new item" @keyup.enter="addItem">
+      <input v-model="newItem" placeholder="Add new item" @keyup.enter="addItem" />
       <button @click="addItem">Add</button>
     </div>
     <ul v-if="items.length">
       <li v-for="(item, index) in items" :key="index">
-        <span :class="{ 'completed': item.completed }">{{ item.name }}</span>
+        <span :class="{ completed: item.completed }">{{ item.name }}</span>
         <div>
           <button @click="toggleComplete(index)">{{ item.completed ? 'Undo' : 'Complete' }}</button>
           <button @click="removeItem(index)">Remove</button>
@@ -23,19 +23,51 @@ export default {
   name: 'ShoppingList',
   data() {
     return {
-      items: [
-        { name: 'Milk', completed: false },
-        { name: 'Bread', completed: false },
-        { name: 'Eggs', completed: true }
-      ],
+      username: '',
+      items: [],
       newItem: ''
     }
   },
+  mounted() {
+    this.username = localStorage.getItem('loggedInUser')
+    this.getItems()
+  },
   methods: {
-    addItem() {
+    async makeRequest(url, method, body = null) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Username': this.username
+      }
+      const options = { method, headers }
+      if (body) options.body = JSON.stringify(body)
+      try {
+        const response = await fetch(`http://localhost:5000/api${url}`, options)
+        return await response.json()
+      } catch (error) {
+        console.error('Error during fetch:', error)
+        return { error: 'An error occurred (Shopping List).' }
+      }
+    },
+    async addItem(event) {
       if (this.newItem.trim()) {
         this.items.push({ name: this.newItem, completed: false })
+        event.preventDefault()
+        const result = await this.makeRequest('/shopping-list', 'POST', {
+          itemName: this.newItem,
+          itemQuantity: 2
+        })
         this.newItem = ''
+      }
+    },
+    async getItems() {
+      try {
+        const result = await this.makeRequest('/shopping-list', 'GET')
+        this.items = result.map((item) => ({
+          name: item.ItemName,
+          completed: false
+        }))
+      } catch (error) {
+        console.error('Error fetching items:', error)
       }
     },
     toggleComplete(index) {
@@ -61,6 +93,7 @@ h1 {
 
 .add-item {
   display: flex;
+  align-items: start;
   margin-bottom: 20px;
 }
 
