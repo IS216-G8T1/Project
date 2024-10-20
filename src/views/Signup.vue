@@ -1,25 +1,39 @@
 <template>
-  <div class="signup-container">
-    <h1>Signup</h1>
-    <form @submit.prevent="handleSignup" class="signup-form">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" required minlength="3" maxlength="20" @blur="checkUsername">
-        <small>Username must be 3-20 characters long and unique.</small>
+  <div id="signup-page">
+    <div id="signup-container">
+      <div class="icon">
+        <img src="../assets/icon.png" alt="icon" width="200px" />
+      </div>
+      <h1 class="title">Sign Up</h1>
+      <form @submit.prevent="handleSignup" class="signup-form">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          v-model="username" 
+          @blur="checkUsername" 
+          required 
+          minlength="3" 
+          maxlength="20"
+        />
         <small v-if="usernameError" class="error-message">{{ usernameError }}</small>
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required minlength="8">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          v-model="password" 
+          required 
+          minlength="8"
+        />
         <small>Password must be at least 8 characters long.</small>
+        <button type="submit" :disabled="isLoading || !isFormValid">
+          {{ isLoading ? 'Signing up...' : 'Sign Up' }}
+        </button>
+      </form>
+      <div v-if="message" :class="['message', messageType]">{{ message }}</div>
+      <div class="login-link">
+        <p>Already have an account? <router-link to="/login">Login here</router-link></p>
       </div>
-      <button type="submit" :disabled="isLoading || !isFormValid || !!usernameError">
-        {{ isLoading ? 'Signing up...' : 'Sign Up' }}
-      </button>
-    </form>
-    <div v-if="message" :class="['message', messageType]">{{ message }}</div>
-    <div class="login-link">
-      Already have an account? <router-link to="/login">Login here</router-link>
     </div>
   </div>
 </template>
@@ -44,6 +58,10 @@ export default {
     isFormValid() {
       return this.username.length >= 3 && this.username.length <= 20 && this.password.length >= 8 && !this.usernameError;
     }
+  },
+  mounted() {
+    const foodIcon = document.querySelector('.icon img')
+    foodIcon.style.animation = 'bounce 2s ease infinite'
   },
   methods: {
     async checkUsername() {
@@ -99,10 +117,25 @@ export default {
 </script>
 
 <style scoped>
-.signup-container {
-  max-width: 400px;
-  margin: 0 auto;
+#signup-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#signup-container {
+  background-color: #ffe0b2;
+  color: #795548;
+  border-radius: 8px;
+  text-align: center;
+  width: 400px;
   padding: 20px;
+}
+
+.title {
+  margin-top: -5px;
+  color: #5d4037;
 }
 
 .signup-form {
@@ -110,39 +143,40 @@ export default {
   flex-direction: column;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
 label {
-  margin-bottom: 5px;
-  display: block;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: start;
 }
 
 input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #795548;
   border-radius: 4px;
+  font-size: 1rem;
 }
 
 small {
   display: block;
-  margin-top: 5px;
-  color: #666;
+  margin-bottom: 1rem;
+  color: #795548;
+  text-align: left;
 }
 
 button {
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #ffa726;
+  color: #5d4037;
+  padding: 0.75rem;
   border: none;
   border-radius: 4px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: #ffcc80;
 }
 
 button:disabled {
@@ -152,11 +186,10 @@ button:disabled {
 
 .login-link {
   margin-top: 20px;
-  text-align: center;
 }
 
 .login-link a {
-  color: #4CAF50;
+  color: #795548;
   text-decoration: none;
 }
 
@@ -185,5 +218,18 @@ button:disabled {
 .error-message {
   color: #721c24;
   font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
 }
 </style>
