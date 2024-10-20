@@ -138,10 +138,15 @@ export default {
     }
 
     // Function to update a recipe
-    const updateRecipe = async () => {
+    const updateRecipe = async (event) => {
+      event.preventDefault() // Ensure the form submission is prevented
+      console.log('updateRecipe function called') // Debug log
+
       try {
         // Format prep time back to HH:MM
         editingRecipe.value.PrepTime = `${editingPrepTimeHours.value.toString().padStart(2, '0')}:${editingPrepTimeMinutes.value.toString().padStart(2, '0')}`
+
+        console.log('Sending update request for recipe:', editingRecipe.value) // Debug log
 
         const response = await fetch(
           `http://localhost:5000/api/personal-recipes/${editingRecipe.value.UserMadeRecipeID}`,
@@ -155,19 +160,29 @@ export default {
           }
         )
 
+        console.log('Update response status:', response.status) // Debug log
+
         if (response.ok) {
           const updatedRecipe = await response.json()
+          console.log('Updated recipe received:', updatedRecipe) // Debug log
+
           const index = recipes.value.findIndex(
             (r) => r.UserMadeRecipeID === updatedRecipe.UserMadeRecipeID
           )
-          if (index !== -1) recipes.value[index] = updatedRecipe
+          if (index !== -1) {
+            recipes.value[index] = updatedRecipe
+            recipes.value = [...recipes.value] // Trigger reactivity
+          }
           showEditModal.value = false
+          error.value = null // Clear any previous errors
+          console.log('Recipe updated successfully') // Debug log
         } else {
           const errorData = await response.json()
           throw new Error(`Failed to update recipe: ${errorData.error || 'Unknown error'}`)
         }
       } catch (err) {
         error.value = `Failed to update recipe: ${err.message}`
+        console.error('Error updating recipe:', err)
       }
     }
 
@@ -186,6 +201,7 @@ export default {
           }
         } catch (err) {
           error.value = 'Failed to delete recipe'
+          console.error('Error deleting recipe:', err)
         }
       }
     }

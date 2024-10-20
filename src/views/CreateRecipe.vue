@@ -5,18 +5,31 @@
     <form @submit.prevent="createRecipe">
       <div>
         <label for="recipeName">Recipe Name:</label>
-        <input v-model="recipe.recipeName" id="recipeName" required>
+        <input v-model="recipe.recipeName" id="recipeName" required />
       </div>
       <div class="prep-time">
         <label>Preparation Time: Hours/Minutes</label>
         <div class="time-inputs">
-          <input v-model.number="prepTimeHours" type="number" min="0" placeholder="Hours" required>
-          <input v-model.number="prepTimeMinutes" type="number" min="0" max="59" placeholder="Minutes" required>
+          <input
+            v-model.number="prepTimeHours"
+            type="number"
+            min="0"
+            placeholder="Hours"
+            required
+          />
+          <input
+            v-model.number="prepTimeMinutes"
+            type="number"
+            min="0"
+            max="59"
+            placeholder="Minutes"
+            required
+          />
         </div>
       </div>
       <div>
         <label for="servingSize">Serving Size:</label>
-        <input v-model.number="recipe.servingSize" id="servingSize" type="number" required>
+        <input v-model.number="recipe.servingSize" id="servingSize" type="number" required />
       </div>
       <div>
         <label for="prepSteps">Preparation Steps:</label>
@@ -29,7 +42,7 @@
       <button type="submit">Create Recipe</button>
     </form>
     <!-- Message to show success or error -->
-    <p v-if="message" :class="{ 'success': isSuccess, 'error': !isSuccess }">{{ message }}</p>
+    <p v-if="message" :class="{ success: isSuccess, error: !isSuccess }">{{ message }}</p>
   </div>
 </template>
 
@@ -54,11 +67,20 @@ export default {
     const message = ref('')
     const isSuccess = ref(false)
 
+    // Function to create a unique identifier
+    const createUniqueId = () => {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2)
+    }
+
     // Function to create a new recipe
     const createRecipe = async () => {
+      const recipeId = createUniqueId()
+      console.log(`Starting recipe creation. Recipe ID: ${recipeId}`)
+
       // Check if user is logged in
       const username = localStorage.getItem('loggedInUser')
       if (!username) {
+        console.error(`Recipe creation failed. Recipe ID: ${recipeId}. Error: User not logged in`)
         message.value = 'Please log in to create a recipe.'
         isSuccess.value = false
         return
@@ -66,6 +88,11 @@ export default {
 
       // Format prep time as "HH:MM"
       recipe.value.prepTime = `${prepTimeHours.value.toString().padStart(2, '0')}:${prepTimeMinutes.value.toString().padStart(2, '0')}`
+
+      console.log(
+        `Sending recipe creation request. Recipe ID: ${recipeId}. Recipe data:`,
+        JSON.stringify(recipe.value, null, 2)
+      )
 
       try {
         // Send POST request to create recipe
@@ -80,6 +107,11 @@ export default {
 
         if (response.ok) {
           // Recipe created successfully
+          const createdRecipe = await response.json()
+          console.log(
+            `Recipe created successfully. Recipe ID: ${recipeId}. Created recipe:`,
+            JSON.stringify(createdRecipe, null, 2)
+          )
           message.value = 'Recipe created successfully!'
           isSuccess.value = true
           // Reset form
@@ -89,14 +121,18 @@ export default {
         } else {
           // Handle error from server
           const error = await response.json()
-          message.value = `Failed to create recipe: ${error.error}`
+          console.error(`Recipe creation failed. Recipe ID: ${recipeId}. Server error:`, error)
+          message.value = `Failed to create recipe: ${error.error || 'Unknown error'}`
           isSuccess.value = false
         }
       } catch (error) {
         // Handle network or other errors
+        console.error(
+          `Recipe creation failed. Recipe ID: ${recipeId}. Network or other error:`,
+          error
+        )
         message.value = 'An error occurred. Please try again.'
         isSuccess.value = false
-        console.error('Error creating recipe:', error)
       }
     }
 
@@ -130,7 +166,8 @@ label {
   margin-top: 10px;
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 5px;
   margin-top: 5px;
