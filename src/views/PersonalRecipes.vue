@@ -31,43 +31,63 @@
       <div class="modal-content">
         <h3>Edit Recipe</h3>
         <form @submit.prevent="updateRecipe">
-          <input v-model="editingRecipe.RecipeName" placeholder="Recipe Name" required />
+          <label for="recipeName">Recipe Name:</label>
+          <input id="recipeName" v-model="editingRecipe.RecipeName" placeholder="Recipe Name" required />
+          
           <div class="prep-time">
-            <label>Preparation Time: Hours/Minutes</label>
+            <label>Preparation Time:</label>
             <div class="time-inputs">
-              <input
-                v-model.number="editingPrepTimeHours"
-                type="number"
-                min="0"
-                placeholder="Hours"
-                required
-              />
-              <input
-                v-model.number="editingPrepTimeMinutes"
-                type="number"
-                min="0"
-                max="59"
-                placeholder="Minutes"
-                required
-              />
+              <div>
+                <label for="prepTimeHours">Hours:</label>
+                <input
+                  id="prepTimeHours"
+                  v-model.number="editingPrepTimeHours"
+                  type="number"
+                  min="0"
+                  placeholder="Hours"
+                  required
+                />
+              </div>
+              <div>
+                <label for="prepTimeMinutes">Minutes:</label>
+                <input
+                  id="prepTimeMinutes"
+                  v-model.number="editingPrepTimeMinutes"
+                  type="number"
+                  min="0"
+                  max="59"
+                  placeholder="Minutes"
+                  required
+                />
+              </div>
             </div>
           </div>
+          
+          <label for="servingSize">Serving Size:</label>
           <input
+            id="servingSize"
             v-model.number="editingRecipe.ServingSize"
             type="number"
             placeholder="Serving Size"
             required
           />
+          
+          <label for="ingredients">Ingredients:</label>
           <textarea
+            id="ingredients"
             v-model="editingRecipe.IngredientList"
             placeholder="Ingredients"
             required
           ></textarea>
+          
+          <label for="prepSteps">Preparation Steps:</label>
           <textarea
+            id="prepSteps"
             v-model="editingRecipe.PrepSteps"
             placeholder="Preparation Steps"
             required
           ></textarea>
+          
           <button type="submit">Save</button>
           <button type="button" @click="showEditModal = false">Cancel</button>
         </form>
@@ -229,7 +249,6 @@ export default {
 </script>
 
 <style scoped>
-/* Styles remain unchanged */
 .personal-recipes {
   max-width: 800px;
   margin: 0 auto;
@@ -288,6 +307,11 @@ button {
   padding: 5px;
 }
 
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
 .prep-time {
   margin-top: 10px;
 }
@@ -297,8 +321,12 @@ button {
   gap: 10px;
 }
 
+.time-inputs > div {
+  flex: 1;
+}
+
 .time-inputs input {
-  width: 50%;
+  width: 100%;
 }
 
 ol {
