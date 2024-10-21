@@ -6,6 +6,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Profile from '../views/Profile.vue'
 import RecipeSearch from '../views/RecipeSearch.vue'
+import DietaryRestrictions from '../views/DietaryRestrictions.vue'
 
 // Create a new router instance
 const router = createRouter({
@@ -62,6 +63,12 @@ const router = createRouter({
       name: 'createRecipe',
       // Lazy-load the CreateRecipe component
       component: () => import('../views/CreateRecipe.vue')
+    },
+    {
+      path: '/dietary-restrictions',
+      name: 'dietaryRestrictions',
+      // Lazy-load the CreateRecipe component
+      component: () => import('../views/DietaryRestrictions.vue')
     }
   ]
 })
