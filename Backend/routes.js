@@ -128,6 +128,15 @@ router.get('/personal-recipes', authenticateUser, async (req, res) => {
   }
 })
 
+router.get('/all-personal-recipes', authenticateUser, async (req, res) => {
+  try {
+    const recipes = await userService.getAllPersonalRecipes()
+    res.json(recipes)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 router.put('/personal-recipes/:recipeId', authenticateUser, async (req, res) => {
   try {
     const { recipeId } = req.params

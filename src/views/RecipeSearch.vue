@@ -2,14 +2,23 @@
   <div class="recipe-search">
     <h1>Recipe Search</h1>
     <div class="search-form">
-      <input type="text" v-model="searchQuery" placeholder="Enter ingredients or recipe name" />
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Enter ingredients or recipe name"
+        @keyup.enter="searchRecipes"
+      />
       <button @click="searchRecipes" :disabled="isLoading">
         {{ isLoading ? 'Searching...' : 'Search' }}
       </button>
     </div>
-    <div class="results" v-if="searchResults.length">
-      <h2>Search Results</h2>
-      <ul>
+    <div v-if="searchResults.length">
+      <div id="search-results">
+        <h2>Search Results</h2>
+        <button v-if="isEDAMAM" @click="displayUserRecipes">User Recipes</button>
+        <button v-else @click="searchRecipes" :disabled="isLoading">EDAMAM Recipes</button>
+      </div>
+      <ul class="results" v-if="isEDAMAM && !isLoading">
         <li v-for="recipe in searchResults" :key="recipe.id">
           <div class="recipe-info">
             <h3>{{ recipe.title }}</h3>
@@ -19,6 +28,21 @@
             <a :href="recipe.url" target="_blank">View Recipe</a>
           </div>
           <img :src="recipe.image" :alt="recipe.title" class="recipe-image" />
+        </li>
+      </ul>
+      <ul class="results" v-else>
+        <li v-for="recipe in searchResults" :key="recipe.UserMadeRecipeID">
+          <div class="recipe-info">
+            <h3>{{ recipe.RecipeName }}</h3>
+            <p>Prep Time: {{ formatTime(recipe.PrepTime) }}</p>
+            <p>Serving Size: {{ recipe.ServingSize }}</p>
+            <p>Ingredients: {{ recipe.IngredientList }}</p>
+            <div>
+              <p>Steps:</p>
+              <!-- Use v-html to render the formatted steps -->
+              <ol v-html="formatSteps(recipe.PrepSteps)"></ol>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -36,19 +60,71 @@ export default {
       isLoading: false
     }
   },
+  setup() {
+    // Function to format time from minutes to hours and minutes
+    const formatTime = (timeString) => {
+      if (!timeString || typeof timeString !== 'string') return 'N/A'
+      const [hours, minutes] = timeString.split(':').map(Number)
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`
+      } else {
+        return `${minutes}m`
+      }
+    }
+
+    // Function to format steps into an HTML list
+    const formatSteps = (steps) => {
+      if (!steps) return ''
+      return steps
+        .split('\n')
+        .map((step) => `<li>${step}</li>`)
+        .join('')
+    }
+
+    return {
+      formatTime,
+      formatSteps
+    }
+  },
   methods: {
     async searchRecipes() {
+      this.isEDAMAM = true
       this.isLoading = true
       try {
         const response = await axios.get('/api/search-recipes', {
           params: { query: this.searchQuery }
         })
-        console.log('Full response:', response);
+        console.log('Full response:', response)
         this.searchResults = response.data
       } catch (error) {
         console.error('Error searching recipes:', error) //Shows error messages for user
       } finally {
         this.isLoading = false
+      }
+    },
+    async makeRequest(url, method, body = null) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Username': this.username
+      }
+      const options = { method, headers }
+      if (body) options.body = JSON.stringify(body)
+      try {
+        const response = await fetch(`http://localhost:5000/api${url}`, options)
+        return await response.json()
+      } catch (error) {
+        console.error('Error during fetch:', error)
+        return { error: 'An error occurred (search recipes).' }
+      }
+    },
+    async displayUserRecipes() {
+      this.isEDAMAM = false
+      try {
+        const result = await this.makeRequest('/all-personal-recipes', 'GET')
+        console.log(result)
+        this.searchResults = result
+      } catch (error) {
+        console.error('Error fetching items:', error)
       }
     }
   }
@@ -76,6 +152,7 @@ input {
   width: 70%;
   border: 1px solid #795548;
   border-radius: 4px;
+  margin-right: 5px;
 }
 
 button {
@@ -107,6 +184,7 @@ li {
 
 .recipe-info {
   flex: 1;
+  margin-bottom: 20px;
 }
 
 .recipe-image {
@@ -115,5 +193,14 @@ li {
   object-fit: cover;
   margin-left: auto;
   border-radius: 4px;
+}
+
+#search-results {
+  display: flex;
+  align-items: center;
+}
+
+#search-results button {
+  margin-left: 20px;
 }
 </style>

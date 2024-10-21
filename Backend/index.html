@@ -82,6 +82,11 @@
         <button type="submit">Get Personal Recipes</button>
     </form>
 
+    <form id="getAllPersonalRecipesForm">
+        <h3>Get All Personal Recipes</h3>
+        <button type="submit">Get All Personal Recipes</button>
+    </form>
+
     <h2>Shopping List</h2>
     <form id="addToShoppingListForm">
         <h3>Add to Shopping List</h3>
@@ -188,6 +193,12 @@
         document.getElementById('getPersonalRecipesForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const result = await makeRequest('/personal-recipes', 'GET');
+            displayResults(result);
+        });
+
+        document.getElementById('getAllPersonalRecipesForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const result = await makeRequest('/all-personal-recipes', 'GET');
             displayResults(result);
         });
 
