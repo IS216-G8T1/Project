@@ -178,8 +178,10 @@ router.get('/dietary-info', authenticateUser, async (req, res) => {
 
 router.post('/dietary-info', authenticateUser, async (req, res) => {
   try {
-    const { dietaryInfo } = req.body
-    await userService.updateDietaryInfo(req.username, dietaryInfo)
+    const { DietaryInfo } = req.body
+    console.log('in route ', DietaryInfo)
+
+    await userService.updateDietaryInfo(req.username, DietaryInfo)
     res.json({ message: 'Dietary information updated successfully' })
   } catch (error) {
     res.status(500).json({ error: error.message })

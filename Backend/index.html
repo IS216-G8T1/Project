@@ -118,33 +118,19 @@
         <button type="submit">Redeem Points</button>
     </form>
 
+    <h2>Dietary Info</h2>
     <form id="getDietaryInfoForm">
-        <h3>Dietary Info</h3>
-        <button type="submit">Get Dietary getRecipesByIngredientsForm</button>
+        <h3>Get Dietary Info</h3>
+        <button type="submit">Get Dietary Info</button>
     </form>
 
     <form id="updateDietaryInfoForm">
-        <h3>Dietary Info</h3>
-            <div class="checkbox-group">
-            <div class="checkbox-item">
-            <input type="checkbox" id="Vegetarian" 
-                value="Vegetarian" 
-                name="dietaryInfo[]" 
-            />
-            <label :for="Vegetarian">Vegetarian</label>
-            <input type="checkbox" id="Vegan" 
-                value="Vegan" 
-                name="dietaryInfo[]" 
-            />
-            <label :for="Vegan">Vegan</label>
-            <input type="checkbox" id="Gluten-Free" 
-                value="Gluten-Free" 
-                name="dietaryInfo[]" 
-            />
-            <label :for="Gluten-Free">Gluten-Free</label>
-            </div>
-            </div>
-          <button type="submit" >submit</button>
+        <h3>Update Dietary Info</h3>
+        Dietary Restrictions:<br />
+        <input name="dietaryInfo[]" type="checkbox" value="vegetarian" />Vegetarian
+        <input name="dietaryInfo[]" type="checkbox" value="vegan" />Vegan
+        <input name="dietaryInfo[]" type="checkbox" value="gluten-free" />Gluten-Free
+        <button type="submit">Update Dietary Info</button>
     </form>
 
     <h2>Results</h2>
@@ -277,9 +263,17 @@
 
         document.getElementById('updateDietaryInfoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const result = await makeRequest('/dietary-info', 'POST', {
-                dietaryInfo: document.getElementById('dietaryInfo').value
+            const newDietaryInfo = [];
+            const info = document.querySelectorAll('input[name="dietaryInfo[]"]:checked');
+
+            info.forEach((item) => {
+                newDietaryInfo.push(item.value);
             });
+
+            const result = await makeRequest('/dietary-info', 'POST', {
+                DietaryInfo: newDietaryInfo
+            });
+
             displayResults(result);
         });
     </script>
