@@ -9,11 +9,17 @@
 
       <!-- Display user's dietary restrictions -->
       <h3>Your Dietary Restrictions:</h3>
+<<<<<<< HEAD
       <ul v-if="dietaryRestrictions.length">
         <li v-for="(restriction, index) in dietaryRestrictions" :key="index">
           {{ restriction }}
         </li>
       </ul>
+=======
+      <p v-if="dietaryRestrictions.length > 0">
+        {{ dietaryRestrictions.join(", ") }} <!-- Display dietary restrictions as a comma-separated list -->
+      </p>
+>>>>>>> annabelle
       <p v-else>No dietary restrictions set.</p>
 
       <!-- Button to navigate to dietary restrictions page -->
@@ -26,6 +32,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api';
@@ -66,6 +73,68 @@ export default {
     }
   }
 };
+=======
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'  // Import useRouter
+
+export default {
+  setup() {
+    // Access the router instance
+    const router = useRouter()
+
+    // Declare reactive variables
+    const dietaryRestrictions = ref([])
+    const loading = ref(true)
+    const error = ref(null)
+    const currentUsername = ref(localStorage.getItem('loggedInUser')) // Make this reactive
+
+    // Function to fetch dietary restrictions from the server
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/dietary-info', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+        })
+        if (response.ok) {
+          dietaryRestrictions.value = await response.json()
+          dietaryRestrictions.value = dietaryRestrictions.value.split(",")
+        } else {
+          throw new Error('Failed to fetch dietary restrictions')
+        }
+      } catch (err) {
+        error.value = 'An error occurred while fetching dietary restrictions.'
+      } finally {
+        loading.value = false
+      }
+    }
+
+    // Function to navigate to dietary restrictions page
+    const goToDietaryRestrictions = () => {
+      router.push('/dietary-restrictions')  // Use router instance directly
+    }
+
+    // Logout function
+    const logout = () => {
+      localStorage.removeItem('loggedInUser')
+      localStorage.removeItem('isLoggedIn')
+      currentUsername.value = ''  // Update reactive variable
+      router.push('/login')  // Redirect to login page
+    }
+
+    // Fetch dietary restrictions when the component is mounted
+    onMounted(fetchDietaryRestrictions)
+
+    // Return variables and functions to be used in the template
+    return {
+      dietaryRestrictions,
+      loading,
+      error,
+      currentUsername,
+      goToDietaryRestrictions,  // Ensure you return the function to the template
+      logout // Return the logout function
+    }
+  }
+}
+>>>>>>> annabelle
 </script>
 
 <style scoped>

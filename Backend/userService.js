@@ -158,12 +158,22 @@ async function getFavoriteRecipes(username) {
 }
 
 // User profile functions
+async function getDietaryInfo(username) {
+  // Update user's dietary information
+  const [user] = await query('SELECT DietaryRestrictions FROM Users WHERE Username = ?', [username])
+  return user ? user.DietaryRestrictions : ""
+}
+
+// User profile functions
 async function updateDietaryInfo(username, dietaryInfo) {
   // Update user's dietary information
+  const newDietaryInfo = dietaryInfo.join(',') // Convert array to comma-separated string
+
   await query('UPDATE Users SET DietaryRestrictions = ? WHERE Username = ?', [
-    dietaryInfo,
+    newDietaryInfo,
     username
   ])
+
   return true
 }
 
@@ -253,6 +263,7 @@ module.exports = {
   getAllPersonalRecipes,
   updatePersonalRecipe,
   deletePersonalRecipe,
+  getDietaryInfo,
   updateDietaryInfo,
   addToShoppingList,
   getShoppingList,
