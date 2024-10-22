@@ -6,8 +6,8 @@
       </div>
       <h1 class="title">Dietary Restrictions</h1>
       <form @submit.prevent="updateDietaryRestrictions" class="dietary-form">
-        <h3>Select Dietary Restrictions:</h3>
-        <div class="checkbox-group">
+        <h3 v-if="!message">Select Dietary Restrictions:</h3>
+        <div v-if="!message" class="checkbox-group">
           <div v-for="(restriction, index) in dietaryOptions" :key="index" class="checkbox-item">
             <input 
               type="checkbox" 
@@ -18,20 +18,26 @@
             <label :for="restriction">{{ restriction }}</label>
           </div>
         </div>
-        <button @click="updateDietaryRestrictions">
+        <button type="submit" :disabled="loading" v-if="!message">
           {{ loading ? 'Updating...' : 'Update Restrictions' }}
         </button>
       </form>
       <div v-if="message" :class="['message', messageType]">{{ message }}</div>
+        <!-- Button to navigate to dietary restrictions page -->
+      <button v-if="message" @click="goBackToProfile">Go back to profile page</button>
     </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'  // Import useRouter
 
 export default {
   setup() {
+    // Access the router instance
+    const router = useRouter()
+    
     // Declare reactive variables
     const dietaryRestrictions = ref([])
     const loading = ref(false) // Initialize loading state
@@ -51,7 +57,6 @@ export default {
           const restrictions = await response.json()
           dietaryRestrictions.value = restrictions.split(",")
           selectedRestrictions.value = dietaryRestrictions.value // Set selected restrictions to the fetched ones
-          console.log(selectedRestrictions.value)
         } else {
           throw new Error('Failed to fetch dietary restrictions')
         }
@@ -61,24 +66,20 @@ export default {
         loading.value = false
       }
     }
+
     const updateDietaryRestrictions = async () => {
       loading.value = true
       try {
-        // Make a POST request or however you're updating the dietary restrictions
-        const response = await fetch('http://localhost:5000/api/dietary-info', {
+        const result = await fetch('http://localhost:5000/api/dietary-info', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-Username': localStorage.getItem('loggedInUser')
           },
-          body: JSON.stringify({ restrictions: selectedRestrictions.value })
+          body: JSON.stringify({ DietaryInfo: selectedRestrictions.value })
         })
 
-        console.log(response)
-        console.log(selectedRestrictions)
-
-        if (response.ok) {
-          // Handle successful update (e.g., show a success message)
+        if (result.ok) {
           message.value = 'Dietary restrictions updated successfully!'
           messageType.value = 'success'
         } else {
@@ -92,6 +93,12 @@ export default {
       }
     }
 
+    // Function to navigate to dietary restrictions page
+    const goBackToProfile = () => {
+      router.push('/profile')  // Use router instance directly
+    }
+
+
     // Fetch dietary restrictions when the component is mounted
     onMounted(fetchDietaryRestrictions)
 
@@ -104,7 +111,8 @@ export default {
       messageType,
       dietaryOptions, // Return dietary options
       selectedRestrictions, // Return selected restrictions
-      updateDietaryRestrictions // Return update function
+      updateDietaryRestrictions, // Return update function
+      goBackToProfile
     }
   }
 }
@@ -180,6 +188,7 @@ button:disabled {
 
 .message {
   margin-top: 15px;
+  margin-bottom: 15px;
   padding: 10px;
   border-radius: 4px;
 }

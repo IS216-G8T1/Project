@@ -9,8 +9,8 @@
 
       <!-- Display user's dietary restrictions -->
       <h3>Your Dietary Restrictions:</h3>
-      <p v-if="dietaryRestrictions!=''">
-        {{ dietaryRestrictions }}
+      <p v-if="dietaryRestrictions.length > 0">
+        {{ dietaryRestrictions.join(", ") }} <!-- Display dietary restrictions as a comma-separated list -->
       </p>
       <p v-else>No dietary restrictions set.</p>
 
@@ -43,7 +43,6 @@ export default {
       try {
         const response = await fetch('http://localhost:5000/api/dietary-info', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
-          
         })
         if (response.ok) {
           dietaryRestrictions.value = await response.json()
@@ -63,9 +62,15 @@ export default {
       router.push('/dietary-restrictions')  // Use router instance directly
     }
 
-    
+    // Logout function
+    const logout = () => {
+      localStorage.removeItem('loggedInUser')
+      localStorage.removeItem('isLoggedIn')
+      currentUsername.value = ''  // Update reactive variable
+      router.push('/login')  // Redirect to login page
+    }
 
-    // Fetch recipes when the component is mounted
+    // Fetch dietary restrictions when the component is mounted
     onMounted(fetchDietaryRestrictions)
 
     // Return variables and functions to be used in the template
@@ -74,7 +79,8 @@ export default {
       loading,
       error,
       currentUsername,
-      goToDietaryRestrictions  // Ensure you return the function to the template
+      goToDietaryRestrictions,  // Ensure you return the function to the template
+      logout // Return the logout function
     }
   }
 }
