@@ -118,6 +118,35 @@
         <button type="submit">Redeem Points</button>
     </form>
 
+    <form id="getDietaryInfoForm">
+        <h3>Dietary Info</h3>
+        <button type="submit">Get Dietary getRecipesByIngredientsForm</button>
+    </form>
+
+    <form id="updateDietaryInfoForm">
+        <h3>Dietary Info</h3>
+            <div class="checkbox-group">
+            <div class="checkbox-item">
+            <input type="checkbox" id="Vegetarian" 
+                value="Vegetarian" 
+                name="dietaryInfo[]" 
+            />
+            <label :for="Vegetarian">Vegetarian</label>
+            <input type="checkbox" id="Vegan" 
+                value="Vegan" 
+                name="dietaryInfo[]" 
+            />
+            <label :for="Vegan">Vegan</label>
+            <input type="checkbox" id="Gluten-Free" 
+                value="Gluten-Free" 
+                name="dietaryInfo[]" 
+            />
+            <label :for="Gluten-Free">Gluten-Free</label>
+            </div>
+            </div>
+          <button type="submit" >submit</button>
+    </form>
+
     <h2>Results</h2>
     <pre id="results"></pre>
 
@@ -239,7 +268,23 @@
             });
             displayResults(result);
         });
+
+        document.getElementById('getDietaryInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const result = await makeRequest('/dietary-info', 'GET');
+            displayResults(result);
+        });
+
+        document.getElementById('updateDietaryInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const result = await makeRequest('/dietary-info', 'POST', {
+                dietaryInfo: document.getElementById('dietaryInfo').value
+            });
+            displayResults(result);
+        });
     </script>
+
+
 </body>
 
 </html>

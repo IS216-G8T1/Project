@@ -158,6 +158,14 @@ async function getFavoriteRecipes(username) {
 }
 
 // User profile functions
+async function getDietaryInfo(username) {
+  // Update user's dietary information
+  const [user] = await query('SELECT DietaryRestrictions FROM Users WHERE Username = ?', [username])
+  return user ? user.DietaryRestrictions : 0
+}
+
+
+// User profile functions
 async function updateDietaryInfo(username, dietaryInfo) {
   // Update user's dietary information
   await query('UPDATE Users SET DietaryRestrictions = ? WHERE Username = ?', [
@@ -253,6 +261,7 @@ module.exports = {
   getAllPersonalRecipes,
   updatePersonalRecipe,
   deletePersonalRecipe,
+  getDietaryInfo,
   updateDietaryInfo,
   addToShoppingList,
   getShoppingList,

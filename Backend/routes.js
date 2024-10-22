@@ -167,6 +167,15 @@ router.delete('/personal-recipes/:recipeId', authenticateUser, async (req, res) 
 })
 
 // Dietary information route
+router.get('/dietary-info', authenticateUser, async (req, res) => {
+  try {
+    const dietaryInfo = await userService.getDietaryInfo(req.username)
+    res.json(dietaryInfo)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 router.post('/dietary-info', authenticateUser, async (req, res) => {
   try {
     const { dietaryInfo } = req.body
