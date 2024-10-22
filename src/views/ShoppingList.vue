@@ -63,6 +63,7 @@ export default {
       this.getItems()
     },
     async getItems() {
+      
       try {
         const result = await this.makeRequest('/shopping-list', 'GET')
         this.items = result.map((item) => ({

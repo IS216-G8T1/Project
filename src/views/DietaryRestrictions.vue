@@ -1,196 +1,198 @@
 <template>
-    <div id="dietary-page">
-      <div id="dietary-container">
-        <div class="icon">
-          <img src="../assets/icon.png" alt="icon" width="150px" />
-        </div>
-        <h1 class="title">Dietary Restrictions</h1>
-        <form @submit.prevent="updateDietaryRestrictions" class="dietary-form">
-          <h3>Select Dietary Restrictions:</h3>
-          <div class="checkbox-group">
-            <div v-for="(restriction, index) in dietaryOptions" :key="index" class="checkbox-item">
-              <input 
-                type="checkbox" 
-                :id="restriction" 
-                :value="restriction" 
-                v-model="selectedRestrictions" 
-              />
-              <label :for="restriction">{{ restriction }}</label>
-            </div>
-          </div>
-          <button type="submit" :disabled="isLoading">
-            {{ isLoading ? 'Updating...' : 'Update Restrictions' }}
-          </button>
-        </form>
-        <div v-if="message" :class="['message', messageType]">{{ message }}</div>
+  <div id="dietary-page">
+    <div id="dietary-container">
+      <div class="icon">
+        <img src="../assets/icon.png" alt="icon" width="150px" />
       </div>
+      <h1 class="title">Dietary Restrictions</h1>
+      <form @submit.prevent="updateDietaryRestrictions" class="dietary-form">
+        <h3>Select Dietary Restrictions:</h3>
+        <div class="checkbox-group">
+          <div v-for="(restriction, index) in dietaryOptions" :key="index" class="checkbox-item">
+            <input 
+              type="checkbox" 
+              :id="restriction" 
+              :value="restriction" 
+              v-model="selectedRestrictions" 
+            />
+            <label :for="restriction">{{ restriction }}</label>
+          </div>
+        </div>
+        <button @click="updateDietaryRestrictions">
+          {{ loading ? 'Updating...' : 'Update Restrictions' }}
+        </button>
+      </form>
+      <div v-if="message" :class="['message', messageType]">{{ message }}</div>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-import { getDietaryInfo, updateDietaryInfo } from '../../Backend/userService';
-  
-  const API_BASE_URL = 'http://localhost:5000/api';
-  
-  export default {
-    data() {
-      return {
-        dietaryOptions: [
-          'Vegetarian',
-          'Vegan',
-          'Gluten-Free',
-          'Dairy-Free',
-          'Nut-Free',
-          'Egg-Free',
-          'Soy-Free',
-          'Halal',
-          'Kosher'
-        ],
-        selectedRestrictions: [],
-        isLoading: false,
-        message: '',
-        messageType: '',
-      }
-    },
-    mounted() {
-      this.getDietaryInfo();
-    },
-    methods: {
-      async getDietaryInfo() {
-        const username = localStorage.getItem('loggedInUser');
-        if (username) {
-          try {
-            const response = await axios.get(`${API_BASE_URL}/users/${username}`);
-            if (response.data.dietaryRestrictions) {
-              this.selectedRestrictions = response.data.dietaryRestrictions.split(',');
-            }
-          } catch (error) {
-            console.error('Error fetching dietary restrictions:', error);
-          }
+  </div>
+</template>
+
+<script>
+import { ref, onMounted } from 'vue'
+
+export default {
+  setup() {
+    // Declare reactive variables
+    const dietaryRestrictions = ref([])
+    const loading = ref(false) // Initialize loading state
+    const error = ref(null)
+    const dietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free']
+    const selectedRestrictions = ref([]) // Make this a ref
+    const message = ref("")
+    const messageType = ref("")
+
+    // Function to fetch dietary restrictions from the server
+    const fetchDietaryRestrictions = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/dietary-info', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+        })
+        if (response.ok) {
+          const restrictions = await response.json()
+          dietaryRestrictions.value = restrictions.split(",")
+          selectedRestrictions.value = dietaryRestrictions.value // Set selected restrictions to the fetched ones
+          console.log(selectedRestrictions.value)
         } else {
-          this.$router.push('/login');
+          throw new Error('Failed to fetch dietary restrictions')
         }
-      },
-      async updateDietaryInfo() {
-        this.isLoading = true;
-        const username = localStorage.getItem('loggedInUser');
-        if (!username) {
-          this.message = 'You need to log in to update your dietary restrictions.';
-          this.messageType = 'error';
-          this.isLoading = false;
-          return;
+      } catch (err) {
+        error.value = 'An error occurred while fetching dietary restrictions.'
+      } finally {
+        loading.value = false
+      }
+    }
+    const updateDietaryRestrictions = async () => {
+      loading.value = true
+      try {
+        // Make a POST request or however you're updating the dietary restrictions
+        const response = await fetch('http://localhost:5000/api/dietary-info', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Username': localStorage.getItem('loggedInUser')
+          },
+          body: JSON.stringify({ restrictions: selectedRestrictions.value })
+        })
+
+        console.log(response)
+        console.log(selectedRestrictions)
+
+        if (response.ok) {
+          // Handle successful update (e.g., show a success message)
+          message.value = 'Dietary restrictions updated successfully!'
+          messageType.value = 'success'
+        } else {
+          throw new Error('Failed to update dietary restrictions')
         }
-        try {
-          const response = await axios.put(`${API_BASE_URL}/users/${username}`, {
-            
-            dietaryRestrictions: this.selectedRestrictions.join(','),
-            
-          });
-          console.log(response)
-          if (response.status === 200) {
-            this.message = 'Dietary restrictions updated successfully!';
-            this.messageType = 'success';
-          } else {
-            this.message = 'Failed to update dietary restrictions.';
-            this.messageType = 'error';
-          }
-        } catch (error) {
-          console.error('Error updating dietary restrictions:', error);
-          this.message = 'An error occurred while updating your dietary restrictions.';
-          this.messageType = 'error';
-        } finally {
-          this.isLoading = false;
-        }
-      },
+      } catch (err) {
+        message.value = 'An error occurred while updating dietary restrictions.'
+        messageType.value = 'error'
+      } finally {
+        loading.value = false
+      }
+    }
+
+    // Fetch dietary restrictions when the component is mounted
+    onMounted(fetchDietaryRestrictions)
+
+    // Return variables and functions to be used in the template
+    return {
+      dietaryRestrictions,
+      loading,
+      error,
+      message,
+      messageType,
+      dietaryOptions, // Return dietary options
+      selectedRestrictions, // Return selected restrictions
+      updateDietaryRestrictions // Return update function
     }
   }
-  </script>
-  
-  <style scoped>
-  #dietary-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  #dietary-container {
-    background-color: #ffe0b2;
-    color: #795548;
-    border-radius: 8px;
-    text-align: center;
-    width: 400px;
-    padding: 20px;
-  }
-  
-  .title {
-    margin-top: -5px;
-    color: #5d4037;
-  }
-  
-  .dietary-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  h3 {
-    margin-bottom: 1rem;
-  }
-  
-  .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-  }
-  
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  input[type="checkbox"] {
-    margin-right: 0.5rem;
-  }
-  
-  button {
-    background-color: #ffa726;
-    color: #5d4037;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover:not(:disabled) {
-    background-color: #ffcc80;
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  .message {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 4px;
-  }
-  
-  .success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-  
-  .error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-  </style>
-  
+}
+</script>
+
+<style scoped>
+#dietary-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#dietary-container {
+  background-color: #ffe0b2;
+  color: #795548;
+  border-radius: 8px;
+  text-align: center;
+  width: 400px;
+  padding: 20px;
+}
+
+.title {
+  margin-top: -5px;
+  color: #5d4037;
+}
+
+.dietary-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h3 {
+  margin-bottom: 1rem;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+button {
+  background-color: #ffa726;
+  color: #5d4037;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: #ffcc80;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+</style>

@@ -9,11 +9,9 @@
 
       <!-- Display user's dietary restrictions -->
       <h3>Your Dietary Restrictions:</h3>
-      <ul v-if="dietaryRestrictions.length">
-        <li v-for="(restriction, index) in dietaryRestrictions" :key="index">
-          {{ restriction }}
-        </li>
-      </ul>
+      <p v-if="dietaryRestrictions!=''">
+        {{ dietaryRestrictions }}
+      </p>
       <p v-else>No dietary restrictions set.</p>
 
       <!-- Button to navigate to dietary restrictions page -->
@@ -26,46 +24,60 @@
 </template>
 
 <script>
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:5000/api';
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'  // Import useRouter
 
 export default {
-  data() {
-    return {
-      currentUsername: '',
-      dietaryRestrictions: [],
-    };
-  },
-  mounted() {
-    this.currentUsername = localStorage.getItem('loggedInUser');
-    if (!this.currentUsername) {
-      this.$router.push('/login'); // Redirect to login if not logged in
-    } else {
-      this.fetchDietaryRestrictions();
-    }
-  },
-  methods: {
-    async fetchDietaryRestrictions() {
+  setup() {
+    // Access the router instance
+    const router = useRouter()
+
+    // Declare reactive variables
+    const dietaryRestrictions = ref([])
+    const loading = ref(true)
+    const error = ref(null)
+    const currentUsername = ref(localStorage.getItem('loggedInUser')) // Make this reactive
+
+    // Function to fetch dietary restrictions from the server
+    const fetchDietaryRestrictions = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/users/${this.currentUsername}`);
-        if (response.data.dietaryRestrictions) {
-          this.dietaryRestrictions = response.data.dietaryRestrictions.split(',');
+        const response = await fetch('http://localhost:5000/api/dietary-info', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+          
+        })
+        if (response.ok) {
+          dietaryRestrictions.value = await response.json()
+          dietaryRestrictions.value = dietaryRestrictions.value.split(",")
+        } else {
+          throw new Error('Failed to fetch dietary restrictions')
         }
-      } catch (error) {
-        console.error('Error fetching dietary restrictions:', error);
+      } catch (err) {
+        error.value = 'An error occurred while fetching dietary restrictions.'
+      } finally {
+        loading.value = false
       }
-    },
-    goToDietaryRestrictions() {
-      this.$router.push('/dietary-restrictions'); // Route to the dietary restrictions page
-    },
-    logout() {
-      localStorage.removeItem('loggedInUser');
-      localStorage.removeItem('isLoggedIn');
-      this.$router.push('/login');
+    }
+
+    // Function to navigate to dietary restrictions page
+    const goToDietaryRestrictions = () => {
+      router.push('/dietary-restrictions')  // Use router instance directly
+    }
+
+    
+
+    // Fetch recipes when the component is mounted
+    onMounted(fetchDietaryRestrictions)
+
+    // Return variables and functions to be used in the template
+    return {
+      dietaryRestrictions,
+      loading,
+      error,
+      currentUsername,
+      goToDietaryRestrictions  // Ensure you return the function to the template
     }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -161,7 +161,7 @@ async function getFavoriteRecipes(username) {
 async function getDietaryInfo(username) {
   // Update user's dietary information
   const [user] = await query('SELECT DietaryRestrictions FROM Users WHERE Username = ?', [username])
-  return user ? user.DietaryRestrictions : 0
+  return user ? user.DietaryRestrictions : ""
 }
 
 // User profile functions
