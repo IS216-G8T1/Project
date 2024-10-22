@@ -9,17 +9,9 @@
 
       <!-- Display user's dietary restrictions -->
       <h3>Your Dietary Restrictions:</h3>
-<<<<<<< HEAD
-      <ul v-if="dietaryRestrictions.length">
-        <li v-for="(restriction, index) in dietaryRestrictions" :key="index">
-          {{ restriction }}
-        </li>
-      </ul>
-=======
       <p v-if="dietaryRestrictions.length > 0">
         {{ dietaryRestrictions.join(", ") }} <!-- Display dietary restrictions as a comma-separated list -->
       </p>
->>>>>>> annabelle
       <p v-else>No dietary restrictions set.</p>
 
       <!-- Button to navigate to dietary restrictions page -->
@@ -32,48 +24,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:5000/api';
-
-export default {
-  data() {
-    return {
-      currentUsername: '',
-      dietaryRestrictions: [],
-    };
-  },
-  mounted() {
-    this.currentUsername = localStorage.getItem('loggedInUser');
-    if (!this.currentUsername) {
-      this.$router.push('/login'); // Redirect to login if not logged in
-    } else {
-      this.fetchDietaryRestrictions();
-    }
-  },
-  methods: {
-    async fetchDietaryRestrictions() {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/users/${this.currentUsername}`);
-        if (response.data.dietaryRestrictions) {
-          this.dietaryRestrictions = response.data.dietaryRestrictions.split(',');
-        }
-      } catch (error) {
-        console.error('Error fetching dietary restrictions:', error);
-      }
-    },
-    goToDietaryRestrictions() {
-      this.$router.push('/dietary-restrictions'); // Route to the dietary restrictions page
-    },
-    logout() {
-      localStorage.removeItem('loggedInUser');
-      localStorage.removeItem('isLoggedIn');
-      this.$router.push('/login');
-    }
-  }
-};
-=======
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'  // Import useRouter
 
@@ -134,7 +84,6 @@ export default {
     }
   }
 }
->>>>>>> annabelle
 </script>
 
 <style scoped>
