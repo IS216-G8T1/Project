@@ -69,6 +69,12 @@ const router = createRouter({
       name: 'dietaryRestrictions',
       // Lazy-load the CreateRecipe component
       component: () => import('../views/DietaryRestrictions.vue')
+    },
+    {
+      path: '/browse-recipes',
+      name: 'browseRecipes',
+      // Lazy-load the BrowseRecipes component
+      component: () => import('../views/BrowseRecipes.vue')
     }
   ]
 })

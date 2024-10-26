@@ -21,12 +21,71 @@ async function createPersonalRecipe(username, recipe) {
   return { id: result.insertId, ...recipe, prepTime: formattedPrepTime }
 }
 
+async function searchRecipes(searchTerms = '', sortByRating = false) {
+  // Clean and split search terms
+  const terms = searchTerms
+    .split(',')
+    .map(term => term.trim())
+    .filter(term => term.length > 0)
+
+  let sql = `
+    SELECT r.*, 
+           COALESCE(AVG(rv.Rating), 0) as AverageRating,
+           COUNT(rv.Rating) as RatingCount
+    FROM UserMadeRecipe r
+    LEFT JOIN Reviews rv ON r.UserMadeRecipeID = rv.UserMadeRecipeID
+  `
+
+  // Add search conditions if terms exist
+  if (terms.length > 0) {
+    const searchConditions = terms.map(() => 
+      '(LOWER(r.RecipeName) LIKE LOWER(?) OR LOWER(r.IngredientList) LIKE LOWER(?))'
+    ).join(' OR ') // Changed from AND to OR
+    
+    sql += ` WHERE ${searchConditions}`
+  }
+
+  sql += ' GROUP BY r.UserMadeRecipeID'
+
+  // Add sorting
+  if (sortByRating) {
+    sql += ' ORDER BY AverageRating DESC, RatingCount DESC'
+  } else {
+    sql += ' ORDER BY r.UserMadeRecipeID DESC'
+  }
+
+  // Create parameters array for search terms
+  const params = []
+  terms.forEach(term => {
+    params.push(`%${term}%`, `%${term}%`) // One for RecipeName, one for IngredientList
+  })
+
+  return await query(sql, params)
+}
+
 async function getPersonalRecipes(username) {
-  return await query('SELECT * FROM UserMadeRecipe WHERE Username = ?', [username])
+  return await query(
+    `SELECT r.*, 
+            COALESCE(AVG(rv.Rating), 0) as AverageRating,
+            COUNT(rv.Rating) as RatingCount
+     FROM UserMadeRecipe r
+     LEFT JOIN Reviews rv ON r.UserMadeRecipeID = rv.UserMadeRecipeID
+     WHERE r.Username = ?
+     GROUP BY r.UserMadeRecipeID`,
+    [username]
+  )
 }
 
 async function getAllPersonalRecipes() {
-  return await query('SELECT * FROM UserMadeRecipe')
+  return await query(
+    `SELECT r.*, 
+            COALESCE(AVG(rv.Rating), 0) as AverageRating,
+            COUNT(rv.Rating) as RatingCount
+     FROM UserMadeRecipe r
+     LEFT JOIN Reviews rv ON r.UserMadeRecipeID = rv.UserMadeRecipeID
+     GROUP BY r.UserMadeRecipeID
+     ORDER BY r.UserMadeRecipeID DESC`
+  )
 }
 
 async function updatePersonalRecipe(username, recipeId, recipe) {
@@ -61,9 +120,16 @@ async function updatePersonalRecipe(username, recipeId, recipe) {
   const updateQuery = `UPDATE UserMadeRecipe SET ${setClause} WHERE UserMadeRecipeID = ? AND Username = ?`
   await query(updateQuery, params)
 
-  const [updatedRecipe] = await query('SELECT * FROM UserMadeRecipe WHERE UserMadeRecipeID = ?', [
-    recipeId
-  ])
+  const [updatedRecipe] = await query(
+    `SELECT r.*, 
+            COALESCE(AVG(rv.Rating), 0) as AverageRating,
+            COUNT(rv.Rating) as RatingCount
+     FROM UserMadeRecipe r
+     LEFT JOIN Reviews rv ON r.UserMadeRecipeID = rv.UserMadeRecipeID
+     WHERE r.UserMadeRecipeID = ?
+     GROUP BY r.UserMadeRecipeID`,
+    [recipeId]
+  )
 
   return updatedRecipe
 }
@@ -81,5 +147,6 @@ module.exports = {
   getPersonalRecipes,
   getAllPersonalRecipes,
   updatePersonalRecipe,
-  deletePersonalRecipe
+  deletePersonalRecipe,
+  searchRecipes
 }
