@@ -16,7 +16,6 @@
           <input 
             type="checkbox" 
             v-model="sortByRating"
-            @change="fetchRecipes"
           >
           Show Highest Rated First
         </label>
@@ -150,25 +149,42 @@ export default {
   },
   computed: {
     filteredRecipes() {
-      if (!this.searchQuery) {
-        return this.recipes
+      let result = [...this.recipes]
+
+      // Apply search filter if there's a search query
+      if (this.searchQuery) {
+        const searchTerms = this.searchQuery
+          .toLowerCase()
+          .split(',')
+          .map(term => term.trim())
+          .filter(term => term.length > 0)
+
+        result = result.filter(recipe => {
+          const recipeName = recipe.RecipeName.toLowerCase()
+          const ingredients = recipe.IngredientList.toLowerCase()
+          
+          // Check if ALL search terms are present in either recipe name or ingredients
+          return searchTerms.every(term => 
+            recipeName.includes(term) || ingredients.includes(term)
+          )
+        })
       }
 
-      const searchTerms = this.searchQuery
-        .toLowerCase()
-        .split(',')
-        .map(term => term.trim())
-        .filter(term => term.length > 0)
+      // Apply sorting
+      if (this.sortByRating) {
+        result.sort((a, b) => {
+          // Sort by average rating (descending)
+          const ratingDiff = b.AverageRating - a.AverageRating
+          if (ratingDiff !== 0) return ratingDiff
+          // If ratings are equal, sort by number of ratings (descending)
+          return b.RatingCount - a.RatingCount
+        })
+      } else {
+        // Sort by ID (descending) for most recent first
+        result.sort((a, b) => b.UserMadeRecipeID - a.UserMadeRecipeID)
+      }
 
-      return this.recipes.filter(recipe => {
-        const recipeName = recipe.RecipeName.toLowerCase()
-        const ingredients = recipe.IngredientList.toLowerCase()
-        
-        // Check if ALL search terms are present in either recipe name or ingredients
-        return searchTerms.every(term => 
-          recipeName.includes(term) || ingredients.includes(term)
-        )
-      })
+      return result
     }
   },
   methods: {
