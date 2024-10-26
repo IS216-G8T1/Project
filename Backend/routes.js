@@ -1,6 +1,6 @@
 const express = require('express')
 const recipeService = require('./recipeService')
-const userService = require('./userService')
+const userService = require('./userService')  // This path is correct as userService.js re-exports all services
 
 const router = express.Router()
 

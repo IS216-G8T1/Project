@@ -40,9 +40,26 @@ async function createTables() {
         Username VARCHAR(50) PRIMARY KEY,
         Password VARCHAR(255) NOT NULL,
         DietaryRestrictions TEXT,
+        Allergies TEXT,
         Points INT DEFAULT 0
       )
     `);
+
+    // Check if Allergies column exists, if not add it
+    const [columns] = await connection.execute(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_NAME = 'Users' 
+      AND COLUMN_NAME = 'Allergies'
+      AND TABLE_SCHEMA = ?
+    `, [process.env.DB_NAME]);
+
+    if (columns.length === 0) {
+      await connection.execute(`
+        ALTER TABLE Users
+        ADD COLUMN Allergies TEXT
+      `);
+    }
 
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS UserSavedRecipe (
