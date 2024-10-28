@@ -5,7 +5,6 @@
         <img src="../assets/icon.png" alt="icon" width="150px" />
       </div>
       <h1 class="title">Dietary Restrictions</h1>
-      <form @submit.prevent="updateDietaryRestrictions" class="dietary-form">
 
       <!-- Tabs for Dietary Restrictions and Allergies -->
       <div class="tabs">
@@ -34,6 +33,8 @@
 
       <!-- Allergies Form -->
       <form v-if="activeTab === 'allergies'" @submit.prevent="updateAllergies" class="dietary-form">
+        <h3 v-if="!message">Select Allergies:</h3>
+        <div v-if="!message" class="checkbox-group">
           <div v-for="(allergy, index) in allergyOptions" :key="index" class="checkbox-item">
             <input 
               type="checkbox" 
@@ -50,7 +51,6 @@
       </form>
 
       <div v-if="message" :class="['message', messageType]">{{ message }}</div>
-        <!-- Button to navigate to dietary restrictions page -->
       <button v-if="message" @click="goBackToProfile">Go back to profile page</button>
     </div>
   </div>
@@ -58,22 +58,16 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'  // Import useRouter
 import { useRouter } from 'vue-router'
 
 export default {
   setup() {
-    // Access the router instance
     const router = useRouter()
-    
-    // Declare reactive variables
     const dietaryRestrictions = ref([])
-    const loading = ref(false) // Initialize loading state
     const allergies = ref([])
     const loading = ref(false)
     const error = ref(null)
     const dietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free']
-    const selectedRestrictions = ref([]) // Make this a ref
     const allergyOptions = ['Peanuts', 'Tree Nuts', 'Shellfish', 'Eggs', 'Milk', 'Soy']
     const selectedRestrictions = ref([])
     const selectedAllergies = ref([])
@@ -81,7 +75,6 @@ export default {
     const messageType = ref("")
     const activeTab = ref('dietary')
 
-    // Function to fetch dietary restrictions from the server
     const fetchDietaryRestrictions = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/dietary-info', {
@@ -90,7 +83,6 @@ export default {
         if (response.ok) {
           const restrictions = await response.json()
           dietaryRestrictions.value = restrictions.split(",")
-          selectedRestrictions.value = dietaryRestrictions.value // Set selected restrictions to the fetched ones
           selectedRestrictions.value = dietaryRestrictions.value
         } else {
           throw new Error('Failed to fetch dietary restrictions')
@@ -132,7 +124,6 @@ export default {
           },
           body: JSON.stringify({ DietaryInfo: selectedRestrictions.value })
         })
-
         if (result.ok) {
           message.value = 'Dietary restrictions updated successfully!'
           messageType.value = 'success'
@@ -147,9 +138,6 @@ export default {
       }
     }
 
-    // Function to navigate to dietary restrictions page
-    const goBackToProfile = () => {
-      router.push('/profile')  // Use router instance directly
     const updateAllergies = async () => {
       loading.value = true
       try {
@@ -179,14 +167,11 @@ export default {
       router.push('/profile')
     }
 
-    // Fetch dietary restrictions when the component is mounted
-    onMounted(fetchDietaryRestrictions)
     onMounted(() => {
       fetchDietaryRestrictions()
       fetchAllergies()
     })
 
-    // Return variables and functions to be used in the template
     return {
       dietaryRestrictions,
       allergies,
@@ -194,10 +179,6 @@ export default {
       error,
       message,
       messageType,
-      dietaryOptions, // Return dietary options
-      selectedRestrictions, // Return selected restrictions
-      updateDietaryRestrictions, // Return update function
-      goBackToProfile
       dietaryOptions,
       allergyOptions,
       selectedRestrictions,
