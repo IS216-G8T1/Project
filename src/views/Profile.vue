@@ -71,8 +71,8 @@ export default {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
-          const allergiesList = await response.json()
-          allergies.value = allergiesList.allergies.split(",") // Ensure allergies data comes in the expected format
+          allergies.value = await response.json()
+          allergies.value = allergies.value.split(",") // Ensure allergies data comes in the expected format
         } else {
           throw new Error('Failed to fetch allergies')
         }
@@ -97,8 +97,6 @@ export default {
       router.push('/login')  // Redirect to login page
     }
 
-    // Fetch dietary restrictions when the component is mounted
-    onMounted(fetchDietaryRestrictions)
     // Fetch dietary restrictions and allergies when the component is mounted
     onMounted(() => {
       fetchDietaryRestrictions()
