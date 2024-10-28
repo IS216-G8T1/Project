@@ -6,6 +6,15 @@
       </div>
       <h1 class="title">Dietary Restrictions</h1>
       <form @submit.prevent="updateDietaryRestrictions" class="dietary-form">
+
+      <!-- Tabs for Dietary Restrictions and Allergies -->
+      <div class="tabs">
+        <button v-if="!message" @click="activeTab = 'dietary'" :class="{ active: activeTab === 'dietary' }">Dietary Restrictions</button>
+        <button v-if="!message" @click="activeTab = 'allergies'" :class="{ active: activeTab === 'allergies' }">Allergies</button>
+      </div>
+
+      <!-- Dietary Restrictions Form -->
+      <form v-if="activeTab === 'dietary'" @submit.prevent="updateDietaryRestrictions" class="dietary-form">
         <h3 v-if="!message">Select Dietary Restrictions:</h3>
         <div v-if="!message" class="checkbox-group">
           <div v-for="(restriction, index) in dietaryOptions" :key="index" class="checkbox-item">
@@ -22,6 +31,24 @@
           {{ loading ? 'Updating...' : 'Update Restrictions' }}
         </button>
       </form>
+
+      <!-- Allergies Form -->
+      <form v-if="activeTab === 'allergies'" @submit.prevent="updateAllergies" class="dietary-form">
+          <div v-for="(allergy, index) in allergyOptions" :key="index" class="checkbox-item">
+            <input 
+              type="checkbox" 
+              :id="allergy" 
+              :value="allergy" 
+              v-model="selectedAllergies" 
+            />
+            <label :for="allergy">{{ allergy }}</label>
+          </div>
+        </div>
+        <button type="submit" :disabled="loading" v-if="!message">
+          {{ loading ? 'Updating...' : 'Update Allergies' }}
+        </button>
+      </form>
+
       <div v-if="message" :class="['message', messageType]">{{ message }}</div>
         <!-- Button to navigate to dietary restrictions page -->
       <button v-if="message" @click="goBackToProfile">Go back to profile page</button>
@@ -32,6 +59,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'  // Import useRouter
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
@@ -41,11 +69,17 @@ export default {
     // Declare reactive variables
     const dietaryRestrictions = ref([])
     const loading = ref(false) // Initialize loading state
+    const allergies = ref([])
+    const loading = ref(false)
     const error = ref(null)
     const dietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free']
     const selectedRestrictions = ref([]) // Make this a ref
+    const allergyOptions = ['Peanuts', 'Tree Nuts', 'Shellfish', 'Eggs', 'Milk', 'Soy']
+    const selectedRestrictions = ref([])
+    const selectedAllergies = ref([])
     const message = ref("")
     const messageType = ref("")
+    const activeTab = ref('dietary')
 
     // Function to fetch dietary restrictions from the server
     const fetchDietaryRestrictions = async () => {
@@ -57,11 +91,31 @@ export default {
           const restrictions = await response.json()
           dietaryRestrictions.value = restrictions.split(",")
           selectedRestrictions.value = dietaryRestrictions.value // Set selected restrictions to the fetched ones
+          selectedRestrictions.value = dietaryRestrictions.value
         } else {
           throw new Error('Failed to fetch dietary restrictions')
         }
       } catch (err) {
         error.value = 'An error occurred while fetching dietary restrictions.'
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const fetchAllergies = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/allergy-info', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+        })
+        if (response.ok) {
+          const allergiesList = await response.json()
+          allergies.value = allergiesList.split(",")
+          selectedAllergies.value = allergies.value
+        } else {
+          throw new Error('Failed to fetch allergies')
+        }
+      } catch (err) {
+        error.value = 'An error occurred while fetching allergies.'
       } finally {
         loading.value = false
       }
@@ -96,15 +150,46 @@ export default {
     // Function to navigate to dietary restrictions page
     const goBackToProfile = () => {
       router.push('/profile')  // Use router instance directly
+    const updateAllergies = async () => {
+      loading.value = true
+      try {
+        const result = await fetch('http://localhost:5000/api/allergy-info', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Username': localStorage.getItem('loggedInUser')
+          },
+          body: JSON.stringify({ AllergyInfo: selectedAllergies.value })
+        })
+        if (result.ok) {
+          message.value = 'Allergies updated successfully!'
+          messageType.value = 'success'
+        } else {
+          throw new Error('Failed to update allergies')
+        }
+      } catch (err) {
+        message.value = 'An error occurred while updating allergies.'
+        messageType.value = 'error'
+      } finally {
+        loading.value = false
+      }
     }
 
+    const goBackToProfile = () => {
+      router.push('/profile')
+    }
 
     // Fetch dietary restrictions when the component is mounted
     onMounted(fetchDietaryRestrictions)
+    onMounted(() => {
+      fetchDietaryRestrictions()
+      fetchAllergies()
+    })
 
     // Return variables and functions to be used in the template
     return {
       dietaryRestrictions,
+      allergies,
       loading,
       error,
       message,
@@ -113,10 +198,19 @@ export default {
       selectedRestrictions, // Return selected restrictions
       updateDietaryRestrictions, // Return update function
       goBackToProfile
+      dietaryOptions,
+      allergyOptions,
+      selectedRestrictions,
+      selectedAllergies,
+      updateDietaryRestrictions,
+      updateAllergies,
+      goBackToProfile,
+      activeTab
     }
   }
 }
 </script>
+
 
 <style scoped>
 #dietary-page {
@@ -204,4 +298,26 @@ button:disabled {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  background-color: #ffa726;
+  color: #5d4037;
+  border: none;
+  border-radius: 4px;
+}
+
+.tabs button.active {
+  background-color: #ffcc80;
+  font-weight: bold;
+}
+
 </style>

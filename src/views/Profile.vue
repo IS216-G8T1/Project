@@ -14,6 +14,13 @@
       </p>
       <p v-else>No dietary restrictions set.</p>
 
+      <!-- Display user's dietary restrictions -->
+      <h3>Your Allergies:</h3>
+      <p v-if="allergies.length > 0">
+        {{ allergies.join(", ") }} <!-- Display dietary restrictions as a comma-separated list -->
+      </p>
+      <p v-else>No allergies set.</p>
+
       <!-- Button to navigate to dietary restrictions page -->
       <button @click="goToDietaryRestrictions">Update Dietary Restrictions</button>
 
@@ -34,6 +41,7 @@ export default {
 
     // Declare reactive variables
     const dietaryRestrictions = ref([])
+    const allergies = ref([])
     const loading = ref(true)
     const error = ref(null)
     const currentUsername = ref(localStorage.getItem('loggedInUser')) // Make this reactive
@@ -57,6 +65,25 @@ export default {
       }
     }
 
+    const fetchAllergies = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/allergy-info', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+        })
+        if (response.ok) {
+          const allergiesList = await response.json()
+          allergies.value = allergiesList.allergies.split(",") // Ensure allergies data comes in the expected format
+        } else {
+          throw new Error('Failed to fetch allergies')
+        }
+      } catch (err) {
+        error.value = 'An error occurred while fetching allergies.'
+      } finally {
+        loading.value = false
+      }
+    }
+
+
     // Function to navigate to dietary restrictions page
     const goToDietaryRestrictions = () => {
       router.push('/dietary-restrictions')  // Use router instance directly
@@ -72,10 +99,16 @@ export default {
 
     // Fetch dietary restrictions when the component is mounted
     onMounted(fetchDietaryRestrictions)
+    // Fetch dietary restrictions and allergies when the component is mounted
+    onMounted(() => {
+      fetchDietaryRestrictions()
+      fetchAllergies()
+    })
 
     // Return variables and functions to be used in the template
     return {
       dietaryRestrictions,
+      allergies,
       loading,
       error,
       currentUsername,
