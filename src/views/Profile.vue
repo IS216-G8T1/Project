@@ -72,6 +72,7 @@ export default {
         })
         if (response.ok) {
           allergies.value = await response.json()
+          console.log("Allergies data from server:", allergies.value);
           allergies.value = allergies.value.split(",") // Ensure allergies data comes in the expected format
         } else {
           throw new Error('Failed to fetch allergies')
