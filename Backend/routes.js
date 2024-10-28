@@ -1,6 +1,6 @@
 const express = require('express')
 const recipeService = require('./recipeService')
-const userService = require('./userService')
+const userService = require('./userService')  // This path is correct as userService.js re-exports all services
 
 const router = express.Router()
 
@@ -128,7 +128,8 @@ router.get('/personal-recipes', authenticateUser, async (req, res) => {
   }
 })
 
-router.get('/all-personal-recipes', authenticateUser, async (req, res) => {
+// Changed to not require authentication since these are public recipes
+router.get('/all-personal-recipes', async (req, res) => {
   try {
     const recipes = await userService.getAllPersonalRecipes()
     res.json(recipes)
@@ -234,6 +235,17 @@ router.post('/rate-recipe', authenticateUser, async (req, res) => {
   }
 })
 
+// Get reviews for a specific recipe
+router.get('/recipe-reviews/:recipeId', async (req, res) => {
+  try {
+    const { recipeId } = req.params
+    const reviews = await userService.getRecipeReviews(recipeId)
+    res.json(reviews)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // User points routes
 router.get('/user-points', authenticateUser, async (req, res) => {
   try {
@@ -258,7 +270,7 @@ router.post('/redeem-points', authenticateUser, async (req, res) => {
   }
 })
 
-// Top rated recipes route
+// Top rated recipes route - removed authentication requirement
 router.get('/top-rated-recipes', async (req, res) => {
   try {
     const { limit } = req.query
