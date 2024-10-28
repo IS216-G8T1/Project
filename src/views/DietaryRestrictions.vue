@@ -91,6 +91,7 @@ export default {
         error.value = 'An error occurred while fetching dietary restrictions.'
       } finally {
         loading.value = false
+        console.log(selectedRestrictions)
       }
     }
 
@@ -110,6 +111,7 @@ export default {
         error.value = 'An error occurred while fetching allergies.'
       } finally {
         loading.value = false
+        console.log(selectedAllergies)
       }
     }
 
@@ -135,6 +137,7 @@ export default {
         messageType.value = 'error'
       } finally {
         loading.value = false
+        console.log(selectedRestrictions)
       }
     }
 
@@ -160,6 +163,7 @@ export default {
         messageType.value = 'error'
       } finally {
         loading.value = false
+        console.log(selectedAllergies)
       }
     }
 
