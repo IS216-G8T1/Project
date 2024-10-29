@@ -25,7 +25,10 @@
             <p>Calories: {{ Math.round(recipe.calories) }}</p>
             <p>Cooking Time: {{ Math.round(recipe.calories) }}</p>
             <p>Source: {{ recipe.source }}</p>
-            <a :href="recipe.url" target="_blank">View Recipe</a>
+            <div>
+              <a :href="recipe.url" target="_blank">View Recipe</a>
+              <button @click="addToFavourites(recipe.id)" id="fav-button">Add to Favourites</button>
+            </div>
           </div>
           <img :src="recipe.image" :alt="recipe.title" class="recipe-image" />
         </li>
@@ -34,14 +37,17 @@
         <li v-for="recipe in searchResults" :key="recipe.UserMadeRecipeID">
           <div class="recipe-info">
             <h3>{{ recipe.RecipeName }}</h3>
+            <p>Made by: {{ recipe.Username }}</p>
             <p>Prep Time: {{ formatTime(recipe.PrepTime) }}</p>
             <p>Serving Size: {{ recipe.ServingSize }}</p>
             <p>Ingredients: {{ recipe.IngredientList }}</p>
-            <div>
+            <div style="margin-bottom: 20px">
               <p>Steps:</p>
-              <!-- Use v-html to render the formatted steps -->
               <ol v-html="formatSteps(recipe.PrepSteps)"></ol>
             </div>
+            <button @click="addToFavourites(recipe.UserMadeRecipeID)" id="fav-button">
+              Add to Favourites
+            </button>
           </div>
         </li>
       </ul>
@@ -55,10 +61,14 @@ export default {
   name: 'RecipeSearch',
   data() {
     return {
+      username: '',
       searchQuery: '',
       searchResults: [],
       isLoading: false
     }
+  },
+  mounted() {
+    this.username = localStorage.getItem('loggedInUser')
   },
   setup() {
     // Function to format time from minutes to hours and minutes
@@ -126,6 +136,13 @@ export default {
       } catch (error) {
         console.error('Error fetching items:', error)
       }
+    },
+    async addToFavourites(recipeId) {
+      console.log('in vue ' + recipeId + ', ' + this.isEDAMAM)
+      await this.makeRequest('/favourites', 'POST', {
+        recipeId: recipeId,
+        isEdamamRecipe: this.isEDAMAM
+      })
     }
   }
 }
@@ -202,5 +219,11 @@ li {
 
 #search-results button {
   margin-left: 20px;
+}
+
+#fav-button {
+  margin-left: 20px;
+  padding: 10px;
+  font-size: 0.8em;
 }
 </style>

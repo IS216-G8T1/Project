@@ -142,9 +142,9 @@ async function deletePersonalRecipe(username, recipeId) {
   return result.affectedRows > 0
 }
 
-// Favorite recipes functions
-async function addFavoriteRecipe(username, recipeId, isEdamamRecipe) {
-  // Add a recipe to user's favorites
+// Favourite recipes functions
+async function addFavouriteRecipe(username, recipeId, isEdamamRecipe) {
+  // Add a recipe to user's favourites
   await query('INSERT INTO UserSavedRecipe (Username, RecipeID, isEdamamRecipe) VALUES (?, ?, ?)', [
     username,
     recipeId,
@@ -152,8 +152,8 @@ async function addFavoriteRecipe(username, recipeId, isEdamamRecipe) {
   ])
 }
 
-async function getFavoriteRecipes(username) {
-  // Fetch all favorite recipes for a user
+async function getFavouriteRecipes(username) {
+  // Fetch all favourite recipes for a user
   return await query('SELECT * FROM UserSavedRecipe WHERE Username = ?', [username])
 }
 
@@ -246,8 +246,8 @@ module.exports = {
   createUser,
   loginUser,
   checkUsernameExists,
-  addFavoriteRecipe,
-  getFavoriteRecipes,
+  addFavouriteRecipe,
+  getFavouriteRecipes,
   createPersonalRecipe,
   getPersonalRecipes,
   getAllPersonalRecipes,

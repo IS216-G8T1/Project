@@ -88,21 +88,22 @@ router.get('/recipe/:recipeId', async (req, res) => {
   }
 })
 
-// Favorite recipes routes
-router.post('/favorites', authenticateUser, async (req, res) => {
+// Favourite recipes routes
+router.post('/favourites', authenticateUser, async (req, res) => {
+  console.log('in routes')
   try {
     const { recipeId, isEdamamRecipe } = req.body
-    await userService.addFavoriteRecipe(req.username, recipeId, isEdamamRecipe)
-    res.status(201).json({ message: 'Recipe added to favorites' })
+    await userService.addFavouriteRecipe(req.username, recipeId, isEdamamRecipe)
+    res.status(201).json({ message: 'Recipe added to favourites' })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
 })
 
-router.get('/favorites', authenticateUser, async (req, res) => {
+router.get('/favourites', authenticateUser, async (req, res) => {
   try {
-    const favorites = await userService.getFavoriteRecipes(req.username)
-    res.json(favorites)
+    const favourites = await userService.getFavouriteRecipes(req.username)
+    res.json(favourites)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
