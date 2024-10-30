@@ -17,12 +17,14 @@ module.exports = {
   createPersonalRecipe: recipeService.createPersonalRecipe,
   getPersonalRecipes: recipeService.getPersonalRecipes,
   getAllPersonalRecipes: recipeService.getAllPersonalRecipes,
+  getPersonalRecipeById: recipeService.getPersonalRecipeById,
   updatePersonalRecipe: recipeService.updatePersonalRecipe,
   deletePersonalRecipe: recipeService.deletePersonalRecipe,
 
   // Favorite services
-  addFavoriteRecipe: favoriteService.addFavoriteRecipe,
-  getFavoriteRecipes: favoriteService.getFavoriteRecipes,
+  addFavouriteRecipe: favoriteService.addFavouriteRecipe,
+  getFavouriteRecipes: favoriteService.getFavouriteRecipes,
+  deleteFromFavourites: favoriteService.deleteFromFavourites,
 
   // Shopping list services
   addToShoppingList: shoppingListService.addToShoppingList,

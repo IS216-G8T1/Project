@@ -25,8 +25,8 @@ async function searchRecipes(searchTerms = '', sortByRating = false) {
   // Clean and split search terms
   const terms = searchTerms
     .split(',')
-    .map(term => term.trim())
-    .filter(term => term.length > 0)
+    .map((term) => term.trim())
+    .filter((term) => term.length > 0)
 
   let sql = `
     SELECT r.*, 
@@ -38,10 +38,10 @@ async function searchRecipes(searchTerms = '', sortByRating = false) {
 
   // Add search conditions if terms exist
   if (terms.length > 0) {
-    const searchConditions = terms.map(() => 
-      '(LOWER(r.RecipeName) LIKE LOWER(?) OR LOWER(r.IngredientList) LIKE LOWER(?))'
-    ).join(' OR ') // Changed from AND to OR
-    
+    const searchConditions = terms
+      .map(() => '(LOWER(r.RecipeName) LIKE LOWER(?) OR LOWER(r.IngredientList) LIKE LOWER(?))')
+      .join(' OR ') // Changed from AND to OR
+
     sql += ` WHERE ${searchConditions}`
   }
 
@@ -56,7 +56,7 @@ async function searchRecipes(searchTerms = '', sortByRating = false) {
 
   // Create parameters array for search terms
   const params = []
-  terms.forEach(term => {
+  terms.forEach((term) => {
     params.push(`%${term}%`, `%${term}%`) // One for RecipeName, one for IngredientList
   })
 
@@ -86,6 +86,11 @@ async function getAllPersonalRecipes() {
      GROUP BY r.UserMadeRecipeID
      ORDER BY r.UserMadeRecipeID DESC`
   )
+}
+
+async function getPersonalRecipeById(userMadeRecipeId) {
+  // Fetch personal recipe by a user
+  return await query('SELECT * FROM UserMadeRecipe WHERE UserMadeRecipeID = ?', [userMadeRecipeId])
 }
 
 async function updatePersonalRecipe(username, recipeId, recipe) {
@@ -146,6 +151,7 @@ module.exports = {
   createPersonalRecipe,
   getPersonalRecipes,
   getAllPersonalRecipes,
+  getPersonalRecipeById,
   updatePersonalRecipe,
   deletePersonalRecipe,
   searchRecipes
