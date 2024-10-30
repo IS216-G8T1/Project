@@ -1,12 +1,12 @@
-const axios = require('axios');
-const dotenv = require('dotenv');
-const { query } = require('./db');
+const axios = require('axios')
+const dotenv = require('dotenv')
+const { query } = require('./db')
 
-dotenv.config();
+dotenv.config()
 
-const EDAMAM_APP_ID = process.env.EDAMAM_APP_ID;
-const EDAMAM_APP_KEY = process.env.EDAMAM_APP_KEY;
-const EDAMAM_API_URL = 'https://api.edamam.com/api/recipes/v2';
+const EDAMAM_APP_ID = process.env.EDAMAM_APP_ID
+const EDAMAM_APP_KEY = process.env.EDAMAM_APP_KEY
+const EDAMAM_API_URL = 'https://api.edamam.com/api/recipes/v2'
 
 async function searchEdamamRecipes(searchQuery, healthLabels = []) {
   try {
@@ -18,9 +18,9 @@ async function searchEdamamRecipes(searchQuery, healthLabels = []) {
         app_key: EDAMAM_APP_KEY,
         health: healthLabels
       }
-    });
+    })
 
-    return response.data.hits.map(hit => ({
+    return response.data.hits.map((hit) => ({
       id: hit.recipe.uri.split('_')[1],
       title: hit.recipe.label,
       image: hit.recipe.image,
@@ -38,10 +38,10 @@ async function searchEdamamRecipes(searchQuery, healthLabels = []) {
         fiber: hit.recipe.totalNutrients.FIBTG
       },
       isEdamamRecipe: true
-    }));
+    }))
   } catch (error) {
-    console.error('Error searching Edamam recipes:', error);
-    throw new Error('Failed to search Edamam recipes');
+    console.error('Error searching Edamam recipes:', error)
+    throw new Error('Failed to search Edamam recipes')
   }
 }
 
@@ -51,14 +51,14 @@ async function searchUserMadeRecipes(searchQuery) {
       `SELECT * FROM UserMadeRecipe 
        WHERE RecipeName LIKE ? OR IngredientList LIKE ?`,
       [`%${searchQuery}%`, `%${searchQuery}%`]
-    );
-    return results.map(recipe => ({
+    )
+    return results.map((recipe) => ({
       ...recipe,
       isEdamamRecipe: false
-    }));
+    }))
   } catch (error) {
-    console.error('Error searching user-made recipes:', error);
-    throw new Error('Failed to search user-made recipes');
+    console.error('Error searching user-made recipes:', error)
+    throw new Error('Failed to search user-made recipes')
   }
 }
 
@@ -66,27 +66,29 @@ async function searchAllRecipes(searchQuery, healthLabels = []) {
   const [edamamRecipes, userMadeRecipes] = await Promise.all([
     searchEdamamRecipes(searchQuery, healthLabels),
     searchUserMadeRecipes(searchQuery)
-  ]);
-  return [...edamamRecipes, ...userMadeRecipes];
+  ])
+  return [...edamamRecipes, ...userMadeRecipes]
 }
 
 async function getRecipesByIngredients(ingredients, healthLabels = []) {
   try {
-    const searchQuery = ingredients.join(',');
-    return await searchAllRecipes(searchQuery, healthLabels);
+    const searchQuery = ingredients.join(',')
+    return await searchAllRecipes(searchQuery, healthLabels)
   } catch (error) {
-    console.error('Error getting recipes by ingredients:', error);
-    throw new Error('Failed to get recipes by ingredients');
+    console.error('Error getting recipes by ingredients:', error)
+    throw new Error('Failed to get recipes by ingredients')
   }
 }
 
 async function getUserMadeRecipe(recipeId) {
   try {
-    const [recipe] = await query('SELECT * FROM UserMadeRecipe WHERE UserMadeRecipeID = ?', [recipeId]);
-    return recipe ? { ...recipe, isEdamamRecipe: false } : null;
+    const [recipe] = await query('SELECT * FROM UserMadeRecipe WHERE UserMadeRecipeID = ?', [
+      recipeId
+    ])
+    return recipe ? { ...recipe, isEdamamRecipe: false } : null
   } catch (error) {
-    console.error('Error getting user-made recipe:', error);
-    throw new Error('Failed to get user-made recipe');
+    console.error('Error getting user-made recipe:', error)
+    throw new Error('Failed to get user-made recipe')
   }
 }
 
@@ -96,10 +98,10 @@ async function getEdamamRecipe(recipeId) {
       params: {
         type: 'public',
         app_id: EDAMAM_APP_ID,
-        app_key: EDAMAM_APP_KEY,
+        app_key: EDAMAM_APP_KEY
       }
-    });
-    const recipe = response.data.recipe;
+    })
+    const recipe = response.data.recipe
     return {
       id: recipeId,
       title: recipe.label,
@@ -118,24 +120,50 @@ async function getEdamamRecipe(recipeId) {
         fiber: recipe.totalNutrients.FIBTG
       },
       isEdamamRecipe: true
-    };
+    }
   } catch (error) {
-    console.error('Error getting Edamam recipe:', error);
-    throw new Error('Failed to get Edamam recipe');
+    console.error('Error getting Edamam recipe:', error)
+    throw new Error('Failed to get Edamam recipe')
   }
 }
 
 async function getRecipe(recipeId, isEdamamRecipe) {
-  return isEdamamRecipe ? getEdamamRecipe(recipeId) : getUserMadeRecipe(recipeId);
+  return isEdamamRecipe ? getEdamamRecipe(recipeId) : getUserMadeRecipe(recipeId)
 }
 
 function getValidHealthLabels() {
   return [
-    'alcohol-free', 'celery-free', 'crustacean-free', 'dairy-free', 'egg-free', 'fish-free', 'fodmap-free', 'gluten-free',
-    'keto-friendly', 'kidney-friendly', 'kosher', 'low-potassium', 'lupine-free', 'mustard-free', 'low-fat-abs',
-    'No-oil-added', 'low-sugar', 'paleo', 'peanut-free', 'pecatarian', 'pork-free', 'red-meat-free', 'sesame-free',
-    'shellfish-free', 'soy-free', 'sugar-conscious', 'tree-nut-free', 'vegan', 'vegetarian', 'wheat-free'
-  ];
+    'alcohol-free',
+    'celery-free',
+    'crustacean-free',
+    'dairy-free',
+    'egg-free',
+    'fish-free',
+    'fodmap-free',
+    'gluten-free',
+    'keto-friendly',
+    'kidney-friendly',
+    'kosher',
+    'low-potassium',
+    'lupine-free',
+    'mustard-free',
+    'low-fat-abs',
+    'No-oil-added',
+    'low-sugar',
+    'paleo',
+    'peanut-free',
+    'pecatarian',
+    'pork-free',
+    'red-meat-free',
+    'sesame-free',
+    'shellfish-free',
+    'soy-free',
+    'sugar-conscious',
+    'tree-nut-free',
+    'vegan',
+    'vegetarian',
+    'wheat-free'
+  ]
 }
 
 module.exports = {
@@ -143,4 +171,4 @@ module.exports = {
   getRecipesByIngredients,
   getRecipe,
   getValidHealthLabels
-};
+}

@@ -76,6 +76,11 @@ async function getAllPersonalRecipes() {
   return await query('SELECT * FROM UserMadeRecipe')
 }
 
+async function getPersonalRecipeById(userMadeRecipeId) {
+  // Fetch personal recipe by a user
+  return await query('SELECT * FROM UserMadeRecipe WHERE UserMadeRecipeID = ?', [userMadeRecipeId])
+}
+
 async function updatePersonalRecipe(username, recipeId, recipe) {
   console.log('Updating recipe:', { username, recipeId, recipe }) // Debug log
 
@@ -251,6 +256,7 @@ module.exports = {
   createPersonalRecipe,
   getPersonalRecipes,
   getAllPersonalRecipes,
+  getPersonalRecipeById,
   updatePersonalRecipe,
   deletePersonalRecipe,
   updateDietaryInfo,

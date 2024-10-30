@@ -64,7 +64,8 @@ export default {
       username: '',
       searchQuery: '',
       searchResults: [],
-      isLoading: false
+      isLoading: false,
+      isEDAMAM: true
     }
   },
   mounted() {

@@ -90,7 +90,6 @@ router.get('/recipe/:recipeId', async (req, res) => {
 
 // Favourite recipes routes
 router.post('/favourites', authenticateUser, async (req, res) => {
-  console.log('in routes')
   try {
     const { recipeId, isEdamamRecipe } = req.body
     await userService.addFavouriteRecipe(req.username, recipeId, isEdamamRecipe)
@@ -103,6 +102,7 @@ router.post('/favourites', authenticateUser, async (req, res) => {
 router.get('/favourites', authenticateUser, async (req, res) => {
   try {
     const favourites = await userService.getFavouriteRecipes(req.username)
+    console.log('from database: ' + favourites)
     res.json(favourites)
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -133,6 +133,16 @@ router.get('/all-personal-recipes', authenticateUser, async (req, res) => {
   try {
     const recipes = await userService.getAllPersonalRecipes()
     res.json(recipes)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+router.get('/personal-recipes/:recipeId', authenticateUser, async (req, res) => {
+  try {
+    const { recipeId } = req.params
+    const recipe = await userService.getPersonalRecipeById(recipeId)
+    res.json(recipe)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
