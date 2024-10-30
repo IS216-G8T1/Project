@@ -46,6 +46,7 @@ export default {
       }
     },
     async getFavourites() {
+      this.favourites = []
       try {
         const result = await this.makeRequest('/favourites', 'GET')
         // console.log(result)
@@ -86,10 +87,9 @@ export default {
         console.error('Error fetching recipe:', error)
       }
     },
-    removeFromFavourites(id) {
-      // TODO: Implement API call to remove favourite
-      console.log('Removing favourite with id:', id)
-      this.favourites = this.favourites.filter((recipe) => recipe.id !== id)
+    async removeFromFavourites(recipeId) {
+      await this.makeRequest(`/favourites/${recipeId}`, 'DELETE')
+      this.getFavourites()
     }
   }
 }

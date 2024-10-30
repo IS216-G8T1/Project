@@ -162,6 +162,12 @@ async function getFavouriteRecipes(username) {
   return await query('SELECT * FROM UserSavedRecipe WHERE Username = ?', [username])
 }
 
+async function deleteFromFavourites(recipeId) {
+  // Remove item from user's favourites
+  const result = await query('DELETE FROM UserSavedRecipe WHERE RecipeID = ?', [recipeId])
+  return result.affectedRows > 0
+}
+
 // User profile functions
 async function updateDietaryInfo(username, dietaryInfo) {
   // Update user's dietary information
@@ -253,6 +259,7 @@ module.exports = {
   checkUsernameExists,
   addFavouriteRecipe,
   getFavouriteRecipes,
+  deleteFromFavourites,
   createPersonalRecipe,
   getPersonalRecipes,
   getAllPersonalRecipes,

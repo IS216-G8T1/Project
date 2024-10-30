@@ -139,7 +139,6 @@ export default {
       }
     },
     async addToFavourites(recipeId) {
-      console.log('in vue ' + recipeId + ', ' + this.isEDAMAM)
       await this.makeRequest('/favourites', 'POST', {
         recipeId: recipeId,
         isEdamamRecipe: this.isEDAMAM

@@ -109,6 +109,20 @@ router.get('/favourites', authenticateUser, async (req, res) => {
   }
 })
 
+router.delete('/favourites/:recipeId', authenticateUser, async (req, res) => {
+  try {
+    const { recipeId } = req.params
+    const deleted = await userService.deleteFromFavourites(recipeId)
+    if (deleted) {
+      res.json({ message: 'Successfully removed from favourites' })
+    } else {
+      res.status(404).json({ error: 'Remove unsuccessful or unauthorized' })
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // Personal recipes routes
 router.post('/personal-recipes', authenticateUser, async (req, res) => {
   try {
