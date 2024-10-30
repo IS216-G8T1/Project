@@ -1,6 +1,6 @@
 const express = require('express')
 const recipeService = require('./recipeService')
-const userService = require('./userService')
+const userService = require('./userService')  // This path is correct as userService.js re-exports all services
 
 const router = express.Router()
 
@@ -143,7 +143,8 @@ router.get('/personal-recipes', authenticateUser, async (req, res) => {
   }
 })
 
-router.get('/all-personal-recipes', authenticateUser, async (req, res) => {
+// Changed to not require authentication since these are public recipes
+router.get('/all-personal-recipes', async (req, res) => {
   try {
     const recipes = await userService.getAllPersonalRecipes()
     res.json(recipes)
@@ -192,10 +193,21 @@ router.delete('/personal-recipes/:recipeId', authenticateUser, async (req, res) 
 })
 
 // Dietary information route
+router.get('/dietary-info', authenticateUser, async (req, res) => {
+  try {
+    const dietaryInfo = await userService.getDietaryInfo(req.username)
+    res.json(dietaryInfo)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 router.post('/dietary-info', authenticateUser, async (req, res) => {
   try {
-    const { dietaryInfo } = req.body
-    await userService.updateDietaryInfo(req.username, dietaryInfo)
+    const { DietaryInfo } = req.body
+    console.log('in route ', DietaryInfo)
+
+    await userService.updateDietaryInfo(req.username, DietaryInfo)
     res.json({ message: 'Dietary information updated successfully' })
   } catch (error) {
     res.status(500).json({ error: error.message })
@@ -248,6 +260,17 @@ router.post('/rate-recipe', authenticateUser, async (req, res) => {
   }
 })
 
+// Get reviews for a specific recipe
+router.get('/recipe-reviews/:recipeId', async (req, res) => {
+  try {
+    const { recipeId } = req.params
+    const reviews = await userService.getRecipeReviews(recipeId)
+    res.json(reviews)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // User points routes
 router.get('/user-points', authenticateUser, async (req, res) => {
   try {
@@ -272,7 +295,7 @@ router.post('/redeem-points', authenticateUser, async (req, res) => {
   }
 })
 
-// Top rated recipes route
+// Top rated recipes route - removed authentication requirement
 router.get('/top-rated-recipes', async (req, res) => {
   try {
     const { limit } = req.query
