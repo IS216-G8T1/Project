@@ -32,38 +32,56 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: Profile
+      component: Profile,
+      meta: { requiresAuth: true }
     },
     {
       path: '/recipe-search',
       name: 'recipeSearch',
-      component: RecipeSearch
+      component: RecipeSearch,
+      meta: { requiresAuth: true }
     },
     {
       path: '/favourites',
       name: 'favourites',
       // Lazy-load the Favourites component
-      component: () => import('../views/Favourites.vue')
+      component: () => import('../views/Favourites.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/personal-recipes',
       name: 'personalRecipes',
       // Lazy-load the PersonalRecipes component
-      component: () => import('../views/PersonalRecipes.vue')
+      component: () => import('../views/PersonalRecipes.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/shopping-list',
       name: 'shoppingList',
       // Lazy-load the ShoppingList component
-      component: () => import('../views/ShoppingList.vue')
+      component: () => import('../views/ShoppingList.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/create-recipe',
       name: 'createRecipe',
       // Lazy-load the CreateRecipe component
-      component: () => import('../views/CreateRecipe.vue')
+      component: () => import('../views/CreateRecipe.vue'),
+      meta: { requiresAuth: true }
     }
   ]
+})
+
+// GLobal navigation guard
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('loggedInUser')
+
+  // If the route requires authentication and user is not authenticated, redirect to login
+  if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 // Export the router instance to be used in main.js

@@ -32,8 +32,13 @@
         <h3>Edit Recipe</h3>
         <form @submit.prevent="updateRecipe">
           <label for="recipeName">Recipe Name:</label>
-          <input id="recipeName" v-model="editingRecipe.RecipeName" placeholder="Recipe Name" required />
-          
+          <input
+            id="recipeName"
+            v-model="editingRecipe.RecipeName"
+            placeholder="Recipe Name"
+            required
+          />
+
           <div class="prep-time">
             <label>Preparation Time:</label>
             <div class="time-inputs">
@@ -62,7 +67,7 @@
               </div>
             </div>
           </div>
-          
+
           <label for="servingSize">Serving Size:</label>
           <input
             id="servingSize"
@@ -71,7 +76,7 @@
             placeholder="Serving Size"
             required
           />
-          
+
           <label for="ingredients">Ingredients:</label>
           <textarea
             id="ingredients"
@@ -79,7 +84,7 @@
             placeholder="Ingredients"
             required
           ></textarea>
-          
+
           <label for="prepSteps">Preparation Steps:</label>
           <textarea
             id="prepSteps"
@@ -87,7 +92,7 @@
             placeholder="Preparation Steps"
             required
           ></textarea>
-          
+
           <button type="submit">Save</button>
           <button type="button" @click="showEditModal = false">Cancel</button>
         </form>

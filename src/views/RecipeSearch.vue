@@ -138,6 +138,7 @@ export default {
         console.error('Error fetching items:', error)
       }
     },
+    // need to handle duplicate entries
     async addToFavourites(recipeId) {
       await this.makeRequest('/favourites', 'POST', {
         recipeId: recipeId,
