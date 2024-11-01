@@ -38,12 +38,18 @@
           <p><strong>Prep Time:</strong> {{ recipe.PrepTime }}</p>
           <p><strong>Serving Size:</strong> {{ recipe.ServingSize }}</p>
           <div class="rating" v-if="recipe.AverageRating > 0">
-            <span>Rating: {{ Number(recipe.AverageRating).toFixed(1) }} ⭐</span>
+            <span> Rating: {{ Number(recipe.AverageRating).toFixed(1) }} </span>
+            <span 
+              v-for="(star, index) in 5" 
+              :key="index" 
+              :class="getStarClass(recipe.AverageRating, index)"
+              class="fa fa-star"
+            ></span>
             <span>({{ recipe.RatingCount }} reviews)</span>
           </div>
           <div class="rating" v-else>
             <span>No ratings yet</span>
-          </div>
+        </div>
         </div>
 
         <!-- Reviews Section -->
@@ -242,6 +248,14 @@ export default {
         alert(error.response?.data?.error || 'Error submitting review')
         console.error('Error submitting review:', error)
       }
+    },
+      getStarClass(rating, index) {
+      // Full star
+      if (index < Math.floor(rating)) return 'checked'
+      // Half star (only for one star, as rating is out of 5)
+      if (index < Math.ceil(rating)) return 'fa-star-half-alt checked'
+      // Empty star
+      return ''
     }
   },
   created() {
@@ -441,7 +455,19 @@ pre {
 
 .rating {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: center;
 }
+.rating .fa-star.checked {
+  color: gold;
+}
+
+.rating .fa-star-half-o.checked {
+  color: gold;
+}
+
+.rating .fa-star {
+  color: lightgray;
+}
+
 </style>

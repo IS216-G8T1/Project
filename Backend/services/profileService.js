@@ -2,7 +2,6 @@ const { query } = require('../db')
 
 async function getDietaryInfo(username) {
   const [user] = await query('SELECT DietaryRestrictions FROM Users WHERE Username = ?', [username])
-  console.log(user)
   return user ? user.DietaryRestrictions : ''
 }
 
@@ -17,8 +16,6 @@ async function updateDietaryInfo(username, dietaryInfo) {
 
 async function getAllergyInfo(username) {
   const [user] = await query('SELECT Allergies FROM Users WHERE Username = ?', [username])
-  console.log("getAllergyInfo User")
-  console.log(user)
   return user
 }
 
