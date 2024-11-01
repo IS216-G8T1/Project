@@ -192,6 +192,26 @@ router.delete('/personal-recipes/:recipeId', authenticateUser, async (req, res) 
   }
 })
 
+// Allergy information routes
+router.get('/allergy-info', authenticateUser, async (req, res) => {
+  try {
+    const allergyInfo = await userService.getAllergyInfo(req.username)
+    res.json(allergyInfo)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
+router.post('/allergy-info', authenticateUser, async (req, res) => {
+  try {
+    const { AllergyInfo } = req.body
+    await userService.updateAllergyInfo(req.username, AllergyInfo)
+    res.json({ message: 'Allergy information updated successfully' })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 // Dietary information route
 router.get('/dietary-info', authenticateUser, async (req, res) => {
   try {

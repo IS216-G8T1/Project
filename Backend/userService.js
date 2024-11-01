@@ -39,5 +39,7 @@ module.exports = {
 
   // Profile services
   getDietaryInfo: profileService.getDietaryInfo,
-  updateDietaryInfo: profileService.updateDietaryInfo
+  updateDietaryInfo: profileService.updateDietaryInfo,
+  getAllergyInfo: profileService.getAllergyInfo,
+  updateAllergyInfo: profileService.updateAllergyInfo
 }

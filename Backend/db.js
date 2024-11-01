@@ -39,7 +39,7 @@ async function createTables() {
       CREATE TABLE IF NOT EXISTS Users (
         Username VARCHAR(50) PRIMARY KEY,
         Password VARCHAR(255) NOT NULL,
-        DietaryRestrictions TEXT,
+        DietaryRestrictions TEXT DEFAULT NULL,
         Allergies TEXT,
         Points INT DEFAULT 0
       )
@@ -98,7 +98,7 @@ async function createTables() {
 
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS Vouchers (
-        VoucherCode VARCHAR(100) PRIMARY KEY,
+        VoucherCode INT AUTO_INCREMENT PRIMARY KEY,
         Username VARCHAR(50),
         FOREIGN KEY (Username) REFERENCES Users(Username)
       )
