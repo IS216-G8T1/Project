@@ -42,6 +42,7 @@ export default {
     // Declare reactive variables
     const dietaryRestrictions = ref([])
     const allergies = ref([])
+    const selectedAllergies = ref([])
     const loading = ref(true)
     const error = ref(null)
     const currentUsername = ref(localStorage.getItem('loggedInUser')) // Make this reactive
@@ -71,9 +72,10 @@ export default {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
-          allergies.value = await response.json()
-          console.log("Allergies data from server:", allergies.value);
-          allergies.value = allergies.value.split(",") // Ensure allergies data comes in the expected format
+          const data = await response.json()
+          const allergiesList = data.Allergies;
+          allergies.value = allergiesList.split(",")
+          selectedAllergies.value = allergies.value
         } else {
           throw new Error('Failed to fetch allergies')
         }
@@ -81,6 +83,7 @@ export default {
         error.value = 'An error occurred while fetching allergies.'
       } finally {
         loading.value = false
+        console.log(selectedAllergies)
       }
     }
 

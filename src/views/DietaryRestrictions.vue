@@ -101,7 +101,8 @@ export default {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
-          const allergiesList = await response.json()
+          const data = await response.json()
+          const allergiesList = data.Allergies;
           allergies.value = allergiesList.split(",")
           selectedAllergies.value = allergies.value
         } else {
