@@ -67,8 +67,8 @@ export default {
     const allergies = ref([])
     const loading = ref(false)
     const error = ref(null)
-    const dietaryOptions = ['Vegetarian', 'Vegan', 'Gluten-Free']
-    const allergyOptions = ['Peanuts', 'Tree Nuts', 'Shellfish', 'Eggs', 'Milk', 'Soy']
+    const dietaryOptions = ['Alcohol-free', 'Balanced', 'High-Fiber', 'High-Protein', 'Keto', 'Kidney friendly', 'Kosher', 'Low-Carb', 'Low-Fat', 'Low potassium', 'Low-Sodium', 'No oil added', 'No-sugar', 'Paleo', 'Pescatarian', 'Pork-free', 'Red meat-free', 'Sugar-conscious', 'Vegan', 'Vegetarian']
+    const allergyOptions = ['Celery-free', 'Crustacean-free', 'Dairy-free', 'Egg-free','Fish-free', 'Gluten-free', 'Lupine-free', 'Mustard-free', 'Peanut-free', 'Sesame-free', 'Shellfish-free', 'Soy-free', 'Tree-Nut-free', 'Wheat-free']
     const selectedRestrictions = ref([])
     const selectedAllergies = ref([])
     const message = ref("")
