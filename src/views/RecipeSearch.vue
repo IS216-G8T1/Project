@@ -20,21 +20,46 @@
       </div>
       <ul class="results" v-if="isEDAMAM && !isLoading">
         <li v-for="recipe in searchResults" :key="recipe.id">
+          <img
+            v-if="favourites.some((fav) => fav.recipe_name === recipe.title)"
+            src="../assets/favourite_checked.png"
+            alt="fav-icon"
+            class="fav-icon"
+            @click="removeFromFavourites(recipe.id)"
+          />
+          <img
+            v-else
+            src="../assets/favourite_unchecked.png"
+            alt="fav-icon"
+            class="fav-icon"
+            @click="addToFavourites(recipe.id)"
+          />
           <div class="recipe-info">
             <h3>{{ recipe.title }}</h3>
             <p>Calories: {{ Math.round(recipe.calories) }}</p>
             <p>Cooking Time: {{ Math.round(recipe.calories) }}</p>
             <p>Source: {{ recipe.source }}</p>
-            <div>
-              <a :href="recipe.url" target="_blank">View Recipe</a>
-              <button @click="addToFavourites(recipe.id)" id="fav-button">Add to Favourites</button>
-            </div>
+            <a :href="recipe.url" target="_blank">View Recipe</a>
           </div>
           <img :src="recipe.image" :alt="recipe.title" class="recipe-image" />
         </li>
       </ul>
       <ul class="results" v-else>
         <li v-for="recipe in searchResults" :key="recipe.UserMadeRecipeID">
+          <img
+            v-if="favourites.some((fav) => fav.recipe_name === recipe.RecipeName)"
+            src="../assets/favourite_checked.png"
+            alt="fav-icon"
+            class="fav-icon"
+            @click="removeFromFavourites(recipe.UserMadeRecipeID)"
+          />
+          <img
+            v-else
+            src="../assets/favourite_unchecked.png"
+            alt="fav-icon"
+            class="fav-icon"
+            @click="addToFavourites(recipe.UserMadeRecipeID)"
+          />
           <div class="recipe-info">
             <h3>{{ recipe.RecipeName }}</h3>
             <p>Made By: {{ recipe.Username }}</p>
@@ -45,9 +70,6 @@
               <p>Steps:</p>
               <ol v-html="formatSteps(recipe.PrepSteps)"></ol>
             </div>
-            <button @click="addToFavourites(recipe.UserMadeRecipeID)" id="fav-button">
-              Add to Favourites
-            </button>
           </div>
         </li>
       </ul>
@@ -57,6 +79,7 @@
 
 <script>
 import axios from 'axios'
+
 export default {
   name: 'RecipeSearch',
   data() {
@@ -65,11 +88,13 @@ export default {
       searchQuery: '',
       searchResults: [],
       isLoading: false,
-      isEDAMAM: true
+      isEDAMAM: true,
+      favourites: []
     }
   },
   mounted() {
     this.username = localStorage.getItem('loggedInUser')
+    this.getFavourites()
   },
   setup() {
     // Function to format time from minutes to hours and minutes
@@ -138,12 +163,69 @@ export default {
         console.error('Error fetching items:', error)
       }
     },
+    async getFavourites() {
+      this.favourites = []
+      try {
+        const result = await this.makeRequest('/favourites', 'GET')
+        for (const fav of result) {
+          if (fav.isEdamamRecipe == 0) {
+            const recipeDetails = await this.displayUserRecipe(fav.RecipeID)
+            this.favourites.push({
+              id: recipeDetails[0].UserMadeRecipeID,
+              recipe_name: recipeDetails[0].RecipeName
+            })
+          } else {
+            try {
+              const response = await axios.get(`/api/recipe/${fav.RecipeID}`, {
+                params: { isEdamamRecipe: true }
+              })
+              this.favourites.push({
+                id: response.data.id,
+                recipe_name: response.data.title
+              })
+            } catch (error) {
+              console.error('Error searching recipes:', error)
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching favourites:', error)
+      }
+      console.log(this.favourites)
+    },
+    async displayUserRecipe(recipeId) {
+      try {
+        const result = await this.makeRequest(`/personal-recipes/${recipeId}`, 'GET')
+        return result
+      } catch (error) {
+        console.error('Error fetching recipe:', error)
+      }
+    },
     // need to handle duplicate entries
     async addToFavourites(recipeId) {
       await this.makeRequest('/favourites', 'POST', {
         recipeId: recipeId,
         isEdamamRecipe: this.isEDAMAM
       })
+
+      // Immediately update the favourites array
+      const recipeToAdd = this.isEDAMAM
+        ? this.searchResults.find((recipe) => recipe.id === recipeId)
+        : this.searchResults.find((recipe) => recipe.UserMadeRecipeID === recipeId)
+
+      if (recipeToAdd) {
+        this.favourites.push({
+          id: recipeToAdd.id || recipeToAdd.UserMadeRecipeID,
+          recipe_name: recipeToAdd.title || recipeToAdd.RecipeName
+        })
+      }
+    },
+    async removeFromFavourites(recipeId) {
+      await this.makeRequest(`/favourites/${recipeId}`, 'DELETE')
+      // this.getFavourites()
+
+      // Immediately update the favourites array
+      this.favourites = this.favourites.filter((fav) => fav.id !== recipeId)
     }
   }
 }
@@ -226,5 +308,16 @@ li {
   margin-left: 20px;
   padding: 10px;
   font-size: 0.8em;
+}
+
+.fav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  margin-left: auto;
+  border-radius: 4px;
+  margin-top: 16px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 </style>
