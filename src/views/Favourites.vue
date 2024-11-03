@@ -5,7 +5,10 @@
       <div v-for="recipe in favourites" :key="recipe.id" class="recipe-card">
         <div v-if="recipe.isEdamamRecipe == 0">
           <h3>{{ recipe.recipe_name }}</h3>
-          <p>Created By: {{ recipe.username }}</p>
+          <p>Made By: {{ recipe.username }}</p>
+          <p>Prep Time: {{ formatTime(recipe.prep_time) }}</p>
+          <p>Serving Size: {{ recipe.serving_size }}</p>
+          <p>Ingredients: {{ recipe.ingredient_list }}</p>
           <div>
             <p>Steps:</p>
             <!-- Use v-html to render the formatted steps -->
@@ -47,6 +50,16 @@ export default {
     this.getFavourites()
   },
   setup() {
+    const formatTime = (timeString) => {
+      if (!timeString || typeof timeString !== 'string') return 'N/A'
+      const [hours, minutes] = timeString.split(':').map(Number)
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`
+      } else {
+        return `${minutes}m`
+      }
+    }
+
     const formatSteps = (steps) => {
       if (!steps) return ''
       return steps
@@ -56,6 +69,7 @@ export default {
     }
 
     return {
+      formatTime,
       formatSteps
     }
   },

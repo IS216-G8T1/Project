@@ -37,7 +37,7 @@
         <li v-for="recipe in searchResults" :key="recipe.UserMadeRecipeID">
           <div class="recipe-info">
             <h3>{{ recipe.RecipeName }}</h3>
-            <p>Made by: {{ recipe.Username }}</p>
+            <p>Made By: {{ recipe.Username }}</p>
             <p>Prep Time: {{ formatTime(recipe.PrepTime) }}</p>
             <p>Serving Size: {{ recipe.ServingSize }}</p>
             <p>Ingredients: {{ recipe.IngredientList }}</p>
