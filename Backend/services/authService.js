@@ -3,14 +3,14 @@ const { query } = require('../db')
 
 const saltRounds = 10
 
-async function createUser(username, password, dietaryRestrictions = '') {
+async function createUser(username, password) {
   if (username.length > 50) {
     throw new Error('Username must be 50 characters or less')
   }
   const hashedPassword = await bcrypt.hash(password, saltRounds)
   await query(
-    'INSERT INTO Users (Username, Password, DietaryRestrictions, Points) VALUES (?, ?, ?, 0)',
-    [username, hashedPassword, dietaryRestrictions]
+    'INSERT INTO Users (Username, Password, Points) VALUES (?, ?, 0)',
+    [username, hashedPassword]
   )
   return { username }
 }

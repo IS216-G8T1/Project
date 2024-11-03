@@ -49,16 +49,25 @@ async function getUserPoints(username) {
 }
 
 async function redeemPoints(username, pointsToRedeem) {
-  const [user] = await query('SELECT Points FROM Users WHERE Username = ?', [username])
+  const [user] = await query('SELECT Points FROM Users WHERE Username = ?', [username]);
+  
+  // Check if user exists and has enough points
   if (user && user.Points >= pointsToRedeem) {
+    // Insert a new voucher for the user
+    await query('INSERT INTO Vouchers (Username) VALUES (?)', [username]);
+    
+    // Update the user's points
     await query('UPDATE Users SET Points = Points - ? WHERE Username = ?', [
       pointsToRedeem,
       username
-    ])
-    return { success: true, remainingPoints: user.Points - pointsToRedeem }
+    ]);
+    
+    return { success: true, remainingPoints: user.Points - pointsToRedeem };
   }
-  return { success: false, message: 'Insufficient points' }
+  
+  return { success: false, message: 'Insufficient points' };
 }
+
 
 async function getTopRatedRecipes(limit = 10) {
   // Convert limit to number and set a default
