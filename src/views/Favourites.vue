@@ -1,13 +1,30 @@
 <template>
   <div class="favourites">
     <h1>Favourite Recipes</h1>
-    <div v-if="favourites.length">
-      <ul>
-        <li v-for="recipe in favourites" :key="recipe.id">
-          {{ recipe.username }}, {{ recipe.recipe_name }}
-          <button @click="removeFromFavourites(recipe.id)">Remove</button>
-        </li>
-      </ul>
+    <div v-if="favourites.length" class="recipe-list">
+      <div v-for="recipe in favourites" :key="recipe.id" class="recipe-card">
+        <div v-if="recipe.isEdamamRecipe == 0">
+          <h3>{{ recipe.recipe_name }}</h3>
+          <p>Created By: {{ recipe.username }}</p>
+          <div>
+            <p>Steps:</p>
+            <!-- Use v-html to render the formatted steps -->
+            <ol v-html="formatSteps(recipe.prep_steps)"></ol>
+          </div>
+        </div>
+        <div v-else>
+          <h3>{{ recipe.recipe_name }}</h3>
+          <p>Calories: {{ Math.round(recipe.calories) }}</p>
+          <p>Cooking Time: {{ Math.round(recipe.cooking_time) }}</p>
+          <p>Source: {{ recipe.source }}</p>
+          <a :href="recipe.url" target="_blank">View Recipe</a>
+        </div>
+        <div class="recipe-actions">
+          <button @click="removeFromFavourites(recipe.id)">Remove from Favourites</button>
+          <!-- <button @click="editRecipe(recipe)">Edit</button>
+          <button @click="deleteRecipe(recipe.UserMadeRecipeID)">Delete</button> -->
+        </div>
+      </div>
     </div>
     <div v-else>
       <p>You haven't added any favourites yet.</p>
@@ -28,6 +45,19 @@ export default {
   mounted() {
     this.username = localStorage.getItem('loggedInUser')
     this.getFavourites()
+  },
+  setup() {
+    const formatSteps = (steps) => {
+      if (!steps) return ''
+      return steps
+        .split('\n')
+        .map((step) => `<li>${step}</li>`)
+        .join('')
+    }
+
+    return {
+      formatSteps
+    }
   },
   methods: {
     async makeRequest(url, method, body = null) {
@@ -55,9 +85,14 @@ export default {
           if (fav.isEdamamRecipe == 0) {
             const recipeDetails = await this.displayUserRecipe(fav.RecipeID)
             this.favourites.push({
+              isEdamamRecipe: 0,
               id: recipeDetails[0].UserMadeRecipeID,
               username: recipeDetails[0].Username,
-              recipe_name: recipeDetails[0].RecipeName
+              recipe_name: recipeDetails[0].RecipeName,
+              prep_time: recipeDetails[0].PrepTime,
+              serving_size: recipeDetails[0].ServingSize,
+              prep_steps: recipeDetails[0].PrepSteps,
+              ingredient_list: recipeDetails[0].IngredientList
             })
           } else {
             try {
@@ -65,9 +100,13 @@ export default {
                 params: { isEdamamRecipe: true }
               })
               this.favourites.push({
+                isEdamamRecipe: 1,
                 id: response.data.id,
-                username: response.data.source,
-                recipe_name: response.data.title
+                source: response.data.source,
+                recipe_name: response.data.title,
+                calories: response.data.calories,
+                cooking_time: response.data.totalTime,
+                url: response.data.url
               })
             } catch (error) {
               console.error('Error searching recipes:', error) //Shows error messages for user
@@ -123,6 +162,7 @@ li {
 
 button {
   padding: 5px 10px;
+  margin-top: 10px;
   background-color: #ffa726;
   color: white;
   border: none;
@@ -132,5 +172,25 @@ button {
 
 button:hover {
   background-color: #ff9800;
+}
+
+.recipe-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.recipe-card {
+  background-color: #ffe0b2;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

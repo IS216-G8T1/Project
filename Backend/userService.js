@@ -1,7 +1,7 @@
 // Import all service modules
 const authService = require('./services/authService')
 const recipeService = require('./services/recipeService')
-const favoriteService = require('./services/favoriteService')
+const favouriteService = require('./services/favouriteService')
 const shoppingListService = require('./services/shoppingListService')
 const ratingService = require('./services/ratingService')
 const profileService = require('./services/profileService')
@@ -22,9 +22,9 @@ module.exports = {
   deletePersonalRecipe: recipeService.deletePersonalRecipe,
 
   // Favorite services
-  addFavouriteRecipe: favoriteService.addFavouriteRecipe,
-  getFavouriteRecipes: favoriteService.getFavouriteRecipes,
-  deleteFromFavourites: favoriteService.deleteFromFavourites,
+  addFavouriteRecipe: favouriteService.addFavouriteRecipe,
+  getFavouriteRecipes: favouriteService.getFavouriteRecipes,
+  deleteFromFavourites: favouriteService.deleteFromFavourites,
 
   // Shopping list services
   addToShoppingList: shoppingListService.addToShoppingList,
