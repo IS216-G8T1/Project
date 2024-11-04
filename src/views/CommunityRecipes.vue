@@ -1,30 +1,47 @@
 <template>
   <div class="community-recipes">
     <h1>Community Recipes</h1>
-    
+
     <div class="filters">
       <div class="search-bar">
-        <input 
-          type="text" 
-          v-model="searchQuery" 
+        <input
+          type="text"
+          v-model="searchQuery"
           placeholder="Search recipes (use commas to search multiple terms, e.g. 'chicken, fish')"
           @input="debouncedSearch"
-        >
+        />
+      </div>
+      <div class="filter-options">
+        <select v-model="ratingFilter" class="rating-filter">
+          <option value="0">All Ratings</option>
+          <option value="5">5 Stars Only</option>
+          <option value="4">4+ Stars</option>
+          <option value="3">3+ Stars</option>
+          <option value="2">2+ Stars</option>
+          <option value="1">1+ Stars</option>
+          <option value="no">No Ratings</option>
+        </select>
       </div>
       <div class="sort-options">
-        <label>
-          <input 
-            type="checkbox" 
-            v-model="sortByRating"
-          >
-          Show Highest Rated First
-        </label>
-      </div>
+  <div class="sort-label">Sort by rating:</div>
+  <div class="radio-group">
+    <label class="radio-label">
+      <input type="radio" v-model="sortDirection" value="highest" />
+      <span class="radio-text">Highest Rated First</span>
+    </label>
+    <label class="radio-label">
+      <input type="radio" v-model="sortDirection" value="lowest" />
+      <span class="radio-text">Lowest Rated First</span>
+    </label>
+    <label class="radio-label">
+      <input type="radio" v-model="sortDirection" value="none" />
+      <span class="radio-text">No Sort</span>
+    </label>
+  </div>
+</div>
     </div>
 
-    <div v-if="loading" class="loading">
-      Loading recipes...
-    </div>
+    <div v-if="loading" class="loading">Loading recipes...</div>
 
     <div v-else-if="filteredRecipes.length === 0" class="no-results">
       No recipes found matching your search.
@@ -39,9 +56,9 @@
           <p><strong>Serving Size:</strong> {{ recipe.ServingSize }}</p>
           <div class="rating" v-if="recipe.AverageRating > 0">
             <span> Rating: {{ Number(recipe.AverageRating).toFixed(1) }} </span>
-            <span 
-              v-for="(star, index) in 5" 
-              :key="index" 
+            <span
+              v-for="(star, index) in 5"
+              :key="index"
               :class="getStarClass(recipe.AverageRating, index)"
               class="fa fa-star"
             ></span>
@@ -49,20 +66,23 @@
           </div>
           <div class="rating" v-else>
             <span>No ratings yet</span>
-        </div>
+          </div>
         </div>
 
         <!-- Reviews Section -->
         <div class="reviews-section">
-          <button 
-            class="toggle-reviews" 
+          <button
+            class="toggle-reviews"
             @click="toggleReviews(recipe.UserMadeRecipeID)"
             v-if="recipe.reviews && recipe.reviews.length > 0"
           >
             {{ showReviewsFor === recipe.UserMadeRecipeID ? 'Hide Reviews' : 'Show Reviews' }}
           </button>
 
-          <div v-if="showReviewsFor === recipe.UserMadeRecipeID && recipe.reviews" class="reviews-list">
+          <div
+            v-if="showReviewsFor === recipe.UserMadeRecipeID && recipe.reviews"
+            class="reviews-list"
+          >
             <div v-for="review in recipe.reviews" :key="review.ReviewID" class="review-item">
               <div class="review-header">
                 <span class="review-author">{{ review.Username }}</span>
@@ -73,7 +93,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Review Form -->
         <div class="review-section" v-if="showReviewForm === recipe.UserMadeRecipeID">
           <h3>Add Review</h3>
@@ -86,8 +106,8 @@
               <option value="5">5 Stars</option>
             </select>
           </div>
-          <textarea 
-            v-model="newReview.description" 
+          <textarea
+            v-model="newReview.description"
             placeholder="Write your review here..."
           ></textarea>
           <div class="review-buttons">
@@ -95,9 +115,9 @@
             <button @click="showReviewForm = null">Cancel</button>
           </div>
         </div>
-        
+
         <div class="recipe-actions">
-          <button 
+          <button
             v-if="isLoggedIn && recipe.Username !== currentUsername"
             @click="showReviewForm = recipe.UserMadeRecipeID"
             class="action-button"
@@ -117,7 +137,7 @@
         <div class="recipe-details">
           <h3>Ingredients:</h3>
           <pre>{{ selectedRecipe.IngredientList }}</pre>
-          
+
           <h3>Preparation Steps:</h3>
           <pre>{{ selectedRecipe.PrepSteps }}</pre>
         </div>
@@ -141,11 +161,12 @@ export default {
     return {
       recipes: [],
       searchQuery: '',
-      sortByRating: false,
+      sortDirection: 'none',
       selectedRecipe: null,
       showReviewForm: null,
       showReviewsFor: null,
       loading: false,
+      ratingFilter: '0',
       newReview: {
         rating: 5,
         description: ''
@@ -162,22 +183,41 @@ export default {
         const searchTerms = this.searchQuery
           .toLowerCase()
           .split(',')
-          .map(term => term.trim())
-          .filter(term => term.length > 0)
+          .map((term) => term.trim())
+          .filter((term) => term.length > 0)
 
-        result = result.filter(recipe => {
+        result = result.filter((recipe) => {
           const recipeName = recipe.RecipeName.toLowerCase()
           const ingredients = recipe.IngredientList.toLowerCase()
-          
+
           // Check if ALL search terms are present in either recipe name or ingredients
-          return searchTerms.every(term => 
-            recipeName.includes(term) || ingredients.includes(term)
+          return searchTerms.every(
+            (term) => recipeName.includes(term) || ingredients.includes(term)
           )
         })
       }
 
-      // Apply sorting
-      if (this.sortByRating) {
+      // Apply rating filter
+      if (this.ratingFilter !== '0') {
+        if (this.ratingFilter === 'no') {
+          // Filter for recipes with no ratings (RatingCount === 0 or AverageRating === 0)
+          result = result.filter((recipe) => recipe.RatingCount === 0 || recipe.AverageRating === 0)
+        } else {
+          const minRating = Number(this.ratingFilter)
+          result = result.filter((recipe) => {
+            if (this.ratingFilter === '5') {
+              // For 5 stars, we want ratings that round to 5.0
+              return recipe.AverageRating >= 4.5
+            } else {
+              // For other ratings, we want greater than or equal to
+              return recipe.AverageRating >= minRating
+            }
+          })
+        }
+      }
+
+      // Apply sorting based on radio button selection
+      if (this.sortDirection === 'highest') {
         result.sort((a, b) => {
           // Sort by average rating (descending)
           const ratingDiff = b.AverageRating - a.AverageRating
@@ -185,9 +225,14 @@ export default {
           // If ratings are equal, sort by number of ratings (descending)
           return b.RatingCount - a.RatingCount
         })
-      } else {
-        // Sort by ID (descending) for most recent first
-        result.sort((a, b) => b.UserMadeRecipeID - a.UserMadeRecipeID)
+      } else if (this.sortDirection === 'lowest') {
+        result.sort((a, b) => {
+          // Sort by average rating (ascending)
+          const ratingDiff = a.AverageRating - b.AverageRating
+          if (ratingDiff !== 0) return ratingDiff
+          // If ratings are equal, sort by number of ratings (ascending)
+          return a.RatingCount - b.RatingCount
+        })
       }
 
       return result
@@ -230,16 +275,20 @@ export default {
       }
 
       try {
-        await axios.post('/api/rate-recipe', {
-          userMadeRecipeId: recipeId,
-          rating: Number(this.newReview.rating),
-          description: this.newReview.description
-        }, {
-          headers: {
-            'X-Username': this.currentUsername
+        await axios.post(
+          '/api/rate-recipe',
+          {
+            userMadeRecipeId: recipeId,
+            rating: Number(this.newReview.rating),
+            description: this.newReview.description
+          },
+          {
+            headers: {
+              'X-Username': this.currentUsername
+            }
           }
-        })
-        
+        )
+
         // Reset form and refresh recipes
         this.newReview = { rating: 5, description: '' }
         this.showReviewForm = null
@@ -249,7 +298,7 @@ export default {
         console.error('Error submitting review:', error)
       }
     },
-      getStarClass(rating, index) {
+    getStarClass(rating, index) {
       // Full star
       if (index < Math.floor(rating)) return 'checked'
       // Half star (only for one star, as rating is out of 5)
@@ -265,13 +314,15 @@ export default {
 </script>
 
 <style scoped>
+/* Previous styles remain unchanged */
 .community-recipes {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.loading, .no-results {
+.loading,
+.no-results {
   text-align: center;
   padding: 20px;
   color: #666;
@@ -281,7 +332,7 @@ export default {
   margin-bottom: 20px;
   display: flex;
   gap: 20px;
-  align-items: center;
+  align-items: baseline;
 }
 
 .search-bar {
@@ -293,11 +344,38 @@ export default {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.filter-options select.rating-filter {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  line-height: normal;
+  margin: 0;
+}
+
+.rating-filter {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
 }
 
 .sort-options {
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.sort-options label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .recipes-grid {
@@ -311,7 +389,7 @@ export default {
   border-radius: 8px;
   padding: 15px;
   background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .recipe-info {
@@ -328,7 +406,7 @@ export default {
   padding: 8px 15px;
   border: none;
   border-radius: 4px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -344,7 +422,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -407,7 +485,7 @@ textarea {
 .toggle-reviews {
   background: none;
   border: none;
-  color: #4CAF50;
+  color: #4caf50;
   cursor: pointer;
   padding: 5px 0;
   font-weight: bold;
@@ -469,5 +547,40 @@ pre {
 .rating .fa-star {
   color: lightgray;
 }
+.sort-options {
+  white-space: nowrap;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
 
+.sort-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.radio-text {
+  color: #444;
+}
+
+input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
 </style>
