@@ -1,5 +1,5 @@
 <template>
-  <div class="browse-recipes">
+  <div class="community-recipes">
     <h1>Community Recipes</h1>
     
     <div class="filters">
@@ -131,7 +131,7 @@ import axios from 'axios'
 import { inject } from 'vue'
 
 export default {
-  name: 'BrowseRecipes',
+  name: 'CommunityRecipes',
   setup() {
     const isLoggedIn = inject('loginState')
     const currentUsername = inject('currentUsername')
@@ -265,7 +265,7 @@ export default {
 </script>
 
 <style scoped>
-.browse-recipes {
+.community-recipes {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
