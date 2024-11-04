@@ -10,15 +10,25 @@ const EDAMAM_API_URL = 'https://api.edamam.com/api/recipes/v2'
 
 async function searchEdamamRecipes(searchQuery, healthLabels = []) {
   try {
-    const response = await axios.get(EDAMAM_API_URL, {
-      params: {
-        type: 'public',
-        q: searchQuery,
-        app_id: EDAMAM_APP_ID,
-        app_key: EDAMAM_APP_KEY,
-        health: healthLabels
-      }
-    })
+    // Convert healthLabels to array if it's a string
+    const healthLabelsArray = Array.isArray(healthLabels) 
+      ? healthLabels 
+      : healthLabels.split(',').map(label => label.trim());
+
+    // Create params object
+    const params = new URLSearchParams({
+      type: 'public',
+      q: searchQuery,
+      app_id: EDAMAM_APP_ID,
+      app_key: EDAMAM_APP_KEY
+    });
+
+    // Add each health label individually
+    healthLabelsArray.forEach(label => {
+      params.append('health', label);
+    });
+
+    const response = await axios.get(EDAMAM_API_URL, { params })
 
     return response.data.hits.map((hit) => ({
       id: hit.recipe.uri.split('_')[1],
@@ -40,7 +50,7 @@ async function searchEdamamRecipes(searchQuery, healthLabels = []) {
       isEdamamRecipe: true
     }))
   } catch (error) {
-    console.error('Error searching Edamam recipes:', error)
+    console.error('Error searching Edamam recipes:', error.response?.data || error.message)
     throw new Error('Failed to search Edamam recipes')
   }
 }
