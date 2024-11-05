@@ -67,8 +67,8 @@ export default {
     const allergies = ref([])
     const loading = ref(false)
     const error = ref(null)
-    const dietaryOptions = ['Alcohol-free', 'Balanced', 'High-Fiber', 'High-Protein', 'Keto', 'Kidney friendly', 'Kosher', 'Low-Carb', 'Low-Fat', 'Low potassium', 'Low-Sodium', 'No oil added', 'No-sugar', 'Paleo', 'Pescatarian', 'Pork-free', 'Red meat-free', 'Sugar-conscious', 'Vegan', 'Vegetarian']
-    const allergyOptions = ['Celery-free', 'Crustacean-free', 'Dairy-free', 'Egg-free','Fish-free', 'Gluten-free', 'Lupine-free', 'Mustard-free', 'Peanut-free', 'Sesame-free', 'Shellfish-free', 'Soy-free', 'Tree-Nut-free', 'Wheat-free']
+    const dietaryOptions = ['Balanced', 'High-Fiber', 'High-Protein', 'Low-Carb', 'Low-Fat', 'Low-Sodium']
+    const allergyOptions = ['Alcohol-free', 'Celery-free', 'Crustacean-free', 'Dairy-free', 'Egg-free', 'Fish-free', 'Gluten-free', 'Kidney-friendly', 'Kosher', 'Low-potassium', 'Lupine-free', 'Mustard-free', 'No-oil-added', 'No-sugar', 'Paleo', 'Peanut-free', 'Pescatarian', 'Pork-free', 'Red-meat-free', 'Sesame-free', 'Shellfish-free', 'Soy-free', 'Sugar-conscious', 'Tree-Nut-free', 'Vegan', 'Vegetarian', 'Wheat-free']
     const selectedRestrictions = ref([])
     const selectedAllergies = ref([])
     const message = ref("")
@@ -197,7 +197,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 #dietary-page {
   display: flex;
@@ -305,5 +304,4 @@ button:disabled {
   background-color: #ffcc80;
   font-weight: bold;
 }
-
 </style>
