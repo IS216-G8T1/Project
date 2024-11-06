@@ -267,7 +267,7 @@ export default {
 }
 
 .recipe-card {
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   border-radius: 8px;
   padding: 15px;
   display: flex;

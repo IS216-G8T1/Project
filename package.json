@@ -16,7 +16,8 @@
     "g8t1-frontend": "file:",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
-    "vue-router": "^4.3.3"
+    "vue-router": "^4.3.3",
+    "vue-typewriter-effect": "^1.0.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
@@ -28,6 +29,7 @@
     "eslint-plugin-vue": "^9.23.0",
     "jsdom": "^24.1.0",
     "prettier": "^3.2.5",
+    "sass-embedded": "^1.80.6",
     "vite": "^5.3.1",
     "vitest": "^1.6.0"
   }

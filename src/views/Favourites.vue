@@ -177,15 +177,15 @@ li {
 button {
   padding: 5px 10px;
   margin-top: 10px;
-  background-color: #ffa726;
-  color: white;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #ff9800;
+  background-color: #3d6a52;
 }
 
 .recipe-list {
@@ -195,7 +195,7 @@ button:hover {
 }
 
 .recipe-card {
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   border-radius: 8px;
   padding: 15px;
   display: flex;

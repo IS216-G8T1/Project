@@ -189,14 +189,14 @@ textarea {
 button {
   margin-top: 20px;
   padding: 10px;
-  background-color: #ffa726;
-  color: white;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #ffcc80;
+  background-color: #4b8063;
 }
 
 .success {

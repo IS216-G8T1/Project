@@ -8,20 +8,36 @@
 
       <!-- Tabs for Dietary Restrictions and Allergies -->
       <div class="tabs">
-        <button v-if="!message" @click="activeTab = 'dietary'" :class="{ active: activeTab === 'dietary' }">Dietary Restrictions</button>
-        <button v-if="!message" @click="activeTab = 'allergies'" :class="{ active: activeTab === 'allergies' }">Allergies</button>
+        <button
+          v-if="!message"
+          @click="activeTab = 'dietary'"
+          :class="{ active: activeTab === 'dietary' }"
+        >
+          Dietary Restrictions
+        </button>
+        <button
+          v-if="!message"
+          @click="activeTab = 'allergies'"
+          :class="{ active: activeTab === 'allergies' }"
+        >
+          Allergies
+        </button>
       </div>
 
       <!-- Dietary Restrictions Form -->
-      <form v-if="activeTab === 'dietary'" @submit.prevent="updateDietaryRestrictions" class="dietary-form">
+      <form
+        v-if="activeTab === 'dietary'"
+        @submit.prevent="updateDietaryRestrictions"
+        class="dietary-form"
+      >
         <h3 v-if="!message">Select Dietary Restrictions:</h3>
         <div v-if="!message" class="checkbox-group">
           <div v-for="(restriction, index) in dietaryOptions" :key="index" class="checkbox-item">
-            <input 
-              type="checkbox" 
-              :id="restriction" 
-              :value="restriction" 
-              v-model="selectedRestrictions" 
+            <input
+              type="checkbox"
+              :id="restriction"
+              :value="restriction"
+              v-model="selectedRestrictions"
             />
             <label :for="restriction">{{ restriction }}</label>
           </div>
@@ -36,12 +52,7 @@
         <h3 v-if="!message">Select Allergies:</h3>
         <div v-if="!message" class="checkbox-group">
           <div v-for="(allergy, index) in allergyOptions" :key="index" class="checkbox-item">
-            <input 
-              type="checkbox" 
-              :id="allergy" 
-              :value="allergy" 
-              v-model="selectedAllergies" 
-            />
+            <input type="checkbox" :id="allergy" :value="allergy" v-model="selectedAllergies" />
             <label :for="allergy">{{ allergy }}</label>
           </div>
         </div>
@@ -67,12 +78,47 @@ export default {
     const allergies = ref([])
     const loading = ref(false)
     const error = ref(null)
-    const dietaryOptions = ['Balanced', 'High-Fiber', 'High-Protein', 'Low-Carb', 'Low-Fat', 'Low-Sodium']
-    const allergyOptions = ['Alcohol-free', 'Celery-free', 'Crustacean-free', 'Dairy-free', 'Egg-free', 'Fish-free', 'Gluten-free', 'Kidney-friendly', 'Kosher', 'Low-potassium', 'Lupine-free', 'Mustard-free', 'No-oil-added', 'No-sugar', 'Paleo', 'Peanut-free', 'Pescatarian', 'Pork-free', 'Red-meat-free', 'Sesame-free', 'Shellfish-free', 'Soy-free', 'Sugar-conscious', 'Tree-Nut-free', 'Vegan', 'Vegetarian', 'Wheat-free']
+    const dietaryOptions = [
+      'Balanced',
+      'High-Fiber',
+      'High-Protein',
+      'Low-Carb',
+      'Low-Fat',
+      'Low-Sodium'
+    ]
+    const allergyOptions = [
+      'Alcohol-free',
+      'Celery-free',
+      'Crustacean-free',
+      'Dairy-free',
+      'Egg-free',
+      'Fish-free',
+      'Gluten-free',
+      'Kidney-friendly',
+      'Kosher',
+      'Low-potassium',
+      'Lupine-free',
+      'Mustard-free',
+      'No-oil-added',
+      'No-sugar',
+      'Paleo',
+      'Peanut-free',
+      'Pescatarian',
+      'Pork-free',
+      'Red-meat-free',
+      'Sesame-free',
+      'Shellfish-free',
+      'Soy-free',
+      'Sugar-conscious',
+      'Tree-Nut-free',
+      'Vegan',
+      'Vegetarian',
+      'Wheat-free'
+    ]
     const selectedRestrictions = ref([])
     const selectedAllergies = ref([])
-    const message = ref("")
-    const messageType = ref("")
+    const message = ref('')
+    const messageType = ref('')
     const activeTab = ref('dietary')
 
     const fetchDietaryRestrictions = async () => {
@@ -82,7 +128,7 @@ export default {
         })
         if (response.ok) {
           const restrictions = await response.json()
-          dietaryRestrictions.value = restrictions.split(",")
+          dietaryRestrictions.value = restrictions.split(',')
           selectedRestrictions.value = dietaryRestrictions.value
         } else {
           throw new Error('Failed to fetch dietary restrictions')
@@ -102,8 +148,8 @@ export default {
         })
         if (response.ok) {
           const data = await response.json()
-          const allergiesList = data.Allergies;
-          allergies.value = allergiesList.split(",")
+          const allergiesList = data.Allergies
+          allergies.value = allergiesList.split(',')
           selectedAllergies.value = allergies.value
         } else {
           throw new Error('Failed to fetch allergies')
@@ -206,7 +252,7 @@ export default {
 }
 
 #dietary-container {
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   color: #795548;
   border-radius: 8px;
   text-align: center;
@@ -241,13 +287,13 @@ h3 {
   margin-bottom: 0.5rem;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   margin-right: 0.5rem;
 }
 
 button {
-  background-color: #ffa726;
-  color: #5d4037;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -257,7 +303,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background-color: #ffcc80;
+  background-color: #4b8063;
 }
 
 button:disabled {
@@ -294,14 +340,14 @@ button:disabled {
   padding: 10px 20px;
   margin: 0 5px;
   cursor: pointer;
-  background-color: #ffa726;
-  color: #5d4037;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   border: none;
   border-radius: 4px;
 }
 
 .tabs button.active {
-  background-color: #ffcc80;
+  background-color: #3d6a52;
   font-weight: bold;
 }
 </style>

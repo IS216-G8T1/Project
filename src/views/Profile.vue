@@ -10,14 +10,16 @@
       <!-- Display user's dietary restrictions -->
       <h3>Your Dietary Restrictions:</h3>
       <p v-if="dietaryRestrictions.length > 0">
-        {{ dietaryRestrictions.join(", ") }} <!-- Display dietary restrictions as a comma-separated list -->
+        {{ dietaryRestrictions.join(', ') }}
+        <!-- Display dietary restrictions as a comma-separated list -->
       </p>
       <p v-else>No dietary restrictions set.</p>
 
       <!-- Display user's dietary restrictions -->
       <h3>Your Allergies:</h3>
       <p v-if="allergies.length > 0">
-        {{ allergies.join(", ") }} <!-- Display dietary restrictions as a comma-separated list -->
+        {{ allergies.join(', ') }}
+        <!-- Display dietary restrictions as a comma-separated list -->
       </p>
       <p v-else>No allergies set.</p>
 
@@ -32,7 +34,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'  // Import useRouter
+import { useRouter } from 'vue-router' // Import useRouter
 
 export default {
   setup() {
@@ -55,7 +57,7 @@ export default {
         })
         if (response.ok) {
           dietaryRestrictions.value = await response.json()
-          dietaryRestrictions.value = dietaryRestrictions.value.split(",")
+          dietaryRestrictions.value = dietaryRestrictions.value.split(',')
         } else {
           throw new Error('Failed to fetch dietary restrictions')
         }
@@ -73,8 +75,8 @@ export default {
         })
         if (response.ok) {
           const data = await response.json()
-          const allergiesList = data.Allergies;
-          allergies.value = allergiesList.split(",")
+          const allergiesList = data.Allergies
+          allergies.value = allergiesList.split(',')
           selectedAllergies.value = allergies.value
         } else {
           throw new Error('Failed to fetch allergies')
@@ -87,18 +89,17 @@ export default {
       }
     }
 
-
     // Function to navigate to dietary restrictions page
     const goToDietaryRestrictions = () => {
-      router.push('/dietary-restrictions')  // Use router instance directly
+      router.push('/dietary-restrictions') // Use router instance directly
     }
 
     // Logout function
     const logout = () => {
       localStorage.removeItem('loggedInUser')
       localStorage.removeItem('isLoggedIn')
-      currentUsername.value = ''  // Update reactive variable
-      router.push('/login')  // Redirect to login page
+      currentUsername.value = '' // Update reactive variable
+      router.push('/') // Redirect to home page
     }
 
     // Fetch dietary restrictions and allergies when the component is mounted
@@ -114,7 +115,7 @@ export default {
       loading,
       error,
       currentUsername,
-      goToDietaryRestrictions,  // Ensure you return the function to the template
+      goToDietaryRestrictions, // Ensure you return the function to the template
       logout // Return the logout function
     }
   }
@@ -130,7 +131,7 @@ export default {
 }
 
 #profile-container {
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   color: #795548;
   border-radius: 8px;
   text-align: center;
@@ -143,8 +144,8 @@ export default {
 }
 
 button {
-  background-color: #ffa726;
-  color: #5d4037;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -154,8 +155,12 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover:not(:disabled) {
-  background-color: #ffcc80;
+/* button:hover:not(:disabled) {
+  background-color: #4b8063;
+} */
+
+button:hover {
+  background-color: #4b8063;
 }
 
 button:disabled {

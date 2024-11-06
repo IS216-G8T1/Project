@@ -51,7 +51,7 @@ function updateLoginState(loggedIn, username) {
 
 function logout() {
   updateLoginState(false, '')
-  router.push('/login')
+  router.push('/')
 }
 </script>
 
@@ -62,11 +62,20 @@ function logout() {
     <nav v-if="!homePage" class="navbar navbar-expand-lg custom-navbar fixed-top p-0">
       <div class="container-fluid p-0">
         <div class="d-flex align-items-center justify-content-between w-100 px-3">
-          <button class="navbar-toggler border-0 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button
+            class="navbar-toggler border-0 shadow-sm"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent"
+            aria-controls="navbarContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <span v-if="isLoggedIn" class="welcome-message d-lg-none ms-2">Welcome, {{ currentUsername }}!</span>
+          <span v-if="isLoggedIn" class="welcome-message d-lg-none ms-2"
+            >Welcome, {{ currentUsername }}!</span
+          >
         </div>
 
         <div class="collapse navbar-collapse" id="navbarContent">
@@ -75,7 +84,7 @@ function logout() {
             <div v-if="isLoggedIn" class="d-none d-lg-block mb-3">
               <div class="welcome-message text-center">Welcome, {{ currentUsername }}!</div>
             </div>
-            
+
             <ul class="navbar-nav flex-column align-items-stretch w-100 gap-1">
               <li class="nav-item">
                 <RouterLink class="nav-link rounded-2" to="/">Home</RouterLink>
@@ -84,22 +93,32 @@ function logout() {
                 <RouterLink class="nav-link rounded-2" to="/profile">Profile</RouterLink>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/recipe-search">Recipe Search</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/recipe-search"
+                  >Recipe Search</RouterLink
+                >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/community-recipes">Community Recipes</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/community-recipes"
+                  >Community Recipes</RouterLink
+                >
               </li>
               <li class="nav-item">
                 <RouterLink class="nav-link rounded-2" to="/favourites">Favourites</RouterLink>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/personal-recipes">Personal Recipes</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/personal-recipes"
+                  >Personal Recipes</RouterLink
+                >
               </li>
               <li class="nav-item" v-if="isLoggedIn">
-                <RouterLink class="nav-link rounded-2" to="/create-recipe">Create Recipe</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/create-recipe"
+                  >Create Recipe</RouterLink
+                >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/shopping-list">Shopping List</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/shopping-list"
+                  >Shopping List</RouterLink
+                >
               </li>
               <li class="nav-item">
                 <RouterLink class="nav-link rounded-2" to="/vouchers">Redeem Vouchers</RouterLink>
@@ -165,9 +184,66 @@ function logout() {
   </div>
 </template>
 
+<script>
+import LoginSignupButtons from './components/LoginSignupButtons.vue'
+
+export default {
+  components: {
+    LoginSignupButtons
+  },
+  data() {
+    return {
+      auth: false,
+      typeValue: '',
+      typeStatus: false,
+      displayTextArray: ['you 🌟', 'our communities 🌈', 'our planet 🌏'],
+      typingSpeed: 70,
+      erasingSpeed: 50,
+      newTextDelay: 2000,
+      displayTextArrayIndex: 0,
+      charIndex: 0
+    }
+  },
+  created() {
+    setTimeout(this.typeText, this.newTextDelay + 200)
+  },
+  methods: {
+    typeText() {
+      if (this.charIndex < this.displayTextArray[this.displayTextArrayIndex].length) {
+        if (!this.typeStatus) this.typeStatus = true
+        this.typeValue += this.displayTextArray[this.displayTextArrayIndex].charAt(this.charIndex)
+        this.charIndex += 1
+        setTimeout(this.typeText, this.typingSpeed)
+      } else {
+        this.typeStatus = false
+        setTimeout(this.eraseText, this.newTextDelay)
+      }
+    },
+    eraseText() {
+      if (this.charIndex > 0) {
+        if (!this.typeStatus) this.typeStatus = true
+        this.typeValue = this.displayTextArray[this.displayTextArrayIndex].substring(
+          0,
+          this.charIndex - 1
+        )
+        this.charIndex -= 1
+        setTimeout(this.eraseText, this.erasingSpeed)
+      } else {
+        this.typeStatus = false
+        this.displayTextArrayIndex += 1
+        if (this.displayTextArrayIndex >= this.displayTextArray.length)
+          this.displayTextArrayIndex = 0
+        setTimeout(this.typeText, this.typingSpeed + 1000)
+      }
+    }
+  }
+}
+</script>
+
 <style>
 body {
-  background-color: #fff8e1;
+  /* background-color: #fff8e1; */
+  background-color: #f5f5f5;
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -269,5 +345,103 @@ body {
   .navbar-collapse:not(.show) {
     display: none;
   }
+}
+
+/* Video Section */
+.video-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.video-bright {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+}
+
+.overlay-content {
+  position: absolute;
+  width: 60%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  align-items: start;
+}
+
+/* Intro text styling */
+.intro-text {
+  grid-column: 1; /* Place intro-text in the first column */
+  font-size: 2.5rem;
+  color: #ffffff;
+  align-self: center; /* Center align in the first column */
+}
+
+.intro-highlight {
+  color: #bfdb9c;
+}
+
+/* Cursor blinking CSS */
+.blinking-cursor {
+  font-size: 2.5rem; /* Match this to your font size */
+  color: #bfdb9c; /* Cursor color */
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from,
+  to {
+    color: transparent;
+  }
+  50% {
+    color: #bfdb9c;
+  }
+}
+
+.second-column {
+  grid-column: 2;
+}
+
+/* Climate Text Styling */
+.climate-text {
+  font-size: 1.25rem;
+  color: #ffffff;
+  text-align: left; /* Align text to the left for readability */
+  padding-bottom: 2rem;
+  /* padding-right: 1rem; */
+}
+
+/* Auth Button Styling */
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  /* justify-content: end; */
+}
+
+.auth-link {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.home-button {
+  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  color: white;
+  border: 2px solid white;
+  border-radius: 9999px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: lightslategray;
 }
 </style>

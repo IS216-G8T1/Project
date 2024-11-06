@@ -326,15 +326,15 @@ input {
 
 button {
   padding: 10px 20px;
-  background-color: #ffa726;
-  color: white;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #ff9800;
+  background-color: #4b8063;
 }
 
 ul {
@@ -345,7 +345,7 @@ ul {
 li {
   margin: 10px 0;
   padding: 10px;
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   border-radius: 4px;
   display: flex;
   align-items: flex-start;

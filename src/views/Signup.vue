@@ -7,24 +7,18 @@
       <h1 class="title">Sign Up</h1>
       <form @submit.prevent="handleSignup" class="signup-form">
         <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username" 
-          v-model="username" 
-          @blur="checkUsername" 
-          required 
-          minlength="3" 
+        <input
+          type="text"
+          id="username"
+          v-model="username"
+          @blur="checkUsername"
+          required
+          minlength="3"
           maxlength="20"
         />
         <small v-if="usernameError" class="error-message">{{ usernameError }}</small>
         <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          v-model="password" 
-          required 
-          minlength="8"
-        />
+        <input type="password" id="password" v-model="password" required minlength="8" />
         <small>Password must be at least 8 characters long.</small>
         <button type="submit" :disabled="isLoading || !isFormValid">
           {{ isLoading ? 'Signing up...' : 'Sign Up' }}
@@ -39,9 +33,9 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5000/api'
 
 export default {
   data() {
@@ -56,7 +50,12 @@ export default {
   },
   computed: {
     isFormValid() {
-      return this.username.length >= 3 && this.username.length <= 20 && this.password.length >= 8 && !this.usernameError;
+      return (
+        this.username.length >= 3 &&
+        this.username.length <= 20 &&
+        this.password.length >= 8 &&
+        !this.usernameError
+      )
     }
   },
   mounted() {
@@ -66,50 +65,50 @@ export default {
   methods: {
     async checkUsername() {
       if (this.username.length < 3 || this.username.length > 20) {
-        this.usernameError = 'Username must be 3-20 characters long.';
-        return;
+        this.usernameError = 'Username must be 3-20 characters long.'
+        return
       }
       try {
-        const response = await axios.get(`${API_BASE_URL}/check-username/${this.username}`);
+        const response = await axios.get(`${API_BASE_URL}/check-username/${this.username}`)
         if (response.data.exists) {
-          this.usernameError = 'This username is already taken.';
+          this.usernameError = 'This username is already taken.'
         } else {
-          this.usernameError = '';
+          this.usernameError = ''
         }
       } catch (error) {
-        console.error('Error checking username:', error);
-        this.usernameError = 'Error checking username availability.';
+        console.error('Error checking username:', error)
+        this.usernameError = 'Error checking username availability.'
       }
     },
     async handleSignup() {
       if (!this.isFormValid) {
-        this.message = 'Please ensure all fields are filled correctly.';
-        this.messageType = 'error';
-        return;
+        this.message = 'Please ensure all fields are filled correctly.'
+        this.messageType = 'error'
+        return
       }
 
-      this.isLoading = true;
-      this.message = '';
+      this.isLoading = true
+      this.message = ''
       try {
         const response = await axios.post(`${API_BASE_URL}/signup`, {
           username: this.username,
           password: this.password,
           dietaryRestrictions: ''
-        });
-        this.message = 'Signup successful! You can now login.';
-        this.messageType = 'success';
+        })
+        this.message = 'Signup successful! You can now login.'
+        this.messageType = 'success'
         // Clear the form
-        this.username = '';
-        this.password = '';
+        this.username = ''
+        this.password = ''
         // Redirect to login page after a short delay
         setTimeout(() => {
-          this.$router.push('/login');
-        }, 2000);
+          this.$router.push('/login')
+        }, 2000)
       } catch (error) {
-        this.message = error.response?.data?.error || 'An error occurred during signup.';
-        this.messageType = 'error';
+        this.message = error.response?.data?.error || 'An error occurred during signup.'
+        this.messageType = 'error'
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     }
   }
@@ -125,7 +124,7 @@ export default {
 }
 
 #signup-container {
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   color: #795548;
   border-radius: 8px;
   text-align: center;
@@ -165,8 +164,8 @@ small {
 }
 
 button {
-  background-color: #ffa726;
-  color: #5d4037;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -176,7 +175,7 @@ button {
 }
 
 button:hover:not(:disabled) {
-  background-color: #ffcc80;
+  background-color: #4b8063;
 }
 
 button:disabled {
@@ -222,7 +221,11 @@ button:disabled {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {

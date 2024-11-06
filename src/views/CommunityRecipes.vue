@@ -23,22 +23,22 @@
         </select>
       </div>
       <div class="sort-options">
-  <div class="sort-label">Sort by rating:</div>
-  <div class="radio-group">
-    <label class="radio-label">
-      <input type="radio" v-model="sortDirection" value="highest" />
-      <span class="radio-text">Highest Rated First</span>
-    </label>
-    <label class="radio-label">
-      <input type="radio" v-model="sortDirection" value="lowest" />
-      <span class="radio-text">Lowest Rated First</span>
-    </label>
-    <label class="radio-label">
-      <input type="radio" v-model="sortDirection" value="none" />
-      <span class="radio-text">No Sort</span>
-    </label>
-  </div>
-</div>
+        <div class="sort-label">Sort by rating:</div>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" v-model="sortDirection" value="highest" />
+            <span class="radio-text">Highest Rated First</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" v-model="sortDirection" value="lowest" />
+            <span class="radio-text">Lowest Rated First</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" v-model="sortDirection" value="none" />
+            <span class="radio-text">No Sort</span>
+          </label>
+        </div>
+      </div>
     </div>
 
     <div v-if="loading" class="loading">Loading recipes...</div>
@@ -406,14 +406,14 @@ export default {
   padding: 8px 15px;
   border: none;
   border-radius: 4px;
-  background-color: #4caf50;
-  color: white;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .action-button:hover {
-  background-color: #45a049;
+  background-color: #4b8063;
 }
 
 .modal {
@@ -579,7 +579,7 @@ pre {
   color: #444;
 }
 
-input[type="radio"] {
+input[type='radio'] {
   margin: 0;
   cursor: pointer;
 }
