@@ -10,7 +10,7 @@
       />
       <div class="filter-options">
         <label class="filter-checkbox">
-          <input type="checkbox" v-model="applyHealthFilters">
+          <input type="checkbox" v-model="applyHealthFilters" />
           Apply My Dietary & Allergy Filters
         </label>
       </div>
@@ -41,7 +41,9 @@
             @click="addToFavourites(recipe.id)"
           />
           <div class="recipe-info">
-            <h3>{{ recipe.title }}</h3>
+            <h4>
+              <strong>{{ recipe.title }}</strong>
+            </h4>
             <p>Calories: {{ Math.round(recipe.calories) }}</p>
             <p>Cooking Time: {{ Math.round(recipe.calories) }}</p>
             <p>Source: {{ recipe.source }}</p>
@@ -67,7 +69,9 @@
             @click="addToFavourites(recipe.UserMadeRecipeID)"
           />
           <div class="recipe-info">
-            <h3>{{ recipe.RecipeName }}</h3>
+            <h4>
+              <strong>{{ recipe.RecipeName }}</strong>
+            </h4>
             <p>Made By: {{ recipe.Username }}</p>
             <p>Prep Time: {{ formatTime(recipe.PrepTime) }}</p>
             <p>Serving Size: {{ recipe.ServingSize }}</p>
@@ -147,54 +151,55 @@ export default {
           this.makeRequest('/dietary-info', 'GET'),
           this.makeRequest('/allergy-info', 'GET')
         ])
-        
+
         this.dietaryRestrictions = dietaryResponse ? dietaryResponse.split(',').filter(Boolean) : []
-        this.allergies = allergyResponse?.Allergies ? allergyResponse.Allergies.split(',').filter(Boolean) : []
-        
+        this.allergies = allergyResponse?.Allergies
+          ? allergyResponse.Allergies.split(',').filter(Boolean)
+          : []
+
         console.log('Dietary Restrictions:', this.dietaryRestrictions)
         console.log('Allergies:', this.allergies)
       } catch (error) {
         console.error('Error fetching health info:', error)
       }
     },
-    
- 
+
     async searchRecipes() {
-  this.isEDAMAM = true
-  this.isLoading = true
-  try {
-    // Start with base query parameter
-    const params = new URLSearchParams({
-      query: this.searchQuery
-    })
-
-    // Add filters if checkbox is checked
-    if (this.applyHealthFilters) {
-      // Add allergies as health parameters
-      if (this.allergies.length > 0) {
-        this.allergies.forEach(allergy => {
-          params.append('health', allergy.toLowerCase())
+      this.isEDAMAM = true
+      this.isLoading = true
+      try {
+        // Start with base query parameter
+        const params = new URLSearchParams({
+          query: this.searchQuery
         })
-      }
 
-      // Add dietary restrictions as diet parameters
-      if (this.dietaryRestrictions.length > 0) {
-        this.dietaryRestrictions.forEach(diet => {
-          params.append('diet', diet.toLowerCase())
-        })
-      }
-    }
+        // Add filters if checkbox is checked
+        if (this.applyHealthFilters) {
+          // Add allergies as health parameters
+          if (this.allergies.length > 0) {
+            this.allergies.forEach((allergy) => {
+              params.append('health', allergy.toLowerCase())
+            })
+          }
 
-    console.log('Search URL:', `/api/search-recipes?${params.toString()}`)
-    const response = await axios.get(`/api/search-recipes?${params.toString()}`)
-    console.log('Search response:', response.data)
-    this.searchResults = response.data
-  } catch (error) {
-    console.error('Error searching recipes:', error)
-  } finally {
-    this.isLoading = false
-  }
-},
+          // Add dietary restrictions as diet parameters
+          if (this.dietaryRestrictions.length > 0) {
+            this.dietaryRestrictions.forEach((diet) => {
+              params.append('diet', diet.toLowerCase())
+            })
+          }
+        }
+
+        console.log('Search URL:', `/api/search-recipes?${params.toString()}`)
+        const response = await axios.get(`/api/search-recipes?${params.toString()}`)
+        console.log('Search response:', response.data)
+        this.searchResults = response.data
+      } catch (error) {
+        console.error('Error searching recipes:', error)
+      } finally {
+        this.isLoading = false
+      }
+    },
     async makeRequest(url, method, body = null) {
       const headers = {
         'Content-Type': 'application/json',
@@ -319,7 +324,7 @@ input {
   cursor: pointer;
 }
 
-.filter-checkbox input[type="checkbox"] {
+.filter-checkbox input[type='checkbox'] {
   width: auto;
   cursor: pointer;
 }
@@ -353,7 +358,8 @@ li {
 
 .recipe-info {
   flex: 1;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
+  margin: 10px;
 }
 
 .recipe-image {

@@ -128,7 +128,7 @@ export default {
   color: #795548;
   border-radius: 8px;
   text-align: center;
-  width: 400px;
+  width: 40%;
   padding: 20px;
 }
 

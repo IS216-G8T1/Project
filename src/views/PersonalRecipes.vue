@@ -1,6 +1,6 @@
 <template>
   <div class="personal-recipes">
-    <h2>My Recipes</h2>
+    <h1>My Recipes</h1>
     <!-- Show loading message while fetching recipes -->
     <div v-if="loading">Loading...</div>
     <!-- Show error message if there's an error -->
@@ -10,7 +10,9 @@
     <!-- Display recipes if they exist -->
     <div v-else class="recipe-list">
       <div v-for="recipe in recipes" :key="recipe.UserMadeRecipeID" class="recipe-card">
-        <h3>{{ recipe.RecipeName }}</h3>
+        <h4>
+          <strong>{{ recipe.RecipeName }}</strong>
+        </h4>
         <p>Prep Time: {{ formatTime(recipe.PrepTime) }}</p>
         <p>Serving Size: {{ recipe.ServingSize }}</p>
         <p>Ingredients: {{ recipe.IngredientList }}</p>
@@ -254,6 +256,10 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  color: #5d4037;
+}
+
 .personal-recipes {
   max-width: 800px;
   margin: 0 auto;

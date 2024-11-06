@@ -1,6 +1,6 @@
 <template>
   <div class="create-recipe">
-    <h2>Create New Recipe</h2>
+    <h1>Create New Recipe</h1>
     <!-- Form for creating a new recipe -->
     <form @submit.prevent="createRecipe">
       <div>
@@ -150,6 +150,10 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  color: #5d4037;
+}
+
 /* Styles remain unchanged */
 .create-recipe {
   max-width: 500px;

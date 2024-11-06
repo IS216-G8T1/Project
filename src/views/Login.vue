@@ -119,7 +119,7 @@ export default {
   color: #795548;
   border-radius: 8px;
   text-align: center;
-  width: 400px;
+  width: 40%;
   padding: 20px;
 }
 
@@ -160,6 +160,10 @@ button {
 
 button:hover {
   background-color: #3d6a52;
+}
+
+.signup-link {
+  margin-top: 20px;
 }
 
 .signup-link a {
