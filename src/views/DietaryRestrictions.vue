@@ -79,44 +79,6 @@ export default {
     const loading = ref(false)
     const error = ref(null)
     const dietaryOptions = [
-      'Alcohol-free',
-      'Balanced',
-      'High-Fiber',
-      'High-Protein',
-      'Keto',
-      'Kidney friendly',
-      'Kosher',
-      'Low-Carb',
-      'Low-Fat',
-      'Low potassium',
-      'Low-Sodium',
-      'No oil added',
-      'No-sugar',
-      'Paleo',
-      'Pescatarian',
-      'Pork-free',
-      'Red meat-free',
-      'Sugar-conscious',
-      'Vegan',
-      'Vegetarian'
-    ]
-    const allergyOptions = [
-      'Celery-free',
-      'Crustacean-free',
-      'Dairy-free',
-      'Egg-free',
-      'Fish-free',
-      'Gluten-free',
-      'Lupine-free',
-      'Mustard-free',
-      'Peanut-free',
-      'Sesame-free',
-      'Shellfish-free',
-      'Soy-free',
-      'Tree-Nut-free',
-      'Wheat-free'
-    ]
-    const dietaryOptions = [
       'Balanced',
       'High-Fiber',
       'High-Protein',
