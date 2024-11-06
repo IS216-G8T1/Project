@@ -57,12 +57,12 @@ function logout() {
 
 <template>
   <!-- Main app layout -->
-  <div v-if="!loginSignup">
+  <div v-if="!loginSignup" class="vh-100">
     <!-- Navigation for non-home pages -->
-    <nav v-if="!homePage" class="navbar navbar-expand-lg custom-navbar fixed-top">
+    <nav v-if="!homePage" class="navbar navbar-expand-lg custom-navbar fixed-top p-0">
       <div class="container-fluid p-0">
-        <div class="d-flex align-items-center w-100">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        <div class="d-flex align-items-center justify-content-between w-100 px-3">
+          <button class="navbar-toggler border-0 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
             aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -70,78 +70,81 @@ function logout() {
         </div>
 
         <div class="collapse navbar-collapse" id="navbarContent">
-          <ul class="navbar-nav flex-column w-100 nav-list">
+          <div class="nav-container px-3">
             <!-- Welcome message for desktop above Home link -->
-            <li v-if="isLoggedIn" class="nav-item d-none d-lg-block">
-              <div class="welcome-message">Welcome, {{ currentUsername }}!</div>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/">Home</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/profile">Profile</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/recipe-search">Recipe Search</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/community-recipes">Community Recipes</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/favourites">Favourites</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/personal-recipes">Personal Recipes</RouterLink>
-            </li>
-            <li class="nav-item" v-if="isLoggedIn">
-              <RouterLink class="nav-link" to="/create-recipe">Create Recipe</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/shopping-list">Shopping List</RouterLink>
-            </li>
-            <li class="nav-item">
-              <RouterLink class="nav-link" to="/vouchers">Redeem Vouchers</RouterLink>
-            </li>
-            <template v-if="isLoggedIn">
+            <div v-if="isLoggedIn" class="d-none d-lg-block mb-3">
+              <div class="welcome-message text-center">Welcome, {{ currentUsername }}!</div>
+            </div>
+            
+            <ul class="navbar-nav flex-column align-items-stretch w-100 gap-1">
               <li class="nav-item">
-                <a class="nav-link" href="#" @click.prevent="logout">Logout</a>
-              </li>
-            </template>
-            <template v-else>
-              <li class="nav-item">
-                <RouterLink class="nav-link" to="/signup">Sign Up</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/">Home</RouterLink>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/login">Login</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/profile">Profile</RouterLink>
               </li>
-            </template>
-          </ul>
+              <li class="nav-item">
+                <RouterLink class="nav-link rounded-2" to="/recipe-search">Recipe Search</RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link rounded-2" to="/community-recipes">Community Recipes</RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link rounded-2" to="/favourites">Favourites</RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link rounded-2" to="/personal-recipes">Personal Recipes</RouterLink>
+              </li>
+              <li class="nav-item" v-if="isLoggedIn">
+                <RouterLink class="nav-link rounded-2" to="/create-recipe">Create Recipe</RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link rounded-2" to="/shopping-list">Shopping List</RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link rounded-2" to="/vouchers">Redeem Vouchers</RouterLink>
+              </li>
+              <template v-if="isLoggedIn">
+                <li class="nav-item">
+                  <a class="nav-link rounded-2" href="#" @click.prevent="logout">Logout</a>
+                </li>
+              </template>
+              <template v-else>
+                <li class="nav-item">
+                  <RouterLink class="nav-link rounded-2" to="/signup">Sign Up</RouterLink>
+                </li>
+                <li class="nav-item">
+                  <RouterLink class="nav-link rounded-2" to="/login">Login</RouterLink>
+                </li>
+              </template>
+            </ul>
+          </div>
         </div>
       </div>
     </nav>
 
     <!-- Home page layout -->
     <div v-if="homePage" class="w-100">
-      <nav class="navbar navbar-expand custom-navbar-home">
+      <nav class="navbar navbar-expand custom-navbar-home shadow-sm">
         <div class="container-fluid">
-          <ul class="navbar-nav ms-auto d-flex align-items-center">
+          <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
             <template v-if="isLoggedIn">
               <li class="nav-item">
                 <span class="welcome-message-home">Welcome, {{ currentUsername }}!</span>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" @click.prevent="logout">Logout</a>
+                <a class="nav-link rounded-2" href="#" @click.prevent="logout">Logout</a>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/profile">Profile</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/profile">Profile</RouterLink>
               </li>
             </template>
             <template v-else>
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/signup">Sign Up</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/signup">Sign Up</RouterLink>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link" to="/login">Login</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/login">Login</RouterLink>
               </li>
             </template>
           </ul>
@@ -151,13 +154,13 @@ function logout() {
     </div>
 
     <!-- Content area for other pages -->
-    <div v-else id="content" class="content-area">
+    <div v-else class="content-area">
       <RouterView />
     </div>
   </div>
 
   <!-- Login and signup pages (no navbar) -->
-  <div v-else>
+  <div v-else class="vh-100">
     <RouterView />
   </div>
 </template>
@@ -176,44 +179,28 @@ body {
   min-height: 100vh;
   border-right: 2px solid #d3a468;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  position: fixed;
 }
 
-.nav-list {
-  padding: 1rem;
+.nav-container {
   width: 100%;
+  max-width: 218px;
+  margin: 0 auto;
+  padding-top: 1rem;
 }
 
 .custom-navbar-home {
   background-color: #ffe0b2;
   height: 70px;
   border-bottom: 2px solid #d3a468;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-toggler {
-  margin: 10px;
-  background-color: #fff;
-  border: 1px solid #d3a468;
-}
-
-.nav-item {
-  width: 218px;
-  margin: 0 auto;
 }
 
 .nav-link {
   color: #5d4037 !important;
-  padding: 12px 16px !important;
-  margin: 4px 0;
-  border-radius: 8px;
+  padding: 0.75rem 1rem !important;
   transition: all 0.3s ease;
   font-size: 1rem;
   white-space: nowrap;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
+  background-color: transparent;
 }
 
 .nav-link:hover {
@@ -223,33 +210,24 @@ body {
 
 .router-link-active {
   background-color: #ffa726 !important;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  box-sizing: border-box;
+  font-weight: 500;
 }
 
 .welcome-message {
   color: #5d4037;
-  font-weight: bold;
-  padding: 12px 16px;
-  background-color: #fff8e1;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  background-color: #ffa726;
   border-radius: 8px;
-  margin: 8px auto 16px;
-  text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 218px;
-  box-sizing: border-box;
 }
 
 .welcome-message-home {
   color: #5d4037;
-  font-weight: bold;
-  padding: 8px 16px;
-  background-color: #fff8e1;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background-color: #ffa726;
   border-radius: 8px;
-  margin: 0 12px;
-  display: inline-block;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -266,17 +244,9 @@ body {
     min-height: auto;
   }
 
-  .nav-list {
-    padding: 0.5rem;
-  }
-
-  .nav-item {
-    width: 100%;
-  }
-
-  .welcome-message {
-    width: 100%;
-    margin: 4px 0 12px 0;
+  .nav-container {
+    max-width: 100%;
+    padding-top: 0;
   }
 
   .content-area {
@@ -287,13 +257,8 @@ body {
 
   .navbar-collapse {
     background-color: #ffe0b2;
-    padding: 1rem;
     border-radius: 0 0 8px 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-link {
-    padding: 10px 14px !important;
   }
 
   .nav-link:hover {
