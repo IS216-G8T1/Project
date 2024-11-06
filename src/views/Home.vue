@@ -1,112 +1,98 @@
-<!-- <template>
-  <div class="home">
-    <h1>Welcome to Recipe Manager</h1>
-    <p>Discover, save, and organize your favorite recipes!</p>
-    <ul>
-      <li>Search for recipes</li>
-      <li>Save your favorite recipes</li>
-      <li>Create and manage your personal recipes</li>
-      <li>Generate shopping lists</li>
-    </ul>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'Home'
-}
-</script>
-
-<style scoped>
-.home {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
-}
-
-h1 {
-  color: #5d4037;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin: 10px 0;
-  color: #795548;
-}
-</style> -->
-
 <template>
   <div class="home">
     <!-- Main Content Sections -->
-    <section class="section">
-      <h2 class="section-title">What we do</h2>
-      <p class="section-paragraph">Discover, save, and organize your favorite recipes!</p>
+    <section class="section hero-section">
+      <h2 class="section-title">Welcome to a Healthier You!</h2>
+      <p class="section-paragraph">
+        Join us on a journey to healthier living with personalized meal plans, sustainable recipes,
+        and reducing food waste. Start making a difference today!
+      </p>
+      <router-link to="/recipe-search" class="cta-link">
+        <button class="cta-button">Find Your Recipe</button>
+      </router-link>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="section about-us">
+      <div class="about-us-content">
+        <div class="about-text">
+          <h2 class="section-title">What We Do</h2>
+          <p class="section-paragraph">
+            We help you eat healthy, save time, and reduce food waste. Our app provides tailored
+            recipes to suit your dietary needs, helping you create delicious meals with the
+            ingredients you already have.
+          </p>
+        </div>
+        <div class="about-grid">
+          <div class="grid-item">
+            <h3>Healthy Recipes</h3>
+            <p>Get personalized meal recommendations for your dietary needs.</p>
+          </div>
+          <div class="grid-item">
+            <h3>Sustainable Cooking</h3>
+            <p>
+              Make meals with what you already have, reducing food waste and supporting
+              sustainability.
+            </p>
+          </div>
+          <div class="grid-item">
+            <h3>Track Your Impact</h3>
+            <p>See how much food you’ve saved from going to waste while enjoying healthy meals.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+      <h2 class="section-title">How It Works</h2>
+      <div class="how-it-works-grid">
+        <div class="how-it-works-box">
+          <h3>Search Recipes</h3>
+          <p>Find delicious recipes based on ingredients you already have in your fridge.</p>
+        </div>
+        <div class="how-it-works-box">
+          <h3>Save & Organize</h3>
+          <p>Save your favorite recipes and organize them for easy access.</p>
+        </div>
+        <div class="how-it-works-box">
+          <h3>Create & Share</h3>
+          <p>Submit your own recipes and share them with the community!</p>
+        </div>
+        <div class="how-it-works-box">
+          <h3>Generate Shopping List</h3>
+          <p>Create a shopping list based on recipes you want to try next.</p>
+        </div>
+      </div>
     </section>
 
     <!-- Statistics Section -->
     <section class="statistics">
+      <h2 class="section-title">Our Impact</h2>
       <div class="stat-box">
-        <div class="stat-value">240</div>
-        <p class="stat-label">users reducing food wastage</p>
+        <div class="stat-value">240+</div>
+        <p class="stat-label">users actively reducing food wastage</p>
       </div>
-      <!-- Repeat for other statistics -->
+      <div class="stat-box">
+        <div class="stat-value">500+</div>
+        <p class="stat-label">healthy recipes shared</p>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">1000+</div>
+        <p class="stat-label">meals saved from going to waste</p>
+      </div>
     </section>
 
-    <!-- Top Users Table -->
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>User</th>
-            <th>Carbon savings</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Table rows here -->
-          <!-- Placeholders -->
-          <tr>
-            <th>1</th>
-            <th>User1</th>
-            <th>50</th>
-          </tr>
-          <tr>
-            <th>2</th>
-            <th>User2</th>
-            <th>35</th>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- How It Works Section -->
-    <section class="how-it-works-grid">
-      <div class="how-it-works-box">
-        <!-- <img src="../assets/icon.png" /> -->
-        <h3 class="how-it-works-title">SEARCH</h3>
-        <p class="how-it-works-description">Search for recipes</p>
-      </div>
-      <div class="how-it-works-box">
-        <!-- <img src="../assets/icon.png" /> -->
-        <h3 class="how-it-works-title">SAVE</h3>
-        <p class="how-it-works-description">Save your favorite recipes</p>
-      </div>
-      <div class="how-it-works-box">
-        <!-- <img src="../assets/icon.png" /> -->
-        <h3 class="how-it-works-title">CREATE</h3>
-        <p class="how-it-works-description">Create and manage your personal recipes</p>
-      </div>
-      <div class="how-it-works-box">
-        <!-- <img src="../assets/icon.png" /> -->
-        <h3 class="how-it-works-title">GENERATE</h3>
-        <p class="how-it-works-description">Generate shopping lists</p>
-      </div>
-      <!-- Repeat for other steps -->
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+      <h2 class="cta-title">Start Saving Food & Eating Healthier Today!</h2>
+      <p class="cta-paragraph">
+        Ready to make a difference? Join us and start cooking healthier meals with the ingredients
+        you already have!
+      </p>
+      <router-link to="/signup" class="cta-link">
+        <button class="cta-button">Sign Up Now</button>
+      </router-link>
     </section>
   </div>
 </template>
@@ -123,53 +109,182 @@ export default {
 </script>
 
 <style scoped>
-/* Container and layout */
-/* .home {
-  width: 100%;
-  max-width: 100vw;
-  margin: 0 auto;
-  padding: 20px;
-} */
-
-/* Main content sections */
-.section {
-  padding: 50px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+/* General styling */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-.section-title {
+/* Main content sections */
+.hero-section {
+  padding: 60px 20px;
+  background-color: #f7f3ed;
+  text-align: center;
+  border-bottom: 2px solid #e0ebe4;
+}
+
+.hero-section .section-title {
   font-size: 3rem;
-  color: #4e632e;
+  color: #5d4037;
   margin-bottom: 20px;
 }
 
-.section-paragraph {
-  color: #4e632e;
+.hero-section .section-paragraph {
+  color: #4b8063;
   font-size: 1.5rem;
   line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.cta-link {
+  text-decoration: none;
+}
+
+.cta-button {
+  padding: 0.75rem 2rem;
+  font-size: 1.2rem;
+  background-color: #5e9b77;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+  background-color: #3d6a52;
+}
+
+/* About Us Section */
+.about-us {
+  padding: 60px 20px;
+  background-color: #e0ebe4;
+}
+
+.about-us .about-us-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.about-us .about-text {
+  flex: 1;
+  max-width: 45%;
+}
+
+.about-us .section-title {
+  font-size: 2.5rem;
+  color: #5d4037;
+  margin-bottom: 20px;
+}
+
+.about-us .section-paragraph {
+  color: #4b8063;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.about-us .about-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.grid-item {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.grid-item h3 {
+  font-size: 1.5rem;
+  color: #4b8063;
+  margin-bottom: 10px;
+}
+
+.grid-item p {
+  font-size: 1rem;
+  color: #795548;
+}
+
+/* How It Works Section */
+.how-it-works {
+  padding: 60px 20px;
+  background-color: #f7f3ed;
+  text-align: center;
+}
+
+.how-it-works .section-title {
+  font-size: 2.5rem;
+  color: #5d4037;
+  margin-bottom: 40px;
+}
+
+.how-it-works-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.how-it-works-box {
+  background-color: #e6e6e6;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+.how-it-works-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.how-it-works-box h3 {
+  font-size: 1.6rem;
+  color: #4b8063;
+  margin-bottom: 15px;
+}
+
+.how-it-works-box p {
+  font-size: 1rem;
+  color: #795548;
 }
 
 /* Statistics Section */
 .statistics {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 30px;
+  padding: 60px 20px;
+  background-color: #e0ebe4;
+  text-align: center;
+}
+
+.statistics .section-title {
+  font-size: 2.5rem;
+  color: #5d4037;
+  margin-bottom: 40px;
 }
 
 .stat-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: inline-block;
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 12px;
+  width: 180px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .stat-value {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #4e622e;
+  color: #4b8063;
 }
 
 .stat-label {
@@ -177,55 +292,22 @@ export default {
   color: #795548;
 }
 
-/* Table styling */
-.table-container {
-  width: 100%;
-  margin: 30px auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.table th,
-.table td {
-  padding: 15px;
+/* CTA Section */
+.cta-section {
+  padding: 60px 20px;
+  background-color: #4b8063;
   text-align: center;
-  color: #4e622e;
+  color: white;
 }
 
-.table th {
-  font-weight: bold;
-  background-color: #f5f5f5;
+.cta-section .cta-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
 }
 
-.table td {
-  border-bottom: 2px solid #bfdb9c;
-}
-
-/* How It Works Section */
-.how-it-works-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 20px;
-}
-
-.how-it-works-box {
-  text-align: center;
-  width: 240px;
-}
-
-.how-it-works-title {
-  font-size: 1.5rem;
-  color: #4e632e;
-  margin-top: 15px;
-}
-
-.how-it-works-description {
-  font-size: 1rem;
-  color: #795548;
+.cta-section .cta-paragraph {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
 }
 </style>
