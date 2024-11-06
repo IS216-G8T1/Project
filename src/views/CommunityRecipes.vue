@@ -49,7 +49,23 @@
 
     <div v-else class="recipes-grid">
       <div v-for="recipe in filteredRecipes" :key="recipe.UserMadeRecipeID" class="recipe-card">
-        <h2>{{ recipe.RecipeName }}</h2>
+        <img
+          v-if="isRecipeFavourite(recipe.UserMadeRecipeID)"
+          src="../assets/favourite_checked.png"
+          alt="fav-icon"
+          class="fav-icon"
+          @click="removeFromFavourites(recipe.UserMadeRecipeID)"
+        />
+        <img
+          v-else
+          src="../assets/favourite_unchecked.png"
+          alt="fav-icon"
+          class="fav-icon"
+          @click="addToFavourites(recipe.UserMadeRecipeID)"
+        />
+        <h3>
+          <strong>{{ recipe.RecipeName }}</strong>
+        </h3>
         <div class="recipe-info">
           <p><strong>By:</strong> {{ recipe.Username }}</p>
           <p><strong>Prep Time:</strong> {{ recipe.PrepTime }}</p>
@@ -159,7 +175,10 @@ export default {
   },
   data() {
     return {
+      username: '',
       recipes: [],
+      favourites: [],
+      searchResults: [],
       searchQuery: '',
       sortDirection: 'none',
       selectedRecipe: null,
@@ -236,6 +255,9 @@ export default {
       }
 
       return result
+    },
+    isRecipeFavourite() {
+      return (recipeId) => this.favourites.some((fav) => fav.id === recipeId)
     }
   },
   methods: {
@@ -305,15 +327,78 @@ export default {
       if (index < Math.ceil(rating)) return 'fa-star-half-alt checked'
       // Empty star
       return ''
+    },
+    async makeRequest(url, method, body = null) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Username': this.username
+      }
+      const options = { method, headers }
+      if (body) options.body = JSON.stringify(body)
+      try {
+        const response = await fetch(`http://localhost:5000/api${url}`, options)
+        return await response.json()
+      } catch (error) {
+        console.error('Error during fetch:', error)
+        return { error: 'An error occurred (search recipes).' }
+      }
+    },
+    async getFavourites() {
+      this.favourites = []
+      try {
+        const result = await this.makeRequest('/favourites', 'GET')
+        for (const fav of result) {
+          const recipeDetails = await this.displayUserRecipe(fav.RecipeID)
+          this.favourites.push({
+            id: recipeDetails[0].UserMadeRecipeID,
+            recipe_name: recipeDetails[0].RecipeName
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching favourites:', error)
+      }
+      console.log(this.favourites)
+    },
+    async displayUserRecipe(recipeId) {
+      try {
+        const result = await this.makeRequest(`/personal-recipes/${recipeId}`, 'GET')
+        return result
+      } catch (error) {
+        console.error('Error fetching recipe:', error)
+      }
+    },
+    async addToFavourites(recipeId) {
+      await this.makeRequest('/favourites', 'POST', {
+        recipeId: recipeId,
+        isEdamamRecipe: false
+      })
+
+      this.favourites = [
+        ...this.favourites,
+        {
+          id: recipeId,
+          recipe_name: this.recipes.find((r) => r.UserMadeRecipeID === recipeId).RecipeName
+        }
+      ]
+    },
+    async removeFromFavourites(recipeId) {
+      await this.makeRequest(`/favourites/${recipeId}`, 'DELETE')
+      this.favourites = this.favourites.filter((fav) => fav.id !== recipeId)
     }
   },
   created() {
+    this.username = localStorage.getItem('loggedInUser')
+    this.getFavourites()
     this.fetchRecipes()
   }
 }
 </script>
 
 <style scoped>
+h1 {
+  color: #5d4037;
+}
+
 /* Previous styles remain unchanged */
 .community-recipes {
   padding: 20px;
@@ -385,9 +470,10 @@ export default {
 }
 
 .recipe-card {
+  position: relative;
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 15px;
+  padding: 25px;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -581,6 +667,15 @@ pre {
 
 input[type='radio'] {
   margin: 0;
+  cursor: pointer;
+}
+
+.fav-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
 }
 </style>
