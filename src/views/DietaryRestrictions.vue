@@ -13,7 +13,7 @@
           @click="activeTab = 'dietary'"
           :class="{ active: activeTab === 'dietary' }"
         >
-          Dietary Restrictions
+          Meal Type
         </button>
         <button
           v-if="!message"
@@ -30,7 +30,7 @@
         @submit.prevent="updateDietaryRestrictions"
         class="dietary-form"
       >
-        <h3 v-if="!message">Select Dietary Restrictions:</h3>
+        <h3 v-if="!message">Select Meal Type(s):</h3>
         <div v-if="!message" class="checkbox-group">
           <div v-for="(restriction, index) in dietaryOptions" :key="index" class="checkbox-item">
             <input
@@ -43,7 +43,7 @@
           </div>
         </div>
         <button type="submit" :disabled="loading" v-if="!message">
-          {{ loading ? 'Updating...' : 'Update Restrictions' }}
+          {{ loading ? 'Updating...' : 'Update Meal Type' }}
         </button>
       </form>
 
@@ -174,7 +174,7 @@ export default {
           body: JSON.stringify({ DietaryInfo: selectedRestrictions.value })
         })
         if (result.ok) {
-          message.value = 'Dietary restrictions updated successfully!'
+          message.value = 'Meal Type updated successfully!'
           messageType.value = 'success'
         } else {
           throw new Error('Failed to update dietary restrictions')
@@ -248,7 +248,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* padding: 20px; */
+  min-height: 100vh;
 }
 
 #dietary-container {
@@ -256,7 +257,7 @@ export default {
   color: #795548;
   border-radius: 8px;
   text-align: center;
-  width: 400px;
+  width: 70%;
   padding: 20px;
 }
 
@@ -278,7 +279,10 @@ h3 {
 .checkbox-group {
   display: flex;
   flex-direction: column;
+  max-height: 200px; /* Limit height for scrolling */
+  overflow-y: auto; /* Enable vertical scroll */
   margin-bottom: 1rem;
+  padding-right: 10px; /* Add padding to avoid scrollbar overlap */
 }
 
 .checkbox-item {
