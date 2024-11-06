@@ -49,8 +49,16 @@ function updateLoginState(loggedIn, username) {
   }
 }
 
+function closeNavbar() {
+  const navbarCollapse = document.getElementById('navbarContent')
+  if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+    new bootstrap.Collapse(navbarCollapse).toggle()
+  }
+}
+
 function logout() {
   updateLoginState(false, '')
+  closeNavbar()
   router.push('/')
 }
 </script>
@@ -86,41 +94,47 @@ function logout() {
             </div> -->
             <ul class="navbar-nav flex-column align-items-stretch w-100 gap-1">
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/">Home</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/" @click="closeNavbar">Home</RouterLink>
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/profile">Profile</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/profile" @click="closeNavbar"
+                  >Profile</RouterLink
+                >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/recipe-search"
+                <RouterLink class="nav-link rounded-2" to="/recipe-search" @click="closeNavbar"
                   >Recipe Search</RouterLink
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/community-recipes"
+                <RouterLink class="nav-link rounded-2" to="/community-recipes" @click="closeNavbar"
                   >Community Recipes</RouterLink
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/favourites">Favourites</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/favourites" @click="closeNavbar"
+                  >Favourites</RouterLink
+                >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/personal-recipes"
+                <RouterLink class="nav-link rounded-2" to="/personal-recipes" @click="closeNavbar"
                   >Personal Recipes</RouterLink
                 >
               </li>
               <li class="nav-item" v-if="isLoggedIn">
-                <RouterLink class="nav-link rounded-2" to="/create-recipe"
+                <RouterLink class="nav-link rounded-2" to="/create-recipe" @click="closeNavbar"
                   >Create Recipe</RouterLink
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/shopping-list"
+                <RouterLink class="nav-link rounded-2" to="/shopping-list" @click="closeNavbar"
                   >Shopping List</RouterLink
                 >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/vouchers">Redeem Vouchers</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/vouchers" @click="closeNavbar"
+                  >Redeem Vouchers</RouterLink
+                >
               </li>
               <template v-if="isLoggedIn">
                 <li class="nav-item">
@@ -129,10 +143,14 @@ function logout() {
               </template>
               <template v-else>
                 <li class="nav-item">
-                  <RouterLink class="nav-link rounded-2" to="/signup">Sign Up</RouterLink>
+                  <RouterLink class="nav-link rounded-2" to="/signup" @click="closeNavbar"
+                    >Sign Up</RouterLink
+                  >
                 </li>
                 <li class="nav-item">
-                  <RouterLink class="nav-link rounded-2" to="/login">Login</RouterLink>
+                  <RouterLink class="nav-link rounded-2" to="/login" @click="closeNavbar"
+                    >Login</RouterLink
+                  >
                 </li>
               </template>
             </ul>
