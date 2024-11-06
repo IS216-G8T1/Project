@@ -25,19 +25,22 @@
         </div>
         <div class="about-grid">
           <div class="grid-item">
-            <h3>Healthy Recipes</h3>
+            <h3><strong>Healthy Recipes</strong></h3>
             <p>Get personalized meal recommendations for your dietary needs.</p>
           </div>
           <div class="grid-item">
-            <h3>Sustainable Cooking</h3>
+            <h3><strong>Sustainable Cooking</strong></h3>
             <p>
               Make meals with what you already have, reducing food waste and supporting
               sustainability.
             </p>
           </div>
           <div class="grid-item">
-            <h3>Track Your Impact</h3>
-            <p>See how much food you’ve saved from going to waste while enjoying healthy meals.</p>
+            <h3><strong>Earn Rewards</strong></h3>
+            <p>
+              Receive points for contributing recipes and making healthy choices. Redeem your points
+              for vouchers and more!
+            </p>
           </div>
         </div>
       </div>
@@ -48,18 +51,22 @@
       <h2 class="section-title">How It Works</h2>
       <div class="how-it-works-grid">
         <div class="how-it-works-box">
+          <img src="../assets/search.png" alt="search" class="how-it-works-image-search" />
           <h3>Search Recipes</h3>
           <p>Find delicious recipes based on ingredients you already have in your fridge.</p>
         </div>
         <div class="how-it-works-box">
+          <img src="../assets/save.png" alt="save" class="how-it-works-image-save" />
           <h3>Save & Organize</h3>
           <p>Save your favorite recipes and organize them for easy access.</p>
         </div>
         <div class="how-it-works-box">
+          <img src="../assets/share.png" alt="share" class="how-it-works-image-share" />
           <h3>Create & Share</h3>
           <p>Submit your own recipes and share them with the community!</p>
         </div>
         <div class="how-it-works-box">
+          <img src="../assets/list.png" alt="list" class="how-it-works-image-list" />
           <h3>Generate Shopping List</h3>
           <p>Create a shopping list based on recipes you want to try next.</p>
         </div>
@@ -70,15 +77,15 @@
     <section class="statistics">
       <h2 class="section-title">Our Impact</h2>
       <div class="stat-box">
-        <div class="stat-value">240+</div>
+        <div class="stat-value" v-cloak>240+</div>
         <p class="stat-label">users actively reducing food wastage</p>
       </div>
       <div class="stat-box">
-        <div class="stat-value">500+</div>
+        <div class="stat-value" v-cloak>500+</div>
         <p class="stat-label">healthy recipes shared</p>
       </div>
       <div class="stat-box">
-        <div class="stat-value">1000+</div>
+        <div class="stat-value" v-cloak>1000+</div>
         <p class="stat-label">meals saved from going to waste</p>
       </div>
     </section>
@@ -118,7 +125,7 @@ body {
 
 /* Main content sections */
 .hero-section {
-  padding: 60px 20px;
+  padding: 80px;
   background-color: #f7f3ed;
   text-align: center;
   border-bottom: 2px solid #e0ebe4;
@@ -131,7 +138,7 @@ body {
 }
 
 .hero-section .section-paragraph {
-  color: #4b8063;
+  color: black;
   font-size: 1.5rem;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -158,26 +165,31 @@ body {
 
 /* About Us Section */
 .about-us {
-  padding: 60px 20px;
+  padding: 160px 60px;
   background-color: #e0ebe4;
 }
 
 .about-us .about-us-content {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   gap: 40px;
+  flex-wrap: wrap;
 }
 
 .about-us .about-text {
   flex: 1;
   max-width: 45%;
+  /* text-align: center; */
 }
 
 .about-us .section-title {
   font-size: 2.5rem;
   color: #5d4037;
   margin-bottom: 20px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .about-us .section-paragraph {
@@ -185,6 +197,7 @@ body {
   font-size: 1.25rem;
   line-height: 1.6;
   margin-bottom: 40px;
+  /* text-align: center; */
 }
 
 .about-us .about-grid {
@@ -202,6 +215,47 @@ body {
   text-align: center;
 }
 
+@media (max-width: 768px) {
+  .about-us .about-text {
+    max-width: 80%; /* Increase max width for smaller screens */
+  }
+
+  .about-us .about-grid {
+    grid-template-columns: 1fr; /* Stack grid items vertically */
+  }
+
+  .grid-item {
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .about-us .section-title {
+    font-size: 2rem; /* Reduce font size */
+  }
+
+  .about-us .about-text,
+  .about-us .about-grid {
+    padding: 10px;
+  }
+
+  .about-us .section-paragraph {
+    font-size: 1rem; /* Reduce font size */
+  }
+
+  .about-us .about-text {
+    text-align: center;
+  }
+
+  .grid-item h3 {
+    font-size: 1.2rem; /* Adjust font size for headings */
+  }
+
+  .grid-item p {
+    font-size: 0.9rem; /* Adjust font size for paragraphs */
+  }
+}
+
 .grid-item h3 {
   font-size: 1.5rem;
   color: #4b8063;
@@ -215,7 +269,7 @@ body {
 
 /* How It Works Section */
 .how-it-works {
-  padding: 60px 20px;
+  padding: 90px 20px;
   background-color: #f7f3ed;
   text-align: center;
 }
@@ -223,7 +277,10 @@ body {
 .how-it-works .section-title {
   font-size: 2.5rem;
   color: #5d4037;
-  margin-bottom: 40px;
+  margin-bottom: 90px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .how-it-works-grid {
@@ -234,7 +291,9 @@ body {
 
 .how-it-works-box {
   background-color: #e6e6e6;
-  padding: 25px;
+  display: inline-block;
+  align-items: center;
+  padding: 35px 25px 25px 25px;
   border-radius: 12px;
   text-align: center;
   transition:
@@ -258,38 +317,144 @@ body {
   color: #795548;
 }
 
+.how-it-works-image-search {
+  max-width: 70px;
+  margin-bottom: 20px;
+}
+
+.how-it-works-image-save {
+  max-width: 70px;
+  margin-bottom: 20px;
+}
+
+.how-it-works-image-share {
+  max-width: 120px;
+  /* margin-bottom: 20px; */
+  margin-top: -30px;
+}
+
+.how-it-works-image-list {
+  max-width: 80px;
+  margin-bottom: 20px;
+}
+
 /* Statistics Section */
 .statistics {
-  padding: 60px 20px;
+  padding: 80px 20px;
   background-color: #e0ebe4;
   text-align: center;
+  animation: fadeIn 1s ease-out;
 }
 
 .statistics .section-title {
   font-size: 2.5rem;
   color: #5d4037;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .stat-box {
   display: inline-block;
-  background-color: #f5f5f5;
-  padding: 20px;
-  margin: 20px;
+  background: linear-gradient(135deg, #6abf6b, #4b8063);
+  padding: 30px;
+  margin: 0px 40px;
   border-radius: 12px;
   width: 180px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+  animation: scaleUp 1.5s ease-out forwards;
+}
+
+.stat-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .stat-value {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: bold;
-  color: #4b8063;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-bottom: 10px;
 }
 
 .stat-label {
-  font-size: 1rem;
-  color: #795548;
+  font-size: 1.2rem;
+  color: white;
+  font-weight: 400;
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 1200px) {
+  .stat-box {
+    width: 100%; /* Make each stat box take up full width on medium screens */
+    margin: 10px 0; /* Add margin between stat boxes */
+  }
+}
+
+@media (max-width: 768px) {
+  .statistics {
+    padding: 60px 20px; /* Reduced padding on small screens */
+  }
+
+  .stat-box {
+    width: 100%; /* Make each stat box take up full width on small screens */
+    margin: 10px 0; /* Ensure space between boxes */
+    padding: 20px; /* Reduce padding in the stat box */
+  }
+
+  .stat-value {
+    font-size: 2.5rem; /* Reduce the size of the stat value on small screens */
+  }
+
+  .stat-label {
+    font-size: 1rem; /* Reduce font size of labels */
+  }
+}
+
+@media (max-width: 480px) {
+  .statistics {
+    padding: 40px 20px; /* Further reduced padding on extra small screens */
+  }
+
+  .stat-box {
+    width: 100%; /* Ensure each box is full width on very small screens */
+    margin: 10px 0;
+    padding: 15px; /* Adjust padding further */
+  }
+
+  .stat-value {
+    font-size: 2rem; /* Make numbers even smaller for extra small screens */
+  }
+
+  .stat-label {
+    font-size: 0.9rem; /* Smaller font size for labels */
+  }
 }
 
 /* CTA Section */
