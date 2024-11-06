@@ -61,7 +61,7 @@ function logout() {
     <!-- Navigation for non-home pages -->
     <nav v-if="!homePage" class="navbar navbar-expand-lg custom-navbar fixed-top p-0">
       <div class="container-fluid p-0">
-        <div class="d-flex align-items-center justify-content-between w-100 px-3">
+        <div>
           <button
             class="navbar-toggler border-0 shadow-sm"
             type="button"
@@ -73,18 +73,17 @@ function logout() {
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <span v-if="isLoggedIn" class="welcome-message d-lg-none ms-2"
+          <!-- <span v-if="isLoggedIn" class="welcome-message d-lg-none ms-2"
             >Welcome, {{ currentUsername }}!</span
-          >
+          > -->
         </div>
 
         <div class="collapse navbar-collapse" id="navbarContent">
           <div class="nav-container px-3">
             <!-- Welcome message for desktop above Home link -->
-            <div v-if="isLoggedIn" class="d-none d-lg-block mb-3">
+            <!-- <div v-if="isLoggedIn" class="d-none d-lg-block mb-3">
               <div class="welcome-message text-center">Welcome, {{ currentUsername }}!</div>
-            </div>
-
+            </div> -->
             <ul class="navbar-nav flex-column align-items-stretch w-100 gap-1">
               <li class="nav-item">
                 <RouterLink class="nav-link rounded-2" to="/">Home</RouterLink>
@@ -144,13 +143,39 @@ function logout() {
 
     <!-- Home page layout -->
     <div v-if="homePage" class="w-100">
+      <section class="video-section">
+        <video class="video-bright" autoplay loop muted>
+          <source src="./assets/vid.mp4" type="video/mp4" />
+        </video>
+        <div class="overlay-content">
+          <div class="intro-text">
+            <strong>Healthy meals for</strong><br />
+            <strong class="intro-highlight">
+              <span class="typed-text">{{ typeValue }}</span>
+              <span class="blinking-cursor">|</span>
+              <span class="cursor" :class="{ typing: typeStatus }">&nbsp;</span>
+            </strong>
+          </div>
+          <div class="second-column">
+            <div class="climate-text">Making a difference with every meal.</div>
+            <div class="auth-buttons">
+              <router-link to="/login" class="auth-link">
+                <button class="home-button">Login</button>
+              </router-link>
+              <router-link to="/signup" class="auth-link">
+                <button class="home-button">Sign Up</button>
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </section>
       <nav class="navbar navbar-expand custom-navbar-home shadow-sm">
         <div class="container-fluid">
           <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
             <template v-if="isLoggedIn">
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <span class="welcome-message-home">Welcome, {{ currentUsername }}!</span>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a class="nav-link rounded-2" href="#" @click.prevent="logout">Logout</a>
               </li>
@@ -250,10 +275,11 @@ body {
 }
 
 .custom-navbar {
-  background-color: #ffe0b2;
-  width: 250px;
+  background-color: #4b8063;
+  width: 210px;
   min-height: 100vh;
-  border-right: 2px solid #d3a468;
+  /* border-right: 2px solid #d3a468; */
+  vertical-align: top;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -262,16 +288,33 @@ body {
   max-width: 218px;
   margin: 0 auto;
   padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height for alignment */
+}
+
+.navbar-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start; /* Align items to the top */
+  gap: 1rem;
+  padding-top: 1rem;
 }
 
 .custom-navbar-home {
-  background-color: #ffe0b2;
+  background-color: #4b8063;
   height: 70px;
-  border-bottom: 2px solid #d3a468;
+  /* border-bottom: 2px solid #d3a468; */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-right: 20px;
+  padding-bottom: 20px;
 }
 
 .nav-link {
-  color: #5d4037 !important;
+  color: #e6e6e6 !important;
   padding: 0.75rem 1rem !important;
   transition: all 0.3s ease;
   font-size: 1rem;
@@ -280,16 +323,16 @@ body {
 }
 
 .nav-link:hover {
-  background-color: #ffcc80;
+  background-color: #5e9b77;
   transform: translateX(5px);
 }
 
 .router-link-active {
-  background-color: #ffa726 !important;
+  background-color: #3d6a52 !important;
   font-weight: 500;
 }
 
-.welcome-message {
+/* .welcome-message {
   color: #5d4037;
   font-weight: 500;
   padding: 0.75rem 1rem;
@@ -305,12 +348,12 @@ body {
   background-color: #ffa726;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .content-area {
   margin-left: 250px;
   padding: 2rem;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
 
 /* Mobile Styles */
@@ -332,7 +375,7 @@ body {
   }
 
   .navbar-collapse {
-    background-color: #ffe0b2;
+    background-color: #4b8063;
     border-radius: 0 0 8px 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
@@ -354,8 +397,8 @@ body {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .video-bright {
@@ -367,19 +410,19 @@ body {
 
 .overlay-content {
   position: absolute;
-  width: 60%;
+  width: 65%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  padding: 1.5rem;
+  padding: 2 rem;
   align-items: start;
 }
 
 /* Intro text styling */
 .intro-text {
   grid-column: 1; /* Place intro-text in the first column */
-  font-size: 2.5rem;
-  color: #ffffff;
+  font-size: 2.75rem;
+  color: #e6e6e6;
   align-self: center; /* Center align in the first column */
 }
 
@@ -410,9 +453,9 @@ body {
 
 /* Climate Text Styling */
 .climate-text {
-  font-size: 1.25rem;
-  color: #ffffff;
-  text-align: left; /* Align text to the left for readability */
+  font-size: 1.5rem;
+  color: #e6e6e6;
+  text-align: right; /* Align text to the left for readability */
   padding-bottom: 2rem;
   /* padding-right: 1rem; */
 }
@@ -421,7 +464,7 @@ body {
 .auth-buttons {
   display: flex;
   gap: 1rem;
-  justify-content: flex-start;
+  justify-content: flex-end;
   /* justify-content: end; */
 }
 
@@ -433,8 +476,8 @@ body {
 .home-button {
   padding: 0.5rem 1.25rem;
   font-size: 1rem;
-  color: white;
-  border: 2px solid white;
+  color: #e6e6e6;
+  border: 2px solid #e6e6e6;
   border-radius: 9999px;
   background: transparent;
   cursor: pointer;
@@ -442,6 +485,6 @@ body {
 }
 
 .home-button:hover {
-  background-color: lightslategray;
+  background-color: #6b6b6b;
 }
 </style>
