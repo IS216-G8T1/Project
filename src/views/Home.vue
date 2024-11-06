@@ -310,4 +310,89 @@ body {
   line-height: 1.6;
   margin-bottom: 30px;
 }
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .about-us .about-us-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-us .about-text,
+  .about-us .about-grid {
+    max-width: 100%;
+  }
+
+  .how-it-works-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .how-it-works-box {
+    padding: 20px;
+  }
+
+  .stat-box {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section .section-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-section .section-paragraph {
+    font-size: 1.25rem;
+  }
+
+  .cta-button {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .how-it-works-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .statistics .stat-box {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .cta-section .cta-title {
+    font-size: 2rem;
+  }
+
+  .cta-section .cta-paragraph {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section .section-title {
+    font-size: 2rem;
+  }
+
+  .hero-section .section-paragraph {
+    font-size: 1rem;
+  }
+
+  .cta-button {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .about-us .section-title {
+    font-size: 2rem;
+  }
+
+  .about-us .about-text,
+  .about-us .about-grid {
+    padding: 10px;
+  }
+
+  .about-us .section-paragraph {
+    font-size: 1rem;
+  }
+}
 </style>
