@@ -53,7 +53,7 @@ function updateLoginState(loggedIn, username) {
 
 function logout() {
   updateLoginState(false, '')
-  router.push('/login')
+  router.push('/')
 }
 </script>
 
@@ -63,6 +63,37 @@ function logout() {
     <!-- Home page layout -->
     <table v-if="homePage">
       <tbody>
+        <tr>
+          <!-- Video and Intro Section -->
+          <td>
+            <section class="video-section">
+              <video class="video-bright" autoplay loop muted>
+                <source src="./assets/vid.mp4" type="video/mp4" />
+              </video>
+              <div class="overlay-content">
+                <div class="intro-text">
+                  <strong>Healthy meals for</strong><br />
+                  <strong class="intro-highlight">
+                    <span class="typed-text">{{ typeValue }}</span>
+                    <span class="blinking-cursor">|</span>
+                    <span class="cursor" :class="{ typing: typeStatus }">&nbsp;</span>
+                  </strong>
+                </div>
+                <div class="second-column">
+                  <div class="climate-text">Making a difference with every meal.</div>
+                  <div class="auth-buttons">
+                    <router-link to="/login" class="auth-link">
+                      <button class="home-button">Login</button>
+                    </router-link>
+                    <router-link to="/signup" class="auth-link">
+                      <button class="home-button">Sign Up</button>
+                    </router-link>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </td>
+        </tr>
         <tr>
           <!-- Navbar as a row for home page -->
           <td id="navbar-row">
@@ -120,10 +151,67 @@ function logout() {
   </div>
 </template>
 
+<script>
+import LoginSignupButtons from './components/LoginSignupButtons.vue'
+
+export default {
+  components: {
+    LoginSignupButtons
+  },
+  data() {
+    return {
+      auth: false,
+      typeValue: '',
+      typeStatus: false,
+      displayTextArray: ['you 🌟', 'our communities 🌈', 'our planet 🌏'],
+      typingSpeed: 70,
+      erasingSpeed: 50,
+      newTextDelay: 2000,
+      displayTextArrayIndex: 0,
+      charIndex: 0
+    }
+  },
+  created() {
+    setTimeout(this.typeText, this.newTextDelay + 200)
+  },
+  methods: {
+    typeText() {
+      if (this.charIndex < this.displayTextArray[this.displayTextArrayIndex].length) {
+        if (!this.typeStatus) this.typeStatus = true
+        this.typeValue += this.displayTextArray[this.displayTextArrayIndex].charAt(this.charIndex)
+        this.charIndex += 1
+        setTimeout(this.typeText, this.typingSpeed)
+      } else {
+        this.typeStatus = false
+        setTimeout(this.eraseText, this.newTextDelay)
+      }
+    },
+    eraseText() {
+      if (this.charIndex > 0) {
+        if (!this.typeStatus) this.typeStatus = true
+        this.typeValue = this.displayTextArray[this.displayTextArrayIndex].substring(
+          0,
+          this.charIndex - 1
+        )
+        this.charIndex -= 1
+        setTimeout(this.eraseText, this.erasingSpeed)
+      } else {
+        this.typeStatus = false
+        this.displayTextArrayIndex += 1
+        if (this.displayTextArrayIndex >= this.displayTextArray.length)
+          this.displayTextArrayIndex = 0
+        setTimeout(this.typeText, this.typingSpeed + 1000)
+      }
+    }
+  }
+}
+</script>
+
 <style>
 /* Styles remain unchanged */
 body {
-  background-color: #fff8e1;
+  /* background-color: #fff8e1; */
+  background-color: #f5f5f5;
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -136,9 +224,13 @@ table {
 }
 
 #navbar-row {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   height: 70px;
   border-bottom: 2px solid gray;
-  background-color: #ffe0b2;
+  /* background-color: #ffe0b2; */
+  background-color: #4b8063;
 }
 
 #navbar-row div {
@@ -152,7 +244,7 @@ table {
   height: 100vh;
   width: 210px;
   border-right: 2px solid gray;
-  background-color: #ffe0b2;
+  background-color: #4b8063;
   vertical-align: top;
   position: fixed;
 }
@@ -165,7 +257,7 @@ table {
 
 .navbar-content a,
 .navbar-content span {
-  color: #5d4037;
+  color: #e6e6e6;
   text-decoration: none;
   padding: 10px;
   margin: 5px;
@@ -174,15 +266,113 @@ table {
 }
 
 .navbar-content a:hover {
-  background-color: #ffcc80;
+  background-color: #5e9b77;
 }
 
 .navbar-content a.router-link-active {
-  background-color: #ffa726;
+  background-color: #3d6a52;
   font-weight: bold;
 }
 
 #content {
   padding-left: 215px;
+}
+
+/* Video Section */
+.video-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.video-bright {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+}
+
+.overlay-content {
+  position: absolute;
+  width: 60%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  align-items: start;
+}
+
+/* Intro text styling */
+.intro-text {
+  grid-column: 1; /* Place intro-text in the first column */
+  font-size: 2.5rem;
+  color: #ffffff;
+  align-self: center; /* Center align in the first column */
+}
+
+.intro-highlight {
+  color: #bfdb9c;
+}
+
+/* Cursor blinking CSS */
+.blinking-cursor {
+  font-size: 2.5rem; /* Match this to your font size */
+  color: #bfdb9c; /* Cursor color */
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from,
+  to {
+    color: transparent;
+  }
+  50% {
+    color: #bfdb9c;
+  }
+}
+
+.second-column {
+  grid-column: 2;
+}
+
+/* Climate Text Styling */
+.climate-text {
+  font-size: 1.25rem;
+  color: #ffffff;
+  text-align: left; /* Align text to the left for readability */
+  padding-bottom: 2rem;
+  /* padding-right: 1rem; */
+}
+
+/* Auth Button Styling */
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  /* justify-content: end; */
+}
+
+.auth-link {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.home-button {
+  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  color: white;
+  border: 2px solid white;
+  border-radius: 9999px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: lightslategray;
 }
 </style>
