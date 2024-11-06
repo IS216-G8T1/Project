@@ -8,6 +8,12 @@
         placeholder="Enter ingredients or recipe name"
         @keyup.enter="searchRecipes"
       />
+      <div class="filter-options">
+        <label class="filter-checkbox">
+          <input type="checkbox" v-model="applyHealthFilters">
+          Apply My Dietary & Allergy Filters
+        </label>
+      </div>
       <button @click="searchRecipes" :disabled="isLoading">
         {{ isLoading ? 'Searching...' : 'Search' }}
       </button>
@@ -89,15 +95,20 @@ export default {
       searchResults: [],
       isLoading: false,
       isEDAMAM: true,
-      favourites: []
+      favourites: [],
+      applyHealthFilters: false,
+      dietaryRestrictions: [],
+      allergies: [],
+      validHealthLabels: []
     }
   },
   mounted() {
     this.username = localStorage.getItem('loggedInUser')
     this.getFavourites()
+    this.getUserHealthInfo()
+    this.getValidHealthLabels()
   },
   setup() {
-    // Function to format time from minutes to hours and minutes
     const formatTime = (timeString) => {
       if (!timeString || typeof timeString !== 'string') return 'N/A'
       const [hours, minutes] = timeString.split(':').map(Number)
@@ -108,7 +119,6 @@ export default {
       }
     }
 
-    // Function to format steps into an HTML list
     const formatSteps = (steps) => {
       if (!steps) return ''
       return steps
@@ -123,21 +133,68 @@ export default {
     }
   },
   methods: {
-    async searchRecipes() {
-      this.isEDAMAM = true
-      this.isLoading = true
+    async getValidHealthLabels() {
       try {
-        const response = await axios.get('/api/search-recipes', {
-          params: { query: this.searchQuery }
-        })
-        console.log('Full response:', response)
-        this.searchResults = response.data
+        const response = await axios.get('/api/valid-health-labels')
+        this.validHealthLabels = response.data
       } catch (error) {
-        console.error('Error searching recipes:', error) //Shows error messages for user
-      } finally {
-        this.isLoading = false
+        console.error('Error fetching valid health labels:', error)
       }
     },
+    async getUserHealthInfo() {
+      try {
+        const [dietaryResponse, allergyResponse] = await Promise.all([
+          this.makeRequest('/dietary-info', 'GET'),
+          this.makeRequest('/allergy-info', 'GET')
+        ])
+        
+        this.dietaryRestrictions = dietaryResponse ? dietaryResponse.split(',').filter(Boolean) : []
+        this.allergies = allergyResponse?.Allergies ? allergyResponse.Allergies.split(',').filter(Boolean) : []
+        
+        console.log('Dietary Restrictions:', this.dietaryRestrictions)
+        console.log('Allergies:', this.allergies)
+      } catch (error) {
+        console.error('Error fetching health info:', error)
+      }
+    },
+    
+ 
+    async searchRecipes() {
+  this.isEDAMAM = true
+  this.isLoading = true
+  try {
+    // Start with base query parameter
+    const params = new URLSearchParams({
+      query: this.searchQuery
+    })
+
+    // Add filters if checkbox is checked
+    if (this.applyHealthFilters) {
+      // Add allergies as health parameters
+      if (this.allergies.length > 0) {
+        this.allergies.forEach(allergy => {
+          params.append('health', allergy.toLowerCase())
+        })
+      }
+
+      // Add dietary restrictions as diet parameters
+      if (this.dietaryRestrictions.length > 0) {
+        this.dietaryRestrictions.forEach(diet => {
+          params.append('diet', diet.toLowerCase())
+        })
+      }
+    }
+
+    console.log('Search URL:', `/api/search-recipes?${params.toString()}`)
+    const response = await axios.get(`/api/search-recipes?${params.toString()}`)
+    console.log('Search response:', response.data)
+    this.searchResults = response.data
+  } catch (error) {
+    console.error('Error searching recipes:', error)
+  } finally {
+    this.isLoading = false
+  }
+},
     async makeRequest(url, method, body = null) {
       const headers = {
         'Content-Type': 'application/json',
@@ -201,14 +258,12 @@ export default {
         console.error('Error fetching recipe:', error)
       }
     },
-    // need to handle duplicate entries
     async addToFavourites(recipeId) {
       await this.makeRequest('/favourites', 'POST', {
         recipeId: recipeId,
         isEdamamRecipe: this.isEDAMAM
       })
 
-      // Immediately update the favourites array
       const recipeToAdd = this.isEDAMAM
         ? this.searchResults.find((recipe) => recipe.id === recipeId)
         : this.searchResults.find((recipe) => recipe.UserMadeRecipeID === recipeId)
@@ -222,9 +277,6 @@ export default {
     },
     async removeFromFavourites(recipeId) {
       await this.makeRequest(`/favourites/${recipeId}`, 'DELETE')
-      // this.getFavourites()
-
-      // Immediately update the favourites array
       this.favourites = this.favourites.filter((fav) => fav.id !== recipeId)
     }
   }
@@ -253,6 +305,23 @@ input {
   border: 1px solid #795548;
   border-radius: 4px;
   margin-right: 5px;
+}
+
+.filter-options {
+  margin: 10px 0;
+}
+
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5d4037;
+  cursor: pointer;
+}
+
+.filter-checkbox input[type="checkbox"] {
+  width: auto;
+  cursor: pointer;
 }
 
 button {

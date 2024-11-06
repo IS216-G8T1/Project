@@ -49,10 +49,11 @@ router.get('/check-username/:username', async (req, res) => {
 // Recipe routes
 router.get('/search-recipes', async (req, res) => {
   try {
-    const { query, healthLabels } = req.query
+    const { query, health, diet } = req.query
     const recipes = await recipeService.searchAllRecipes(
       query,
-      healthLabels ? healthLabels.split(',') : []
+      health ? (Array.isArray(health) ? health : [health]) : [],
+      diet ? (Array.isArray(diet) ? diet : [diet]) : []
     )
     res.json(recipes)
   } catch (error) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="browse-recipes">
+  <div class="community-recipes">
     <h1>Community Recipes</h1>
 
     <div class="filters">
@@ -11,11 +11,33 @@
           @input="debouncedSearch"
         />
       </div>
+      <div class="filter-options">
+        <select v-model="ratingFilter" class="rating-filter">
+          <option value="0">All Ratings</option>
+          <option value="5">5 Stars Only</option>
+          <option value="4">4+ Stars</option>
+          <option value="3">3+ Stars</option>
+          <option value="2">2+ Stars</option>
+          <option value="1">1+ Stars</option>
+          <option value="no">No Ratings</option>
+        </select>
+      </div>
       <div class="sort-options">
-        <label>
-          <input type="checkbox" v-model="sortByRating" />
-          Show Highest Rated First
-        </label>
+        <div class="sort-label">Sort by rating:</div>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" v-model="sortDirection" value="highest" />
+            <span class="radio-text">Highest Rated First</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" v-model="sortDirection" value="lowest" />
+            <span class="radio-text">Lowest Rated First</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" v-model="sortDirection" value="none" />
+            <span class="radio-text">No Sort</span>
+          </label>
+        </div>
       </div>
     </div>
 
@@ -129,7 +151,7 @@ import axios from 'axios'
 import { inject } from 'vue'
 
 export default {
-  name: 'BrowseRecipes',
+  name: 'CommunityRecipes',
   setup() {
     const isLoggedIn = inject('loginState')
     const currentUsername = inject('currentUsername')
@@ -139,11 +161,12 @@ export default {
     return {
       recipes: [],
       searchQuery: '',
-      sortByRating: false,
+      sortDirection: 'none',
       selectedRecipe: null,
       showReviewForm: null,
       showReviewsFor: null,
       loading: false,
+      ratingFilter: '0',
       newReview: {
         rating: 5,
         description: ''
@@ -174,8 +197,27 @@ export default {
         })
       }
 
-      // Apply sorting
-      if (this.sortByRating) {
+      // Apply rating filter
+      if (this.ratingFilter !== '0') {
+        if (this.ratingFilter === 'no') {
+          // Filter for recipes with no ratings (RatingCount === 0 or AverageRating === 0)
+          result = result.filter((recipe) => recipe.RatingCount === 0 || recipe.AverageRating === 0)
+        } else {
+          const minRating = Number(this.ratingFilter)
+          result = result.filter((recipe) => {
+            if (this.ratingFilter === '5') {
+              // For 5 stars, we want ratings that round to 5.0
+              return recipe.AverageRating >= 4.5
+            } else {
+              // For other ratings, we want greater than or equal to
+              return recipe.AverageRating >= minRating
+            }
+          })
+        }
+      }
+
+      // Apply sorting based on radio button selection
+      if (this.sortDirection === 'highest') {
         result.sort((a, b) => {
           // Sort by average rating (descending)
           const ratingDiff = b.AverageRating - a.AverageRating
@@ -183,9 +225,14 @@ export default {
           // If ratings are equal, sort by number of ratings (descending)
           return b.RatingCount - a.RatingCount
         })
-      } else {
-        // Sort by ID (descending) for most recent first
-        result.sort((a, b) => b.UserMadeRecipeID - a.UserMadeRecipeID)
+      } else if (this.sortDirection === 'lowest') {
+        result.sort((a, b) => {
+          // Sort by average rating (ascending)
+          const ratingDiff = a.AverageRating - b.AverageRating
+          if (ratingDiff !== 0) return ratingDiff
+          // If ratings are equal, sort by number of ratings (ascending)
+          return a.RatingCount - b.RatingCount
+        })
       }
 
       return result
@@ -267,7 +314,8 @@ export default {
 </script>
 
 <style scoped>
-.browse-recipes {
+/* Previous styles remain unchanged */
+.community-recipes {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
@@ -284,7 +332,7 @@ export default {
   margin-bottom: 20px;
   display: flex;
   gap: 20px;
-  align-items: center;
+  align-items: baseline;
 }
 
 .search-bar {
@@ -296,11 +344,38 @@ export default {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.filter-options select.rating-filter {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  line-height: normal;
+  margin: 0;
+}
+
+.rating-filter {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
 }
 
 .sort-options {
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.sort-options label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .recipes-grid {
@@ -332,7 +407,7 @@ export default {
   border: none;
   border-radius: 4px;
   background-color: #5e9b77;
-  color: e6e6e6;
+  color: #e6e6e6;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -471,5 +546,41 @@ pre {
 
 .rating .fa-star {
   color: lightgray;
+}
+.sort-options {
+  white-space: nowrap;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.sort-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.radio-text {
+  color: #444;
+}
+
+input[type='radio'] {
+  margin: 0;
+  cursor: pointer;
 }
 </style>

@@ -78,16 +78,16 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/browse-recipes',
-      name: 'browseRecipes',
-      // Lazy-load the BrowseRecipes component
-      component: () => import('../views/BrowseRecipes.vue'),
+      path: '/community-recipes',
+      name: 'communityRecipes',
+      // Lazy-load the CommunityRecipes component
+      component: () => import('../views/CommunityRecipes.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/vouchers',
       name: 'Vouchers',
-      // Lazy-load the BrowseRecipes component
+      // Lazy-load the CommunityRecipes component
       component: () => import('../views/Vouchers.vue'),
       meta: { requiresAuth: true }
     }

@@ -116,6 +116,43 @@ export default {
       'Tree-Nut-free',
       'Wheat-free'
     ]
+    const dietaryOptions = [
+      'Balanced',
+      'High-Fiber',
+      'High-Protein',
+      'Low-Carb',
+      'Low-Fat',
+      'Low-Sodium'
+    ]
+    const allergyOptions = [
+      'Alcohol-free',
+      'Celery-free',
+      'Crustacean-free',
+      'Dairy-free',
+      'Egg-free',
+      'Fish-free',
+      'Gluten-free',
+      'Kidney-friendly',
+      'Kosher',
+      'Low-potassium',
+      'Lupine-free',
+      'Mustard-free',
+      'No-oil-added',
+      'No-sugar',
+      'Paleo',
+      'Peanut-free',
+      'Pescatarian',
+      'Pork-free',
+      'Red-meat-free',
+      'Sesame-free',
+      'Shellfish-free',
+      'Soy-free',
+      'Sugar-conscious',
+      'Tree-Nut-free',
+      'Vegan',
+      'Vegetarian',
+      'Wheat-free'
+    ]
     const selectedRestrictions = ref([])
     const selectedAllergies = ref([])
     const message = ref('')

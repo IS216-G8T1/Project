@@ -128,7 +128,7 @@ function logout() {
               <RouterLink to="/">Home</RouterLink>
               <RouterLink to="/profile">Profile</RouterLink>
               <RouterLink to="/recipe-search">Recipe Search</RouterLink>
-              <RouterLink to="/browse-recipes">Browse Recipes</RouterLink>
+              <RouterLink to="/community-recipes">Community Recipes</RouterLink>
               <RouterLink to="/favourites">Favourites</RouterLink>
               <RouterLink to="/personal-recipes">Personal Recipes</RouterLink>
               <RouterLink v-if="isLoggedIn" to="/create-recipe">Create Recipe</RouterLink>
