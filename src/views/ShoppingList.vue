@@ -63,7 +63,6 @@ export default {
       this.getItems()
     },
     async getItems() {
-      
       try {
         const result = await this.makeRequest('/shopping-list', 'GET')
         this.items = result.map((item) => ({
@@ -118,14 +117,14 @@ input {
 
 button {
   padding: 10px 15px;
-  background-color: #ffa726;
-  color: white;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   border: none;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #ff9800;
+  background-color: #4b8063;
 }
 
 ul {
@@ -138,7 +137,7 @@ li {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   border-radius: 4px;
   margin-bottom: 10px;
 }

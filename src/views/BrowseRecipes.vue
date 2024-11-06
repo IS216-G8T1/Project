@@ -1,30 +1,25 @@
 <template>
   <div class="browse-recipes">
     <h1>Community Recipes</h1>
-    
+
     <div class="filters">
       <div class="search-bar">
-        <input 
-          type="text" 
-          v-model="searchQuery" 
+        <input
+          type="text"
+          v-model="searchQuery"
           placeholder="Search recipes (use commas to search multiple terms, e.g. 'chicken, fish')"
           @input="debouncedSearch"
-        >
+        />
       </div>
       <div class="sort-options">
         <label>
-          <input 
-            type="checkbox" 
-            v-model="sortByRating"
-          >
+          <input type="checkbox" v-model="sortByRating" />
           Show Highest Rated First
         </label>
       </div>
     </div>
 
-    <div v-if="loading" class="loading">
-      Loading recipes...
-    </div>
+    <div v-if="loading" class="loading">Loading recipes...</div>
 
     <div v-else-if="filteredRecipes.length === 0" class="no-results">
       No recipes found matching your search.
@@ -39,9 +34,9 @@
           <p><strong>Serving Size:</strong> {{ recipe.ServingSize }}</p>
           <div class="rating" v-if="recipe.AverageRating > 0">
             <span> Rating: {{ Number(recipe.AverageRating).toFixed(1) }} </span>
-            <span 
-              v-for="(star, index) in 5" 
-              :key="index" 
+            <span
+              v-for="(star, index) in 5"
+              :key="index"
               :class="getStarClass(recipe.AverageRating, index)"
               class="fa fa-star"
             ></span>
@@ -49,20 +44,23 @@
           </div>
           <div class="rating" v-else>
             <span>No ratings yet</span>
-        </div>
+          </div>
         </div>
 
         <!-- Reviews Section -->
         <div class="reviews-section">
-          <button 
-            class="toggle-reviews" 
+          <button
+            class="toggle-reviews"
             @click="toggleReviews(recipe.UserMadeRecipeID)"
             v-if="recipe.reviews && recipe.reviews.length > 0"
           >
             {{ showReviewsFor === recipe.UserMadeRecipeID ? 'Hide Reviews' : 'Show Reviews' }}
           </button>
 
-          <div v-if="showReviewsFor === recipe.UserMadeRecipeID && recipe.reviews" class="reviews-list">
+          <div
+            v-if="showReviewsFor === recipe.UserMadeRecipeID && recipe.reviews"
+            class="reviews-list"
+          >
             <div v-for="review in recipe.reviews" :key="review.ReviewID" class="review-item">
               <div class="review-header">
                 <span class="review-author">{{ review.Username }}</span>
@@ -73,7 +71,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Review Form -->
         <div class="review-section" v-if="showReviewForm === recipe.UserMadeRecipeID">
           <h3>Add Review</h3>
@@ -86,8 +84,8 @@
               <option value="5">5 Stars</option>
             </select>
           </div>
-          <textarea 
-            v-model="newReview.description" 
+          <textarea
+            v-model="newReview.description"
             placeholder="Write your review here..."
           ></textarea>
           <div class="review-buttons">
@@ -95,9 +93,9 @@
             <button @click="showReviewForm = null">Cancel</button>
           </div>
         </div>
-        
+
         <div class="recipe-actions">
-          <button 
+          <button
             v-if="isLoggedIn && recipe.Username !== currentUsername"
             @click="showReviewForm = recipe.UserMadeRecipeID"
             class="action-button"
@@ -117,7 +115,7 @@
         <div class="recipe-details">
           <h3>Ingredients:</h3>
           <pre>{{ selectedRecipe.IngredientList }}</pre>
-          
+
           <h3>Preparation Steps:</h3>
           <pre>{{ selectedRecipe.PrepSteps }}</pre>
         </div>
@@ -162,16 +160,16 @@ export default {
         const searchTerms = this.searchQuery
           .toLowerCase()
           .split(',')
-          .map(term => term.trim())
-          .filter(term => term.length > 0)
+          .map((term) => term.trim())
+          .filter((term) => term.length > 0)
 
-        result = result.filter(recipe => {
+        result = result.filter((recipe) => {
           const recipeName = recipe.RecipeName.toLowerCase()
           const ingredients = recipe.IngredientList.toLowerCase()
-          
+
           // Check if ALL search terms are present in either recipe name or ingredients
-          return searchTerms.every(term => 
-            recipeName.includes(term) || ingredients.includes(term)
+          return searchTerms.every(
+            (term) => recipeName.includes(term) || ingredients.includes(term)
           )
         })
       }
@@ -230,16 +228,20 @@ export default {
       }
 
       try {
-        await axios.post('/api/rate-recipe', {
-          userMadeRecipeId: recipeId,
-          rating: Number(this.newReview.rating),
-          description: this.newReview.description
-        }, {
-          headers: {
-            'X-Username': this.currentUsername
+        await axios.post(
+          '/api/rate-recipe',
+          {
+            userMadeRecipeId: recipeId,
+            rating: Number(this.newReview.rating),
+            description: this.newReview.description
+          },
+          {
+            headers: {
+              'X-Username': this.currentUsername
+            }
           }
-        })
-        
+        )
+
         // Reset form and refresh recipes
         this.newReview = { rating: 5, description: '' }
         this.showReviewForm = null
@@ -249,7 +251,7 @@ export default {
         console.error('Error submitting review:', error)
       }
     },
-      getStarClass(rating, index) {
+    getStarClass(rating, index) {
       // Full star
       if (index < Math.floor(rating)) return 'checked'
       // Half star (only for one star, as rating is out of 5)
@@ -271,7 +273,8 @@ export default {
   margin: 0 auto;
 }
 
-.loading, .no-results {
+.loading,
+.no-results {
   text-align: center;
   padding: 20px;
   color: #666;
@@ -311,7 +314,7 @@ export default {
   border-radius: 8px;
   padding: 15px;
   background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .recipe-info {
@@ -328,14 +331,14 @@ export default {
   padding: 8px 15px;
   border: none;
   border-radius: 4px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #5e9b77;
+  color: e6e6e6;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .action-button:hover {
-  background-color: #45a049;
+  background-color: #4b8063;
 }
 
 .modal {
@@ -344,7 +347,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -407,7 +410,7 @@ textarea {
 .toggle-reviews {
   background: none;
   border: none;
-  color: #4CAF50;
+  color: #4caf50;
   cursor: pointer;
   padding: 5px 0;
   font-weight: bold;
@@ -469,5 +472,4 @@ pre {
 .rating .fa-star {
   color: lightgray;
 }
-
 </style>

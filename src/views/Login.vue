@@ -79,7 +79,7 @@ export default {
       localStorage.removeItem('isLoggedIn')
       this.currentUsername = ''
       this.updateLoginState(false)
-      this.$router.push('/login')
+      this.$router.push('/')
     }
   }
 }
@@ -115,7 +115,7 @@ export default {
 }
 
 #login-container {
-  background-color: #ffe0b2;
+  background-color: #e0ebe4;
   color: #795548;
   border-radius: 8px;
   text-align: center;
@@ -148,8 +148,8 @@ input {
 }
 
 button {
-  background-color: #ffa726;
-  color: #5d4037;
+  background-color: #5e9b77;
+  color: #e6e6e6;
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -159,7 +159,7 @@ button {
 }
 
 button:hover {
-  background-color: #ffcc80;
+  background-color: #3d6a52;
 }
 
 .signup-link a {
