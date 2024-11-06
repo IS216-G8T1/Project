@@ -1,33 +1,75 @@
 <template>
   <div id="profile-page">
     <div id="profile-container">
-      <div class="icon">
+      <!-- Left Column: Icon and Username -->
+      <div class="profile-left">
+        <img src="../assets/icon.png" alt="icon" class="icon" />
+        <h1 class="username">{{ currentUsername }}</h1>
+      </div>
+      <!-- <div class="icon">
         <img src="../assets/icon.png" alt="icon" width="150px" />
       </div>
       <h1 class="title">Profile</h1>
-      <p><strong>Username:</strong> {{ currentUsername }}</p>
+      <p><strong>Username:</strong> {{ currentUsername }}</p> -->
 
       <!-- Display user's dietary restrictions -->
-      <h3>Your Dietary Restrictions:</h3>
+      <!-- <h3>Your Dietary Restrictions:</h3>
       <p v-if="dietaryRestrictions.length > 0">
-        {{ dietaryRestrictions.join(', ') }}
-        <!-- Display dietary restrictions as a comma-separated list -->
-      </p>
-      <p v-else>No dietary restrictions set.</p>
+        {{ dietaryRestrictions.join(', ') }} -->
+      <!-- Display dietary restrictions as a comma-separated list -->
+      <!-- </p>
+      <p v-else>No dietary restrictions set.</p> -->
 
       <!-- Display user's dietary restrictions -->
-      <h3>Your Allergies:</h3>
+      <!-- <h3>Your Allergies:</h3>
       <p v-if="allergies.length > 0">
-        {{ allergies.join(', ') }}
-        <!-- Display dietary restrictions as a comma-separated list -->
-      </p>
-      <p v-else>No allergies set.</p>
+        {{ allergies.join(', ') }} -->
+      <!-- Display dietary restrictions as a comma-separated list -->
+      <!-- </p>
+      <p v-else>No allergies set.</p> -->
 
       <!-- Button to navigate to dietary restrictions page -->
-      <button @click="goToDietaryRestrictions">Update Dietary Restrictions</button>
+      <!-- <button @click="goToDietaryRestrictions">Update Dietary Restrictions</button> -->
 
       <!-- Logout Button -->
-      <button class="logout-btn" @click="logout">Logout</button>
+      <!-- <button class="logout-btn" @click="logout">Logout</button> -->
+
+      <!-- Right Column: User Information -->
+      <div class="profile-right">
+        <div class="profile-section">
+          <h3>Meal Type</h3>
+          <p v-if="dietaryRestrictions.length > 0">
+            {{ dietaryRestrictions.join(', ') }}
+          </p>
+          <p v-else>No meal type set.</p>
+        </div>
+
+        <div class="profile-section">
+          <h3>Allergies</h3>
+          <p v-if="allergies.length > 0">
+            {{ allergies.join(', ') }}
+          </p>
+          <p v-else>No allergies set.</p>
+
+          <!-- Button to Update Dietary Restrictions -->
+          <button class="update-btn" @click="goToDietaryRestrictions">
+            Update Dietary Restrictions
+          </button>
+        </div>
+
+        <!-- Placeholder for User Points and Redeem Button -->
+        <div class="profile-section">
+          <h3>Your Points</h3>
+          <p v-if="pointsBalance >= 0">
+            <span class="points-placeholder">{{ pointsBalance }}</span> Points
+          </p>
+          <p v-else>No points available.</p>
+          <button @click="goToVouchers">Redeem Points</button>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" @click="logout">Logout</button>
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +87,7 @@ export default {
     const dietaryRestrictions = ref([])
     const allergies = ref([])
     const selectedAllergies = ref([])
+    const pointsBalance = ref(0)
     const loading = ref(true)
     const error = ref(null)
     const currentUsername = ref(localStorage.getItem('loggedInUser')) // Make this reactive
@@ -94,6 +137,11 @@ export default {
       router.push('/dietary-restrictions') // Use router instance directly
     }
 
+    // Function to navigate to vouchers page
+    const goToVouchers = () => {
+      router.push('/vouchers') // Use router instance directly
+    }
+
     // Logout function
     const logout = () => {
       localStorage.removeItem('loggedInUser')
@@ -102,10 +150,27 @@ export default {
       router.push('/') // Redirect to home page
     }
 
+    const fetchUserPoints = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/user-points', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          pointsBalance.value = data.points
+        } else {
+          throw new Error('Failed to fetch points balance')
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
     // Fetch dietary restrictions and allergies when the component is mounted
     onMounted(() => {
       fetchDietaryRestrictions()
       fetchAllergies()
+      fetchUserPoints()
     })
 
     // Return variables and functions to be used in the template
@@ -116,6 +181,7 @@ export default {
       error,
       currentUsername,
       goToDietaryRestrictions, // Ensure you return the function to the template
+      goToVouchers,
       logout // Return the logout function
     }
   }
@@ -130,20 +196,70 @@ export default {
   height: 100vh;
 }
 
-#profile-container {
+/* #profile-container {
   background-color: #e0ebe4;
   color: #795548;
   border-radius: 8px;
   text-align: center;
-  width: 400px;
+  width: 70%;
+  padding: 20px;
+} */
+
+#profile-container {
+  display: flex;
+  background-color: #e0ebe4;
+  color: #795548;
+  border-radius: 8px;
+  padding: 20px;
+  width: 70%;
+  position: relative;
+}
+/* 
+.title {
+  color: #5d4037;
+} */
+
+.profile-left {
+  text-align: center;
+  flex: 1;
   padding: 20px;
 }
 
-.title {
-  color: #5d4037;
+.icon {
+  width: 150px;
+  border-radius: 50%;
 }
 
-button {
+.username {
+  color: #5d4037;
+  margin-top: 15px;
+  font-size: 1.8rem;
+}
+
+.profile-right {
+  flex: 2;
+  padding: 20px;
+}
+
+h2 {
+  color: #5d4037;
+  margin-bottom: 15px;
+}
+
+.profile-section {
+  margin-bottom: 20px;
+}
+
+.profile-section h3 {
+  color: #5d4037;
+  margin-bottom: 8px;
+}
+
+.points-placeholder {
+  font-weight: bold;
+}
+
+/* button {
   background-color: #5e9b77;
   color: #e6e6e6;
   padding: 0.75rem;
@@ -152,6 +268,18 @@ button {
   font-size: 1rem;
   cursor: pointer;
   margin: 10px;
+  transition: background-color 0.3s ease;
+} */
+
+button {
+  display: inline-block;
+  background-color: #5e9b77;
+  color: #e6e6e6;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
   transition: background-color 0.3s ease;
 }
 
@@ -170,10 +298,21 @@ button:disabled {
 
 .logout-btn {
   background-color: #e57373;
+  position: absolute; /* Positioned absolutely within the profile container */
+  bottom: 20px; /* Adjust the distance from the bottom */
+  right: 20px; /* Adjust the distance from the right */
 }
 
 .logout-btn:hover {
   background-color: #ef9a9a;
+}
+
+.redeem-btn {
+  background-color: #4caf50;
+}
+
+.redeem-btn:hover {
+  background-color: #66bb6a;
 }
 
 ul {
