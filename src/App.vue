@@ -134,7 +134,7 @@ function logout() {
               <RouterLink v-if="isLoggedIn" to="/create-recipe">Create Recipe</RouterLink>
               <RouterLink to="/shopping-list">Shopping List</RouterLink>
               <RouterLink to="/vouchers">Redeem Vouchers</RouterLink>
-              <a v-if="isLoggedIn" href="#" @click.prevent="logout">Logout</a>
+              <!-- <a v-if="isLoggedIn" href="#" @click.prevent="logout">Logout</a> -->
             </div>
           </td>
           <!-- Main content area -->

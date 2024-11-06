@@ -155,7 +155,11 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover:not(:disabled) {
+/* button:hover:not(:disabled) {
+  background-color: #4b8063;
+} */
+
+button:hover {
   background-color: #4b8063;
 }
 
