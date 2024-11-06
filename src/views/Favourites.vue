@@ -249,7 +249,7 @@ button:hover {
 .recipe-card {
   background-color: #e0ebe4;
   border-radius: 8px;
-  padding: 15px;
+  padding: 25px;
   display: flex;
   flex-direction: column;
 }

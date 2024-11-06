@@ -11,7 +11,7 @@
         <span :class="{ completed: item.completed }">{{ item.name }} | {{ item.quantity }}</span>
         <div>
           <button @click="toggleComplete(index)">{{ item.completed ? 'Undo' : 'Complete' }}</button>
-          <button @click="removeItem(item.id)">Remove</button>
+          <button class="button-remove" @click="removeItem(item.id)">Remove</button>
         </div>
       </li>
     </ul>
@@ -125,6 +125,14 @@ button {
 
 button:hover {
   background-color: #4b8063;
+}
+
+.button-remove {
+  background-color: #e57373;
+}
+
+.button-remove:hover {
+  background-color: #ef9a9a;
 }
 
 ul {
