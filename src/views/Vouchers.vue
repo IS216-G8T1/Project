@@ -4,16 +4,16 @@
       <div class="icon">
         <img src="../assets/icon.png" alt="icon" width="150px" />
       </div>
-      <h1 class="title">Points Redemption</h1>
+      <h2 class="title">Points Redemption</h2>
       <p><strong>Username:</strong> {{ currentUsername }}</p>
 
       <!-- Display user's points balance -->
-      <h3>Your Points Balance:</h3>
+      <h4>Your Points Balance:</h4>
       <p v-if="pointsBalance >= 0">{{ pointsBalance }} Points</p>
       <p v-else>No points available.</p>
 
       <!-- Redemption options -->
-      <h3>Available Redemption Options:</h3>
+      <h4>Available Redemption Options:</h4>
       <ul>
         <li v-for="option in redemptionOptions" :key="option.id">
           {{ option.description }} - {{ option.pointsRequired }} Points
@@ -136,6 +136,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  /* padding: 20px; */
 }
 
 #redemption-container {
@@ -143,8 +144,8 @@ export default {
   color: #795548;
   border-radius: 8px;
   text-align: center;
-  width: 400px;
-  padding: 20px;
+  width: 60%;
+  padding: 10px;
 }
 
 .title {
@@ -188,7 +189,7 @@ ul {
 li {
   background-color: #edf4ef;
   padding: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin: 0rem 2rem 0.75rem 2rem;
   border-radius: 4px;
 }
 </style>
