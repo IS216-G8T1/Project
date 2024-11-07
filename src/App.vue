@@ -189,6 +189,12 @@ function logout() {
       </section>
       <nav class="navbar navbar-expand custom-navbar-home shadow-sm">
         <div class="container-fluid">
+          <div class="navbar-icon-box">
+            <div class="navbar-icon-wrapper">
+              <img src="./assets/icon.png" alt="logo" class="navbar-icon" />
+            </div>
+            <p class="navbar-app-name">QuickEats</p>
+          </div>
           <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
             <template v-if="isLoggedIn">
               <!-- <li class="nav-item">
@@ -207,7 +213,6 @@ function logout() {
               <li class="nav-item">
                 <a class="nav-link rounded-2" href="#" @click.prevent="logout">Logout</a>
               </li>
-              
             </template>
             <template v-else>
               <li class="nav-item">
@@ -337,6 +342,41 @@ body {
   z-index: 10;
   padding-right: 20px;
   padding-bottom: 20px;
+}
+
+.navbar-icon-box {
+  margin-top: 10px;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-icon {
+  /* height: 80px; */
+  /* margin-left: 15px; */
+  max-width: 100%; /* Ensure the icon fits well within the circle */
+  max-height: 100%; /* Maintain aspect ratio */
+}
+
+.navbar-icon-wrapper {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e6e6e6; /* Change to your desired background color */
+  border-radius: 50%; /* Makes the background circular */
+  width: 50px; /* Adjust size to fit the icon */
+  height: 50px; /* Adjust size to fit the icon */
+  margin-right: 10px;
+}
+
+.navbar-app-name {
+  margin-top: 15px;
+  font-size: 2rem;
+  color: #e6e6e6;
+  font-family: 'Caveat', cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .nav-link {
