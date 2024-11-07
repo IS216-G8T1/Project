@@ -132,6 +132,23 @@ export default {
       }
     }
 
+    const fetchUserPoints = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/user-points', {
+          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          pointsBalance.value = data.points
+          console.log(pointsBalance)
+        } else {
+          throw new Error('Failed to fetch points balance')
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
     // Function to navigate to dietary restrictions page
     const goToDietaryRestrictions = () => {
       router.push('/dietary-restrictions') // Use router instance directly
@@ -150,21 +167,7 @@ export default {
       router.push('/') // Redirect to home page
     }
 
-    const fetchUserPoints = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/user-points', {
-          headers: { 'X-Username': localStorage.getItem('loggedInUser') }
-        })
-        if (response.ok) {
-          const data = await response.json()
-          pointsBalance.value = data.points
-        } else {
-          throw new Error('Failed to fetch points balance')
-        }
-      } catch (err) {
-        console.error(err)
-      }
-    }
+    
 
     // Fetch dietary restrictions and allergies when the component is mounted
     onMounted(() => {
@@ -177,6 +180,7 @@ export default {
     return {
       dietaryRestrictions,
       allergies,
+      pointsBalance,
       loading,
       error,
       currentUsername,

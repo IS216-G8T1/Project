@@ -73,7 +73,7 @@
       </div>
     </section>
 
-    <!-- Statistics Section -->
+    <!-- Statistics Section
     <section class="statistics">
       <h2 class="section-title">Our Impact</h2>
       <div class="stat-box">
@@ -88,7 +88,7 @@
         <div class="stat-value" v-cloak>1000+</div>
         <p class="stat-label">meals saved from going to waste</p>
       </div>
-    </section>
+    </section> -->
 
     <!-- Call to Action Section -->
     <section class="cta-section">

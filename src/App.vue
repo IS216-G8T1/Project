@@ -195,11 +195,19 @@ function logout() {
                 <span class="welcome-message-home">Welcome, {{ currentUsername }}!</span>
               </li> -->
               <li class="nav-item">
-                <a class="nav-link rounded-2" href="#" @click.prevent="logout">Logout</a>
+                <RouterLink class="nav-link rounded-2" to="/recipe-search" @click="closeNavbar"
+                  >Recipe Search</RouterLink
+                >
               </li>
               <li class="nav-item">
-                <RouterLink class="nav-link rounded-2" to="/profile">Profile</RouterLink>
+                <RouterLink class="nav-link rounded-2" to="/profile" @click="closeNavbar"
+                  >Profile</RouterLink
+                >
               </li>
+              <li class="nav-item">
+                <a class="nav-link rounded-2" href="#" @click.prevent="logout">Logout</a>
+              </li>
+              
             </template>
             <template v-else>
               <li class="nav-item">
