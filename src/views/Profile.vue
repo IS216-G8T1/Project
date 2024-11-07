@@ -6,33 +6,6 @@
         <img src="../assets/icon.png" alt="icon" class="icon" />
         <h1 class="username">{{ currentUsername }}</h1>
       </div>
-      <!-- <div class="icon">
-        <img src="../assets/icon.png" alt="icon" width="150px" />
-      </div>
-      <h1 class="title">Profile</h1>
-      <p><strong>Username:</strong> {{ currentUsername }}</p> -->
-
-      <!-- Display user's dietary restrictions -->
-      <!-- <h3>Your Dietary Restrictions:</h3>
-      <p v-if="dietaryRestrictions.length > 0">
-        {{ dietaryRestrictions.join(', ') }} -->
-      <!-- Display dietary restrictions as a comma-separated list -->
-      <!-- </p>
-      <p v-else>No dietary restrictions set.</p> -->
-
-      <!-- Display user's dietary restrictions -->
-      <!-- <h3>Your Allergies:</h3>
-      <p v-if="allergies.length > 0">
-        {{ allergies.join(', ') }} -->
-      <!-- Display dietary restrictions as a comma-separated list -->
-      <!-- </p>
-      <p v-else>No allergies set.</p> -->
-
-      <!-- Button to navigate to dietary restrictions page -->
-      <!-- <button @click="goToDietaryRestrictions">Update Dietary Restrictions</button> -->
-
-      <!-- Logout Button -->
-      <!-- <button class="logout-btn" @click="logout">Logout</button> -->
 
       <!-- Right Column: User Information -->
       <div class="profile-right">
@@ -76,23 +49,19 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router' // Import useRouter
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
-    // Access the router instance
     const router = useRouter()
-
-    // Declare reactive variables
     const dietaryRestrictions = ref([])
     const allergies = ref([])
     const selectedAllergies = ref([])
     const pointsBalance = ref(0)
     const loading = ref(true)
     const error = ref(null)
-    const currentUsername = ref(localStorage.getItem('loggedInUser')) // Make this reactive
+    const currentUsername = ref(localStorage.getItem('loggedInUser'))
 
-    // Function to fetch dietary restrictions from the server
     const fetchDietaryRestrictions = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/dietary-info', {
@@ -128,7 +97,6 @@ export default {
         error.value = 'An error occurred while fetching allergies.'
       } finally {
         loading.value = false
-        console.log(selectedAllergies)
       }
     }
 
@@ -140,7 +108,6 @@ export default {
         if (response.ok) {
           const data = await response.json()
           pointsBalance.value = data.points
-          console.log(pointsBalance)
         } else {
           throw new Error('Failed to fetch points balance')
         }
@@ -149,34 +116,27 @@ export default {
       }
     }
 
-    // Function to navigate to dietary restrictions page
     const goToDietaryRestrictions = () => {
-      router.push('/dietary-restrictions') // Use router instance directly
+      router.push('/dietary-restrictions')
     }
 
-    // Function to navigate to vouchers page
     const goToVouchers = () => {
-      router.push('/vouchers') // Use router instance directly
+      router.push('/vouchers')
     }
 
-    // Logout function
     const logout = () => {
       localStorage.removeItem('loggedInUser')
       localStorage.removeItem('isLoggedIn')
-      currentUsername.value = '' // Update reactive variable
-      router.push('/') // Redirect to home page
+      currentUsername.value = ''
+      router.push('/')
     }
 
-    
-
-    // Fetch dietary restrictions and allergies when the component is mounted
     onMounted(() => {
       fetchDietaryRestrictions()
       fetchAllergies()
       fetchUserPoints()
     })
 
-    // Return variables and functions to be used in the template
     return {
       dietaryRestrictions,
       allergies,
@@ -184,9 +144,9 @@ export default {
       loading,
       error,
       currentUsername,
-      goToDietaryRestrictions, // Ensure you return the function to the template
+      goToDietaryRestrictions,
       goToVouchers,
-      logout // Return the logout function
+      logout
     }
   }
 }
@@ -197,17 +157,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-}
-
-/* #profile-container {
-  background-color: #e0ebe4;
-  color: #795548;
-  border-radius: 8px;
-  text-align: center;
-  width: 70%;
+  min-height: 100vh;
   padding: 20px;
-} */
+  box-sizing: border-box;
+}
 
 #profile-container {
   display: flex;
@@ -215,22 +168,23 @@ export default {
   color: #795548;
   border-radius: 8px;
   padding: 20px;
-  width: 70%;
+  width: 100%;
+  max-width: 1000px;
   position: relative;
+  flex-wrap: wrap;
+  gap: 20px;
 }
-/* 
-.title {
-  color: #5d4037;
-} */
 
 .profile-left {
-  text-align: center;
   flex: 1;
+  min-width: 200px;
+  text-align: center;
   padding: 20px;
 }
 
 .icon {
   width: 150px;
+  max-width: 100%;
   border-radius: 50%;
 }
 
@@ -238,20 +192,22 @@ export default {
   color: #5d4037;
   margin-top: 15px;
   font-size: 1.8rem;
+  word-break: break-word;
 }
 
 .profile-right {
   flex: 2;
+  min-width: 300px;
   padding: 20px;
-}
-
-h2 {
-  color: #5d4037;
-  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 80px;
 }
 
 .profile-section {
   margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .profile-section h3 {
@@ -263,18 +219,6 @@ h2 {
   font-weight: bold;
 }
 
-/* button {
-  background-color: #5e9b77;
-  color: #e6e6e6;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 10px;
-  transition: background-color 0.3s ease;
-} */
-
 button {
   display: inline-block;
   background-color: #5e9b77;
@@ -284,12 +228,9 @@ button {
   border-radius: 4px;
   cursor: pointer;
   margin-right: 10px;
+  margin-bottom: 10px;
   transition: background-color 0.3s ease;
 }
-
-/* button:hover:not(:disabled) {
-  background-color: #4b8063;
-} */
 
 button:hover {
   background-color: #4b8063;
@@ -302,32 +243,75 @@ button:disabled {
 
 .logout-btn {
   background-color: #e57373;
-  position: absolute; /* Positioned absolutely within the profile container */
-  bottom: 20px; /* Adjust the distance from the bottom */
-  right: 20px; /* Adjust the distance from the right */
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  margin: 0;
 }
 
 .logout-btn:hover {
   background-color: #ef9a9a;
 }
 
-.redeem-btn {
-  background-color: #4caf50;
+/* Mobile Styles */
+@media (max-width: 768px) {
+  #profile-page {
+    padding: 10px;
+  }
+
+  #profile-container {
+    flex-direction: column;
+  }
+
+  .profile-left,
+  .profile-right {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .profile-right {
+    padding-bottom: 70px;
+  }
+
+  .icon {
+    width: 120px;
+  }
+
+  .username {
+    font-size: 1.5rem;
+  }
+
+  button {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .logout-btn {
+    width: calc(100% - 40px);
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+  }
 }
 
-.redeem-btn:hover {
-  background-color: #66bb6a;
-}
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  #profile-page {
+    padding: 5px;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  .profile-section {
+    padding: 10px;
+  }
 
-li {
-  background-color: #fff3e0;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
+  .username {
+    font-size: 1.3rem;
+  }
+
+  button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
 }
 </style>

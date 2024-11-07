@@ -417,13 +417,35 @@ h1 {
   margin-bottom: 20px;
   display: flex;
   gap: 20px;
-  align-items: baseline;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .search-bar {
   flex: 1;
+  min-width: 250px;
 }
 
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .search-bar {
+    width: 100%;
+    order: -1; /* Makes search bar appear first */
+  }
+
+  .filter-options,
+  .sort-options {
+    width: 100%;
+  }
+
+  .filter-options select.rating-filter {
+    width: 100%;
+  }
+}
 .search-bar input {
   width: 100%;
   padding: 8px;
