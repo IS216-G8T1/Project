@@ -130,6 +130,7 @@ export default {
           const restrictions = await response.json()
           dietaryRestrictions.value = restrictions.split(',')
           selectedRestrictions.value = dietaryRestrictions.value
+          
         } else {
           throw new Error('Failed to fetch dietary restrictions')
         }
