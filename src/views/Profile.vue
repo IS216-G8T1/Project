@@ -10,16 +10,16 @@
       <!-- Right Column: User Information -->
       <div class="profile-right">
         <div class="profile-section">
-          <h3>Meal Type</h3>
-          <p v-if="dietaryRestrictions.length > 0">
+          <h3>Diet Type</h3>
+          <p v-if="dietaryRestrictions != ''">
             {{ dietaryRestrictions.join(', ') }}
           </p>
-          <p v-else>No meal type set.</p>
+          <p v-else>No diet type set.</p>
         </div>
 
         <div class="profile-section">
           <h3>Allergies</h3>
-          <p v-if="allergies.length > 0">
+          <p v-if="allergies != ''">
             {{ allergies.join(', ') }}
           </p>
           <p v-else>No allergies set.</p>
