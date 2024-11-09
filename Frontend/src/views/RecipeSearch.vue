@@ -208,7 +208,7 @@ export default {
       const options = { method, headers }
       if (body) options.body = JSON.stringify(body)
       try {
-        const response = await fetch(`http://localhost:5000/api${url}`, options)
+        const response = await fetch(`http://157.245.198.241:5000/api${url}`, options)
         return await response.json()
       } catch (error) {
         console.error('Error during fetch:', error)

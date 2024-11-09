@@ -49,7 +49,7 @@ export default {
     // Function to fetch user points from the server
     const fetchUserPoints = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/user-points', {
+        const response = await fetch('http://157.245.198.241:5000/api/user-points', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
@@ -76,7 +76,7 @@ export default {
     // Function to redeem points
     const redeemPoints = async (option) => {
       try {
-        const response = await fetch('http://localhost:5000/api/redeem-points', {
+        const response = await fetch('http://157.245.198.241:5000/api/redeem-points', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

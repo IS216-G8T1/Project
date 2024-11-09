@@ -96,7 +96,7 @@ export default {
 
       try {
         // Send POST request to create recipe
-        const response = await fetch('http://localhost:5000/api/personal-recipes', {
+        const response = await fetch('http://157.245.198.241:5000/api/personal-recipes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

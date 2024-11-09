@@ -123,7 +123,7 @@ export default {
 
     const fetchDietaryRestrictions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/dietary-info', {
+        const response = await fetch('http://157.245.198.241:5000/api/dietary-info', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
@@ -144,7 +144,7 @@ export default {
 
     const fetchAllergies = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/allergy-info', {
+        const response = await fetch('http://157.245.198.241:5000/api/allergy-info', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
@@ -166,7 +166,7 @@ export default {
     const updateDietaryRestrictions = async () => {
       loading.value = true
       try {
-        const result = await fetch('http://localhost:5000/api/dietary-info', {
+        const result = await fetch('http://157.245.198.241:5000/api/dietary-info', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ export default {
     const updateAllergies = async () => {
       loading.value = true
       try {
-        const result = await fetch('http://localhost:5000/api/allergy-info', {
+        const result = await fetch('http://157.245.198.241:5000/api/allergy-info', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

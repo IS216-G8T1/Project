@@ -40,3 +40,9 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+
+On droplet
+rm -rf node_modules
+rm package-lock.json
+npm install

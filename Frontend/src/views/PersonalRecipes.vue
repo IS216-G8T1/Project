@@ -120,7 +120,7 @@ export default {
     // Function to fetch recipes from the server
     const fetchRecipes = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/personal-recipes', {
+        const response = await fetch('http://157.245.198.241:5000/api/personal-recipes', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
@@ -176,7 +176,7 @@ export default {
         console.log('Sending update request for recipe:', editingRecipe.value) // Debug log
 
         const response = await fetch(
-          `http://localhost:5000/api/personal-recipes/${editingRecipe.value.UserMadeRecipeID}`,
+          `http://157.245.198.241:5000/api/personal-recipes/${editingRecipe.value.UserMadeRecipeID}`,
           {
             method: 'PUT',
             headers: {
@@ -217,7 +217,7 @@ export default {
     const deleteRecipe = async (recipeId) => {
       if (confirm('Are you sure you want to delete this recipe?')) {
         try {
-          const response = await fetch(`http://localhost:5000/api/personal-recipes/${recipeId}`, {
+          const response = await fetch(`http://157.245.198.241:5000/api/personal-recipes/${recipeId}`, {
             method: 'DELETE',
             headers: { 'X-Username': localStorage.getItem('loggedInUser') }
           })

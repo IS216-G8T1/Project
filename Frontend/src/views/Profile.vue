@@ -64,7 +64,7 @@ export default {
 
     const fetchDietaryRestrictions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/dietary-info', {
+        const response = await fetch('http://157.245.198.241:5000/api/dietary-info', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
@@ -82,7 +82,7 @@ export default {
 
     const fetchAllergies = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/allergy-info', {
+        const response = await fetch('http://157.245.198.241:5000/api/allergy-info', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
@@ -102,7 +102,7 @@ export default {
 
     const fetchUserPoints = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/user-points', {
+        const response = await fetch('http://157.245.198.241:5000/api/user-points', {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
