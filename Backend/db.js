@@ -5,36 +5,42 @@ let connection;
 
 async function connectToDatabase() {
   try {
-    // First, connect without specifying a database
-    const tempConnection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-    });
+    console.log('Attempting to connect to database...');
+    console.log(`Host: ${process.env.DB_HOST}`);
+    console.log(`User: ${process.env.DB_USER}`);
+    console.log(`Database: ${process.env.DB_NAME}`);
 
-    // Create the database if it doesn't exist
-    await tempConnection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`);
-
-    // Close the temporary connection
-    await tempConnection.end();
-
-    // Now connect to the specific database
-    connection = await mysql.createConnection({
+    // Configuration for Google Cloud SQL
+    const config = {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-    });
+      // Additional options for Google Cloud SQL
+      connectTimeout: 30000, // Increased timeout to 30 seconds
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    };
 
-    console.log('Connected to MySQL database');
+    // Create the connection
+    connection = await mysql.createConnection(config);
+    console.log('Successfully connected to MySQL database');
   } catch (error) {
-    console.error('Error connecting to the database:', error);
+    console.error('Detailed connection error:', {
+      message: error.message,
+      code: error.code,
+      errno: error.errno,
+      sqlState: error.sqlState,
+      sqlMessage: error.sqlMessage
+    });
     throw error;
   }
 }
 
 async function createTables() {
   try {
+    console.log('Creating tables...');
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS Users (
         Username VARCHAR(50) PRIMARY KEY,
@@ -123,6 +129,7 @@ async function createTables() {
 
 async function testConnection() {
   try {
+    console.log('Testing database connection...');
     await connection.execute('SELECT 1');
     console.log('Database connection test successful');
   } catch (error) {
