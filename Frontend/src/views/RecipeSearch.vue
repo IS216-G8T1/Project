@@ -39,7 +39,7 @@
             src="../assets/favourite_unchecked.png"
             alt="fav-icon"
             class="fav-icon"
-            @click="addToFavourites(recipe.id)"
+            @click="addToFavourites(recipe)"
           />
           <div class="recipe-info">
             <h4>
@@ -67,7 +67,7 @@
             src="../assets/favourite_unchecked.png"
             alt="fav-icon"
             class="fav-icon"
-            @click="addToFavourites(recipe.UserMadeRecipeID)"
+            @click="addToFavourites(recipe)"
           />
           <div class="recipe-info">
             <h4>
@@ -262,33 +262,30 @@ export default {
         console.error('Error fetching recipe:', error)
       }
     },
-    async addToFavourites(recipeId) {
+    async addToFavourites(recipe) {
+      const recipeId = this.isEDAMAM ? recipe.id : recipe.UserMadeRecipeID
+      
       await this.makeRequest('/favourites', 'POST', {
         recipeId: recipeId,
         isEdamamRecipe: this.isEDAMAM
       })
 
-      const recipeToAdd = this.isEDAMAM
-        ? this.searchResults.find((recipe) => recipe.id === recipeId)
-        : this.searchResults.find((recipe) => recipe.UserMadeRecipeID === recipeId)
-
-      if (recipeToAdd) {
-        if (this.isEDAMAM) {
-          this.favourites.push({
-            isEdamamRecipe: 1,
-            id: recipeToAdd.id,
-            source: recipeToAdd.source,
-            recipe_name: recipeToAdd.title,
-            calories: recipeToAdd.calories,
-            cooking_time: recipeToAdd.totalTime,
-            url: recipeToAdd.url
-          })
-        } else {
-          this.favourites.push({
-            id: recipeToAdd.UserMadeRecipeID,
-            recipe_name: recipeToAdd.RecipeName
-          })
-        }
+      if (this.isEDAMAM) {
+        this.favourites.push({
+          isEdamamRecipe: 1,
+          id: recipe.id,
+          source: recipe.source,
+          recipe_name: recipe.title,
+          calories: recipe.calories,
+          cooking_time: recipe.totalTime,
+          url: recipe.url
+        })
+      } else {
+        this.favourites.push({
+          isEdamamRecipe: 0,
+          id: recipe.UserMadeRecipeID,
+          recipe_name: recipe.RecipeName
+        })
       }
     },
     async removeFromFavourites(recipeId) {
