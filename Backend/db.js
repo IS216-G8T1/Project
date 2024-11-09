@@ -1,30 +1,26 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-let connection;
+// Create a connection pool instead of a single connection
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  connectTimeout: 30000,
+  ssl: {
+    rejectUnauthorized: true
+  }
+});
 
 async function connectToDatabase() {
   try {
     console.log('Attempting to connect to database...');
-    console.log(`Host: ${process.env.DB_HOST}`);
-    console.log(`User: ${process.env.DB_USER}`);
-    console.log(`Database: ${process.env.DB_NAME}`);
-
-    // Configuration for Google Cloud SQL
-    const config = {
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      // Additional options for Google Cloud SQL
-      connectTimeout: 30000, // Increased timeout to 30 seconds
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    };
-
-    // Create the connection
-    connection = await mysql.createConnection(config);
+    // Test the pool connection
+    await pool.getConnection();
     console.log('Successfully connected to MySQL database');
   } catch (error) {
     console.error('Detailed connection error:', {
@@ -41,6 +37,8 @@ async function connectToDatabase() {
 async function createTables() {
   try {
     console.log('Creating tables...');
+    const connection = await pool.getConnection();
+    
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS Users (
         Username VARCHAR(50) PRIMARY KEY,
@@ -120,6 +118,7 @@ async function createTables() {
       )
     `);
 
+    connection.release();
     console.log('Tables created successfully');
   } catch (error) {
     console.error('Error creating tables:', error);
@@ -130,7 +129,9 @@ async function createTables() {
 async function testConnection() {
   try {
     console.log('Testing database connection...');
+    const connection = await pool.getConnection();
     await connection.execute('SELECT 1');
+    connection.release();
     console.log('Database connection test successful');
   } catch (error) {
     console.error('Database connection test failed:', error);
@@ -140,7 +141,7 @@ async function testConnection() {
 
 async function query(sql, params) {
   try {
-    const [results] = await connection.execute(sql, params);
+    const [results] = await pool.execute(sql, params);
     return results;
   } catch (error) {
     console.error('Error executing query:', error);
