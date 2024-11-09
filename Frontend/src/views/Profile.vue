@@ -11,7 +11,7 @@
       <div class="profile-right">
         <div class="profile-section">
           <h3>Diet Type</h3>
-          <p v-if="dietaryRestrictions != ''">
+          <p v-if="dietaryRestrictions && dietaryRestrictions.length > 0">
             {{ dietaryRestrictions.join(', ') }}
           </p>
           <p v-else>No diet type set.</p>
@@ -19,7 +19,7 @@
 
         <div class="profile-section">
           <h3>Allergies</h3>
-          <p v-if="allergies != ''">
+          <p v-if="allergies && allergies.length > 0">
             {{ allergies.join(', ') }}
           </p>
           <p v-else>No allergies set.</p>
@@ -52,6 +52,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
+  name: 'UserProfile',
   setup() {
     const router = useRouter()
     const dietaryRestrictions = ref([])
@@ -68,13 +69,18 @@ export default {
           headers: { 'X-Username': localStorage.getItem('loggedInUser') }
         })
         if (response.ok) {
-          dietaryRestrictions.value = await response.json()
-          dietaryRestrictions.value = dietaryRestrictions.value.split(',')
+          const data = await response.json()
+          if (data && typeof data === 'string' && data.trim() !== '') {
+            dietaryRestrictions.value = data.split(',')
+          } else {
+            dietaryRestrictions.value = []
+          }
         } else {
-          throw new Error('Failed to fetch dietary restrictions')
+          dietaryRestrictions.value = []
         }
       } catch (err) {
-        error.value = 'An error occurred while fetching dietary restrictions.'
+        console.error('Error fetching dietary restrictions:', err)
+        dietaryRestrictions.value = []
       } finally {
         loading.value = false
       }
@@ -87,14 +93,21 @@ export default {
         })
         if (response.ok) {
           const data = await response.json()
-          const allergiesList = data.Allergies
-          allergies.value = allergiesList.split(',')
-          selectedAllergies.value = allergies.value
+          if (data && data.Allergies && typeof data.Allergies === 'string' && data.Allergies.trim() !== '') {
+            allergies.value = data.Allergies.split(',')
+            selectedAllergies.value = allergies.value
+          } else {
+            allergies.value = []
+            selectedAllergies.value = []
+          }
         } else {
-          throw new Error('Failed to fetch allergies')
+          allergies.value = []
+          selectedAllergies.value = []
         }
       } catch (err) {
-        error.value = 'An error occurred while fetching allergies.'
+        console.error('Error fetching allergies:', err)
+        allergies.value = []
+        selectedAllergies.value = []
       } finally {
         loading.value = false
       }
@@ -107,12 +120,13 @@ export default {
         })
         if (response.ok) {
           const data = await response.json()
-          pointsBalance.value = data.points
+          pointsBalance.value = data.points || 0
         } else {
-          throw new Error('Failed to fetch points balance')
+          pointsBalance.value = 0
         }
       } catch (err) {
-        console.error(err)
+        console.error('Error fetching points:', err)
+        pointsBalance.value = 0
       }
     }
 
@@ -132,6 +146,10 @@ export default {
     }
 
     onMounted(() => {
+      if (!localStorage.getItem('loggedInUser')) {
+        router.push('/login')
+        return
+      }
       fetchDietaryRestrictions()
       fetchAllergies()
       fetchUserPoints()

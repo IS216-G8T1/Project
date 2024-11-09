@@ -165,41 +165,39 @@ export default {
     },
 
     async searchRecipes() {
-      this.isEDAMAM = true
-      this.isLoading = true
-      try {
-        // Start with base query parameter
-        const params = new URLSearchParams({
-          query: this.searchQuery
+  this.isEDAMAM = true
+  this.isLoading = true
+  try {
+    // Start with base query parameter
+    const params = new URLSearchParams({
+      query: this.searchQuery
+    })
+
+    // Add filters if checkbox is checked
+    if (this.applyHealthFilters) {
+      // Add allergies as health parameters
+      if (this.allergies.length > 0) {
+        this.allergies.forEach((allergy) => {
+          params.append('health', allergy.toLowerCase())
         })
-
-        // Add filters if checkbox is checked
-        if (this.applyHealthFilters) {
-          // Add allergies as health parameters
-          if (this.allergies.length > 0) {
-            this.allergies.forEach((allergy) => {
-              params.append('health', allergy.toLowerCase())
-            })
-          }
-
-          // Add dietary restrictions as diet parameters
-          if (this.dietaryRestrictions.length > 0) {
-            this.dietaryRestrictions.forEach((diet) => {
-              params.append('diet', diet.toLowerCase())
-            })
-          }
-        }
-
-        console.log('Search URL:', `/api/search-recipes?${params.toString()}`)
-        const response = await axios.get(`/api/search-recipes?${params.toString()}`)
-        console.log('Search response:', response.data)
-        this.searchResults = response.data
-      } catch (error) {
-        console.error('Error searching recipes:', error)
-      } finally {
-        this.isLoading = false
       }
-    },
+
+      // Add dietary restrictions as diet parameters
+      if (this.dietaryRestrictions.length > 0) {
+        this.dietaryRestrictions.forEach((diet) => {
+          params.append('diet', diet.toLowerCase())
+        })
+      }
+    }
+
+    const response = await axios.get(`http://157.245.198.241:5000/api/search-recipes?${params.toString()}`)
+    this.searchResults = response.data
+  } catch (error) {
+    console.error('Error searching recipes:', error)
+  } finally {
+    this.isLoading = false
+  }
+},
     async makeRequest(url, method, body = null) {
       const headers = {
         'Content-Type': 'application/json',
