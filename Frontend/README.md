@@ -44,5 +44,16 @@ npm run lint
 
 On droplet
 rm -rf node_modules
+
+npm install @rollup/rollup-linux-x64-gnu   (maybe)
+
 rm package-lock.json
 npm install
+
+
+
+reinstall:
+pm2 delete all
+cd /root
+rm -rf droplet-recipeapp
+git clone https://github.com/bjorntin/droplet-recipeapp.git
