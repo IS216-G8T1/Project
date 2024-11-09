@@ -273,10 +273,22 @@ export default {
         : this.searchResults.find((recipe) => recipe.UserMadeRecipeID === recipeId)
 
       if (recipeToAdd) {
-        this.favourites.push({
-          id: recipeToAdd.id || recipeToAdd.UserMadeRecipeID,
-          recipe_name: recipeToAdd.title || recipeToAdd.RecipeName
-        })
+        if (this.isEDAMAM) {
+          this.favourites.push({
+            isEdamamRecipe: 1,
+            id: recipeToAdd.id,
+            source: recipeToAdd.source,
+            recipe_name: recipeToAdd.title,
+            calories: recipeToAdd.calories,
+            cooking_time: recipeToAdd.totalTime,
+            url: recipeToAdd.url
+          })
+        } else {
+          this.favourites.push({
+            id: recipeToAdd.UserMadeRecipeID,
+            recipe_name: recipeToAdd.RecipeName
+          })
+        }
       }
     },
     async removeFromFavourites(recipeId) {
