@@ -12,7 +12,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
   connectTimeout: 30000,
   ssl: {
-    rejectUnauthorized: true
+    rejectUnauthorized: false  // Modified this line to fix SSL certificate issue
   }
 });
 
